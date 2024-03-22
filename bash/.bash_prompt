@@ -1,0 +1,63 @@
+#!/bin/bash
+
+#GIT_PROMPT_SCRIPT="$(locate git-prompt.sh |head -n 1)"
+#if [ -n "$GIT_PROMPT_SCRIPT" ];then
+#	source "$GIT_PROMPT_SCRIPT"
+#fi
+# TODO else ?
+
+# Select git info displayed, see /usr/share/git/completion/git-prompt.sh for more
+export GIT_PS1_SHOWDIRTYSTATE=1           # '*'=unstaged, '+'=staged
+export GIT_PS1_SHOWSTASHSTATE=1           # '$'=stashed
+export GIT_PS1_SHOWUNTRACKEDFILES=1       # '%'=untracked
+export GIT_PS1_SHOWUPSTREAM="verbose"     # 'u='=no difference, 'u+1'=ahead by 1 commit
+export GIT_PS1_STATESEPARATOR=''          # No space between branch and index status
+export GIT_PS1_DESCRIBE_STYLE="describe"  # detached HEAD style:
+export GIT_PS1_SHOWCOLORHINTS=1
+#  contains      relative to newer annotated tag (v1.6.3.2~35)
+#  branch        relative to newer tag or branch (master~4)
+#  describe      relative to older annotated tag (v1.6.3.1-13-gdd42c2f)
+#  default       exactly eatching tag
+
+# Regenerate the prompt after each command
+PROMPT_COMMAND=__prompt_command
+
+__prompt_command() {
+
+	local exit="$?"
+
+	# TODO List ansi colors
+	local cya="\[\e[01;36m\]"
+	local whi="\[\e[01;37m\]"
+	local blu="\[\e[01;34m\]"
+	local gre="\[\e[01;32m\]"
+	local red="\[\e[01;31m\]"
+	local yel="\[\e[01;33m\]"
+	local rst="\[\e[00m\]"   
+
+	time="\t"
+	cur_dir="\w"
+	is_root="\$"
+
+    # Visual last status code
+	if [ $exit -eq 0 ]; then
+		status="${gre}•${rst}"
+	else
+		status="${red}•${rst}"
+	fi
+
+    # Add virtual env
+    if [ -n "$VIRTUAL_ENV" ];
+    then
+        export VENV="${yel}($(basename $VIRTUAL_ENV))${cya}"
+    else
+        export VENV="-"
+    fi
+
+	local PreGitPS1="${cya}[${blu}${time}${cya}]${VENV}[${whi}${cur_dir}${cya}]("
+
+    local PostGitPS1="${cya}) ${status}\r\n"
+	PostGitPS1+="${cya}└─\${is_root}${rst} "
+
+    __git_ps1 "$PreGitPS1" "$PostGitPS1" '%s'
+}
