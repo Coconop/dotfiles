@@ -10,4 +10,6 @@ $ ./letsgo.sh
 ```
 
 # TODO
-WSL configuration (hostname, etc)
+ * WSL configuration (hostname, etc)
+ * bash_completion
+ * git completion

@@ -89,10 +89,11 @@ set backspace=indent,eol,start " Make backspace work in insert mode
 set visualbell      " Deactivate sound and flash instead (flash not working)
 set hls             " Highlight search
 set showmode        " Show current mode down the bottom
-set number	    " Show line number
+set number          " Show line number
 
 "=== Indentation
 set expandtab       "Use spaces rather than tabulations
+" Now we can replace tabs by spaces with :retab
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
