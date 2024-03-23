@@ -19,11 +19,11 @@ None='\033[0m' # Return to default colour
 
 set -e
 if grep -qEi "(icrosoft|WSL)" /proc/sys/kernel/osrelease &> /dev/null ; then
-	echo -e "${Red}Damn, we are in Microsoft WSL :(${None}"
-	IS_IN_WSL=1
+    echo -e "${Red}Damn, we are in Microsoft WSL :(${None}"
+    IS_IN_WSL=1
 else
-	echo -e "${Yel}Native linux here :) ${None}"
-	IS_IN_WSL=0
+    echo -e "${Yel}Native linux here :) ${None}"
+    IS_IN_WSL=0
 fi
 
 # TODO test if we have connection (ping)
@@ -42,60 +42,70 @@ sudo update-ca-certificates
 
 # Installing useful/required packets
 echo -e "${Cya}Installing packets...${None}"
-sudo apt install --no-install-recommends vim tmux curl tree git git-lfs \
-	rsync xclip \ 
-	dos2unix python3-dev python3-pip python3-setuptools python3-tk \
-	python3-wheel python3-venv\
-	make gcc cmake cscope \
-	-y
+sudo apt install --no-install-recommends vim tmux curl tree git git-lfs rsync -y
+sudo apt install --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
+sudo apt install --no-install-recommends python3-wheel python3-venv -y
+sudo apt install --no-install-recommends make gcc cmake cscope -y
 
 # Create SSH folder if it does not exists yet
 mkdir -p ~/.ssh
 
-if [ -e ~/.ssh/id_rsa ]; then
-	# Generate SSH key
-	echo -e "${Cya}Generating Passphrase...${None}"
-	echo -e "${Yel}Be sure to remember the passhrase !${None}"
-	ssh-keygen -t rsa -b 4096 
+if [ -f ~/.ssh/id_rsa ]; then
+    echo -e "${Yel}An SSH key is already present!${None}"
 else
-	echo -e "${Yel}An SSH key is already present!${None}"
-fi
-
-# Ensure agent is running: https://stackoverflow.com/questions/40549332/
-timeout 0.3 ssh-add -l &>/dev/null
-if [ "$?" == 2 ]; then
-	# Could not open a connection to your authentication agent.
-	echo -e "${Red}No SSH agent is running! Start it and Add key:${None}"
-	echo -e "${Red}eval `ssh-agent`${None}"
-	echo -e "${Red}ssh-add ~/.ssh/id_rsa${None}"
-else
-	#Add our freshly generated Key
-	ssh-add ~/.ssh/id_rsa
+    # Generate SSH key
+    echo -e "${Cya}Generating Passphrase...${None}"
+    echo -e "${Yel}Be sure to remember the passhrase !${None}"
+    ssh-keygen -t rsa -b 4096 
 fi
 
 # Get the directory containing the script
 script_dir="$(dirname "$0")"
-echo -e "${Cya}Copying files from ${script_dir}...${None}"
-rsync -rtvP ${script_dir}/bash -r ~/
-rsync -rtvP ${script_dir}/tmux -r ~/
-rsync -rtvP ${script_dir}/vim -r ~/
+echo -e "${Cya}Copying files from ${script_dir} to ~/ ...${None}"
+cp -frv ${script_dir}/bash/. ~/
+cp -frv ${script_dir}/tmux/. ~/
+cp -frv ${script_dir}/vim/.vimrc ~/
+mkdir -vp ~/.vim/colors
+cp -frv ${script_dir}/vim/colors/nord.vim ~/.vim/colors
 
 # In WSL we need to tweak tmux config
-if [ $IS_IN_WSL -eq 1 ]then;
-	echo 'source-file ~/.tmux_wsl.conf' | tee -a ~/.tmux.conf > /dev/null
+if [ $IS_IN_WSL -eq 1 ]; then
+    echo 'source-file ~/.tmux_wsl.conf' | sudo tee -a ~/.tmux.conf > /dev/null
 fi
 
 # Moment of truth !
 echo -e "${Cya}Sourcing...${None}"
 source ~/.bashrc
 
-echo -e "${Cya}Disable annoying bash bell (beep):${None}"
-# Comment any existing "set bell-style"
-sudo sed -i 's/set bell-style/\#set bell-style/g' /etc/inputrc
-# Be sure to disable it
-echo 'set bell-style none' | sudo tee -a /etc/inputrc > /dev/null
+echo -e "${Cya}Disable annoying bash bell (beep)${None}"
+inputrc_file="/etc/inputrc"
+
+# Check if the file exists
+if [ ! -f "$inputrc_file" ]; then
+    echo "Error: $inputrc_file does not exist."
+else
+    # Uncomment the line if it's commented
+    sudo sed -i 's/#set bell-style/set bell-style/' "$inputrc_file"
+
+    # Check if the line with "set bell-style" exists and edit it accordingly
+    if grep -q "^set bell-style" "$inputrc_file"; then
+        sudo sed -i 's/^set bell-style .*/set bell-style none/' "$inputrc_file"
+    else
+        # If the line doesn't exist, append it to the end of the file
+         echo "set bell-style none" | sudo tee -a "$inputrc_file"
+    fi
+fi
+
+echo -e "${Cya}Pimping root...${None}"
+sudo ln -sfn ~/.vimrc /root/.vimrc
+sudo ln -sfn ~/.vim /root/.vim
+sudo ln -sfn ~/.dir_colors /root/.dir_colors
+sudo ln -sfn ~/.bash_prompt /root/.bashprompt
+sudo ln -sfn ~/.bashrc /root/.bashrc
 
 # Hush !
-touch .hushlogin
+touch ~/.hushlogin
 
-echo -e "${Gre}All set up! Captain${None}"
+
+
+echo -e "${Gre}All set up Captain! ${None}"
