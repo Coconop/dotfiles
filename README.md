@@ -11,5 +11,4 @@ $ ./letsgo.sh
 
 # TODO
  * WSL configuration (hostname, etc)
- * bash_completion
- * git completion
+ * Better vim theme for coding (do not hardocde colotheme name in file)
