@@ -100,7 +100,9 @@ echo -e "${Cya}Pimping root...${None}"
 sudo ln -sfn ~/.vimrc /root/.vimrc
 sudo ln -sfn ~/.vim /root/.vim
 sudo ln -sfn ~/.dir_colors /root/.dir_colors
-sudo ln -sfn ~/.bash_prompt /root/.bashprompt
+sudo ln -sfn ~/.bash_prompt /root/.bash_prompt
+sudo ln -sfn ~/.bash_git /root/.bash_git
+sudo ln -sfn ~/.bash_git_completion /root/.bash_git_completion
 sudo ln -sfn ~/.bashrc /root/.bashrc
 
 # Hush !

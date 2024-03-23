@@ -32,6 +32,7 @@ __set_bash_prompt()
 
         # Wrap the colour codes between \[ and \], so that
         # bash counts the correct number of characters for line wrapping:
+        # Classic colors            Bold Text
         local Red='\[\e[0;31m\]'; local BRed='\[\e[1;31m\]'
         local Gre='\[\e[0;32m\]'; local BGre='\[\e[1;32m\]'
         local Yel='\[\e[0;33m\]'; local BYel='\[\e[1;33m\]'
@@ -39,6 +40,14 @@ __set_bash_prompt()
         local Mag='\[\e[0;35m\]'; local BMag='\[\e[1;35m\]'
         local Cya='\[\e[0;36m\]'; local BCya='\[\e[1;36m\]'
         local Whi='\[\e[0;37m\]'; local BWhi='\[\e[1;37m\]'
+        local HRed='\[\e[0;91m\]'; local BRed='\[\e[1;91m\]'
+        local HGre='\[\e[0;92m\]'; local BGre='\[\e[1;92m\]'
+        local HYel='\[\e[0;93m\]'; local BYel='\[\e[1;93m\]'
+        local HBlu='\[\e[0;94m\]'; local BBlu='\[\e[1;94m\]'
+        local HMag='\[\e[0;95m\]'; local BMag='\[\e[1;95m\]'
+        local HCya='\[\e[0;96m\]'; local BCya='\[\e[1;96m\]'
+        local HWhi='\[\e[0;97m\]'; local BWhi='\[\e[1;97m\]'
+
         local None='\[\e[0m\]' # Return to default colour
     else
         unset GIT_PS1_SHOWCOLORHINTS
@@ -56,29 +65,35 @@ __set_bash_prompt()
     local time="\t"
     local cur_dir="\w"
     local is_root="\$"
+    local clr=""
+
     if [[ ${EUID} == 0 ]]; then
-        is_root=${Red}$is_root${None}
+        is_root="${HRed}#${None}"
+        clr=${Red}
+    else
+        clr=${HCya}
     fi
+ 
 
     # Visual last status code
     if [ $exit -eq 0 ]; then
-        status="${gre}•${None}"
+        status="${Gre}•${None}"
     else
-        status="${red}•${None}"
+        status="${Red}•${None}"
     fi
 
     # Add virtual env
     if [ -n "$VIRTUAL_ENV" ];
     then
-        export VENV="${yel}($(basename $VIRTUAL_ENV))${Cya}"
+        export VENV="${HYel}($(basename $VIRTUAL_ENV))${HCya}"
     else
         export VENV="-"
     fi
 
-    local PreGitPS1="${Cya}[${Blu}${time}${Cya}]${VENV}[${Whi}${cur_dir}${Cya}]("
+    local PreGitPS1="${clr}[${HBlu}${time}${clr}]${VENV}[${Whi}${cur_dir}${clr}]("
 
-    local PostGitPS1="${Cya}) ${status}\r\n"
-    PostGitPS1+="${Cya}└─\${is_root}${None} "
+    local PostGitPS1="${clr}) ${status}\r\n"
+    PostGitPS1+="${clr}└─${is_root}${None} "
 
     __git_ps1 "$PreGitPS1" "$PostGitPS1" '%s'
 

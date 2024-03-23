@@ -59,7 +59,16 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-### Pimp my prompt 
+# Easier life with git
+if [ -f ~/.bash_git ]; then
+    source ~/.bash_git
+fi
+
+if [ -f ~/.bash_git_completion ]; then
+    source ~/.bash_git_completion
+fi
+
+# Pimp my prompt 
 if [ -f ~/.bash_prompt ]; then
     source ~/.bash_prompt
 fi
@@ -68,12 +77,12 @@ fi
 bash_aliases_d="~/.bash_aliases.d"
 # Check if the directory exists
 if [ -d "$bash_aliases_d" ]; then
-	# Loop through each file in the directory
-	for file in "$bash_aliases_d"/*; do
-		# Check if the file is readable and is a regular file
-		if [ -r "$file" ] && [ -f "$file" ]; then
-			# Source the file
-			source "$file"
-		fi
-	done
+    # Loop through each file in the directory
+    for file in "$bash_aliases_d"/*; do
+        # Check if the file is readable and is a regular file
+        if [ -r "$file" ] && [ -f "$file" ]; then
+            # Source the file
+            source "$file"
+        fi
+    done
 fi
