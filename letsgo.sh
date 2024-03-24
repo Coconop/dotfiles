@@ -66,7 +66,7 @@ cp -frv ${script_dir}/bash/. ~/
 cp -frv ${script_dir}/tmux/. ~/
 cp -frv ${script_dir}/vim/.vimrc ~/
 mkdir -vp ~/.vim/colors
-cp -frv ${script_dir}/vim/colors/nord.vim ~/.vim/colors
+cp -frv ${script_dir}/vim/colors/. ~/.vim/colors/
 
 # In WSL we need to tweak tmux config
 if [ $IS_IN_WSL -eq 1 ]; then

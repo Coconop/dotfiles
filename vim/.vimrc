@@ -105,6 +105,7 @@ match NoTabs /\t/
 " Vertical ruler
 set colorcolumn=80
 highlight ColorColumn ctermbg=235 guibg=#303030
+syntax enable
 
 "=== Persistence 
 " Keep undo history across sessions, by storing in file.
