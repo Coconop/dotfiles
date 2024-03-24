@@ -19,11 +19,66 @@ set nocompatible
 " === Colors
 set termguicolors
 set term=xterm-256color
+set background=dark
 colorscheme iceberg
 
+" === General config
+set showcmd         " Show (partial) command in status line.
+set showmatch       " Show matching brackets.
+set smartcase       " Do smart case matching
+set incsearch       " Incremental search
+set mouse=a         " Enable mouse usage (all modes)
+set cursorline      " Show current line
+set ruler           " Show ruler and commands
+set backspace=indent,eol,start " Make backspace work in insert mode
+set visualbell      " Deactivate sound and flash instead (flash not working)
+set hls             " Highlight search
+set showmode        " Show current mode down the bottom
+set number          " Show line number
+
+"=== Indentation
+set expandtab       "Use spaces rather than tabulations
+" Now we can replace tabs by spaces with :retab
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+
+"=== Formatting & syntax 
+syntax enable
+
+" Highlight Tabulations
+
+" Noob way
+"highlight NoTabs ctermbg=red ctermfg=white guibg=#592929
+"match NoTabs /\t/
+
+" Expert way
+set nolist
+set listchars=tab:▸\ ,eol:¬,trail:·,nbsp:·
+hi NonText guifg=#fff2cc
+hi SpecialKey guifg=#fff2cc
+
+" Vertical ruler
+set colorcolumn=80
+highlight ColorColumn ctermbg=235 guibg=#303030
+
+"=== Persistence 
+" Keep undo history across sessions, by storing in file.
+" Only works all the time.
+silent !mkdir ~/.vim/backups > /dev/null 2>&1
+set undodir=~/.vim/backups
+set undofile
+set history=1000                "Store lots of :cmdline history
+
+" Jump to the last position when reopening a file
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+"TODO Exuberant CTags ?
 " === Cscope: C file indexer
 
-" The following maps all invoke one of the following cscope search types:                 
+" The following maps all invoke one of the following cscope search types:
 "   's'   symbol: find all references to the token under cursor
 "   'g'   global: find global definition(s) of the token under cursor
 "   'c'   calls:  find all calls to the function name under cursor
@@ -77,46 +132,4 @@ if has("cscope")
     nmap <C-@>d :tab cs find d <C-R>=expand("<cword>")<CR><CR> 
 endif
 
-" === General config
-set showcmd         " Show (partial) command in status line.
-set showmatch       " Show matching brackets.
-set smartcase       " Do smart case matching
-set incsearch       " Incremental search
-set mouse=a         " Enable mouse usage (all modes)
-set cursorline      " Show current line
-set ruler           " Show ruler and commands
-set backspace=indent,eol,start " Make backspace work in insert mode
-set visualbell      " Deactivate sound and flash instead (flash not working)
-set hls             " Highlight search
-set showmode        " Show current mode down the bottom
-set number          " Show line number
-
-"=== Indentation
-set expandtab       "Use spaces rather than tabulations
-" Now we can replace tabs by spaces with :retab
-set shiftwidth=4
-set softtabstop=4
-set tabstop=4
-
-"=== Formatting & syntax 
-" Highlight Tabulations
-highlight NoTabs ctermbg=red ctermfg=white guibg=#592929
-match NoTabs /\t/
-" Vertical ruler
-set colorcolumn=80
-highlight ColorColumn ctermbg=235 guibg=#303030
-syntax enable
-
-"=== Persistence 
-" Keep undo history across sessions, by storing in file.
-" Only works all the time.
-silent !mkdir ~/.vim/backups > /dev/null 2>&1
-set undodir=~/.vim/backups
-set undofile
-set history=1000                "Store lots of :cmdline history
-
-" Jump to the last position when reopening a file
-if has("autocmd")
-    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
 
