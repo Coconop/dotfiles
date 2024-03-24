@@ -19,7 +19,7 @@ set nocompatible
 " === Colors
 set termguicolors
 set term=xterm-256color
-colorscheme nord
+colorscheme iceberg
 
 " === Cscope: C file indexer
 
