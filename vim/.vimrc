@@ -25,7 +25,8 @@ colorscheme iceberg
 " === General config
 set showcmd         " Show (partial) command in status line.
 set showmatch       " Show matching brackets.
-set smartcase       " Do smart case matching
+set ignorecase      " Case does not matter...
+set smartcase       " Unless we search for uppercase!
 set incsearch       " Incremental search
 set mouse=a         " Enable mouse usage (all modes)
 set cursorline      " Show current line
@@ -74,6 +75,15 @@ set history=1000                "Store lots of :cmdline history
 if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
+
+"=== statusline
+set statusline=2
+" TODO Visual/Normal/Insert mode, filepath, git status, tabs
+
+"=== Buffer
+" :e to edit
+" :b <Tab> to cycle around buffers
+" :bd to close a buffer
 
 "TODO Exuberant CTags ?
 " === Cscope: C file indexer
