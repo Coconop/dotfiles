@@ -59,6 +59,11 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+# Default editor shall be vim
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export GIT_EDITOR=vim
+
 # Easier life with git
 if [ -f ~/.bash_git ]; then
     source ~/.bash_git
@@ -86,3 +91,10 @@ if [ -d "$bash_aliases_d" ]; then
         fi
     done
 fi
+
+# If something was already defined
+if [ -f ~/.bash_aliases ]; then
+    source ~/.bash_aliases
+fi
+
+
