@@ -69,6 +69,8 @@ mkdir -vp ~/.vim/colors
 cp -frv ${script_dir}/vim/colors/. ~/.vim/colors/
 mkdir -vp ~/.vim/after
 cp -frv ${script_dir}/vim/after/. ~/.vim/after/
+mkdir -vp ~/.vim/plugin
+cp -frv ${script_dir}/vim/plugin/. ~/.vim/plugin/
 
 # In WSL we need to tweak tmux config
 if [ $IS_IN_WSL -eq 1 ]; then
@@ -109,7 +111,5 @@ sudo ln -sfn ~/.bashrc /root/.bashrc
 
 # Hush !
 touch ~/.hushlogin
-
-
 
 echo -e "${Gre}All set up Captain! ${None}"
