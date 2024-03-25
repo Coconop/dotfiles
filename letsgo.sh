@@ -112,4 +112,7 @@ sudo ln -sfn ~/.bashrc /root/.bashrc
 # Hush !
 touch ~/.hushlogin
 
+# Git config TODO complete
+git config --global core.editor "vim"
+
 echo -e "${Gre}All set up Captain! ${None}"
