@@ -32,6 +32,7 @@ __set_bash_prompt()
 
         # Wrap the colour codes between \[ and \], so that
         # bash counts the correct number of characters for line wrapping:
+        #TODO check https://unix.stackexchange.com/a/447520
         # Classic colors            Bold Text
         local Red='\[\e[0;31m\]'; local BRed='\[\e[1;31m\]'
         local Gre='\[\e[0;32m\]'; local BGre='\[\e[1;32m\]'
