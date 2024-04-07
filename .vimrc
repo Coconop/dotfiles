@@ -20,7 +20,7 @@ set nocompatible
 set termguicolors
 set term=xterm-256color
 set background=dark
-colorscheme iceberg
+colorscheme codedark
 
 " === General config
 set showcmd         " Show (partial) command in status line.
@@ -61,7 +61,7 @@ hi NonText guifg=#fff2cc
 hi SpecialKey guifg=#fff2cc
 
 " Vertical ruler
-set colorcolumn=80
+"set colorcolumn=80
 highlight ColorColumn ctermbg=235 guibg=#303030
 
 "=== Persistence 
@@ -85,6 +85,12 @@ set statusline=2
 " :e to edit
 " :b <Tab> to cycle around buffers
 " :bd to close a buffer
+
+"=== Tabs
+" :tabe Open new tab
+" :tabc Close current tab
+" gt    Next tab
+" gT    Prev tab
 
 "TODO Exuberant CTags ?
 

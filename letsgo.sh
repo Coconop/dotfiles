@@ -48,9 +48,9 @@ sudo apt install --no-install-recommends python3-wheel python3-venv -y
 sudo apt install --no-install-recommends make gcc cmake cscope -y
 
 # Create SSH folder if it does not exists yet
-mkdir -p ~/.ssh
+mkdir -p ${HOME}/.ssh
 
-if [ -f ~/.ssh/id_rsa ]; then
+if [ -f ${HOME}/.ssh/id_rsa ]; then
     echo -e "${Yel}An SSH key is already present!${None}"
 else
     # Generate SSH key
@@ -61,25 +61,30 @@ fi
 
 # Get the directory containing the script
 script_dir="$(dirname "$0")"
-echo -e "${Cya}Copying files from ${script_dir} to ~/ ...${None}"
-cp -frv ${script_dir}/bash/. ~/
-cp -frv ${script_dir}/tmux/. ~/
-cp -frv ${script_dir}/vim/.vimrc ~/
-mkdir -vp ~/.vim/colors
-cp -frv ${script_dir}/vim/colors/. ~/.vim/colors/
-mkdir -vp ~/.vim/after
-cp -frv ${script_dir}/vim/after/. ~/.vim/after/
-mkdir -vp ~/.vim/plugin
-cp -frv ${script_dir}/vim/plugin/. ~/.vim/plugin/
+echo -e "${Cya}Copying files from ${script_dir} to ${HOME}/ ...${None}"
+
+sudo ln -sfn ${script_dir}/.vimrc ${HOME}/.vimrc
+sudo ln -sfn ${script_dir}/.vim/ ${HOME}/.vim
+
+sudo ln -sfn ${script_dir}/.bashrc/. ${HOME}/.bashrc
+sudo ln -sfn ${script_dir}/.bash_prompt ${HOME}/.bash_prompt
+sudo ln -sfn ${script_dir}/.bash_git ${HOME}/.bash_git
+sudo ln -sfn ${script_dir}/.bash_git_completion. ${HOME}/.bash_git_completion
+
+sudo ln -sfn ${script_dir}/.tmux.conf/ ${HOME}/.tmux.conf
+
+sudo ln -sfn ${script_dir}/.dircolors/. ${HOME}/.dircolors
 
 # In WSL we need to tweak tmux config
 if [ $IS_IN_WSL -eq 1 ]; then
-    echo 'source-file ~/.tmux_wsl.conf' | sudo tee -a ~/.tmux.conf > /dev/null
+    sudo ln -sfn ${script_dir}/.tmux_wsl.conf/ ${HOME}/.tmux_wsl.conf
+else
+    touch ${HOME}/.tmux_wsl.conf
 fi
 
 # Moment of truth !
 echo -e "${Cya}Sourcing...${None}"
-source ~/.bashrc
+source ${HOME}/.bashrc
 
 echo -e "${Cya}Disable annoying bash bell (beep)${None}"
 inputrc_file="/etc/inputrc"
@@ -101,16 +106,16 @@ else
 fi
 
 echo -e "${Cya}Pimping root...${None}"
-sudo ln -sfn ~/.vimrc /root/.vimrc
-sudo ln -sfn ~/.vim /root/.vim
-sudo ln -sfn ~/.dir_colors /root/.dir_colors
-sudo ln -sfn ~/.bash_prompt /root/.bash_prompt
-sudo ln -sfn ~/.bash_git /root/.bash_git
-sudo ln -sfn ~/.bash_git_completion /root/.bash_git_completion
-sudo ln -sfn ~/.bashrc /root/.bashrc
+sudo ln -sfn ${HOME}/.vimrc /root/.vimrc
+sudo ln -sfn ${HOME}/.vim /root/.vim
+sudo ln -sfn ${HOME}/.dir_colors /root/.dir_colors
+sudo ln -sfn ${HOME}/.bash_prompt /root/.bash_prompt
+sudo ln -sfn ${HOME}/.bash_git /root/.bash_git
+sudo ln -sfn ${HOME}/.bash_git_completion /root/.bash_git_completion
+sudo ln -sfn ${HOME}/.bashrc /root/.bashrc
 
 # Hush !
-touch ~/.hushlogin
+touch ${HOME}/.hushlogin
 
 # Git config TODO complete
 git config --global core.editor "vim"
