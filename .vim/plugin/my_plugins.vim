@@ -29,3 +29,6 @@ call plug#end()
 
 " Custom/Old plugins
 source ~/.vim/plugin/cscope_maps.vim
+
+" Enable lightline
+set laststatus=2

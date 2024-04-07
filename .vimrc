@@ -80,8 +80,8 @@ if has("autocmd")
 endif
 
 "=== StatusLine (Warning: can be in conflict with lightline plugin)
-set statusline=2
-"set noshowmode
+"set statusline=2
+set noshowmode
 
 "=== Buffer
 " :e to edit
