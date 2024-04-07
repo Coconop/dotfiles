@@ -78,23 +78,8 @@ if [ -f ~/.bash_prompt ]; then
     source ~/.bash_prompt
 fi
 
-# Look for custom file configurations
-bash_aliases_d="~/.bash_aliases.d"
-# Check if the directory exists
-if [ -d "$bash_aliases_d" ]; then
-    # Loop through each file in the directory
-    for file in "$bash_aliases_d"/*; do
-        # Check if the file is readable and is a regular file
-        if [ -r "$file" ] && [ -f "$file" ]; then
-            # Source the file
-            source "$file"
-        fi
-    done
+# Private/Pro stuff (untracked)
+if [ -f ~/.bash_priv ]; then
+    source ~/.bash_priv
 fi
-
-# If something was already defined
-if [ -f ~/.bash_aliases ]; then
-    source ~/.bash_aliases
-fi
-
 
