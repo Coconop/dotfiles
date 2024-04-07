@@ -40,6 +40,8 @@ echo -e "${Cya}Updating system...${None}"
 sudo apt update
 echo -e "${Cya}Upgrading system...${None}"
 sudo apt upgrade -y
+echo -e "${Cya}Cleaing up...${None}"
+sudo apt autoremove -y
 
 # Update trust store certificates
 echo -e "${Cya}Updating certificates...${None}"
@@ -66,24 +68,24 @@ else
 fi
 
 # Get the directory containing the script
-script_dir="$(dirname "$0")"
+script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 echo -e "${Cya}Copying files from ${script_dir} to ${HOME}/ ...${None}"
 
 sudo ln -sfn ${script_dir}/.vimrc ${HOME}/.vimrc
-sudo ln -sfn ${script_dir}/.vim/ ${HOME}/.vim
+sudo ln -sfn ${script_dir}/.vim ${HOME}/.vim
 
-sudo ln -sfn ${script_dir}/.bashrc/. ${HOME}/.bashrc
+sudo ln -sfn ${script_dir}/.bashrc ${HOME}/.bashrc
 sudo ln -sfn ${script_dir}/.bash_prompt ${HOME}/.bash_prompt
 sudo ln -sfn ${script_dir}/.bash_git ${HOME}/.bash_git
-sudo ln -sfn ${script_dir}/.bash_git_completion. ${HOME}/.bash_git_completion
+sudo ln -sfn ${script_dir}/.bash_git_completion ${HOME}/.bash_git_completion
 
-sudo ln -sfn ${script_dir}/.tmux.conf/ ${HOME}/.tmux.conf
+sudo ln -sfn ${script_dir}/.tmux.conf ${HOME}/.tmux.conf
 
-sudo ln -sfn ${script_dir}/.dircolors/. ${HOME}/.dircolors
+sudo ln -sfn ${script_dir}/.dir_colors ${HOME}/.dir_colors
 
 # In WSL we need to tweak tmux config
 if [ $IS_IN_WSL -eq 1 ]; then
-    sudo ln -sfn ${script_dir}/.tmux_wsl.conf/ ${HOME}/.tmux_wsl.conf
+    sudo ln -sfn ${script_dir}/.tmux_wsl.conf ${HOME}/.tmux_wsl.conf
 else
     touch ${HOME}/.tmux_wsl.conf
 fi
