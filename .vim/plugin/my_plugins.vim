@@ -10,8 +10,6 @@ call plug#begin()
 
 " Make sure you use single quotes
 
-Plug 'junegunn/seoul256/'
-
 Plug 'junegunn/fzf'
 
 Plug 'preservim/nerdtree'

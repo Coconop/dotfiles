@@ -96,5 +96,5 @@ set statusline=2
 
 
 "=== Plugins
-source ~/.vim/plugin/cscope_maps.vim
+source ~/.vim/plugin/my_plugins.vim
 
