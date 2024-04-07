@@ -52,7 +52,9 @@ syntax enable
 
 " Noob way
 "highlight NoTabs ctermbg=red ctermfg=white guibg=#592929
+"highlight ExtraWhitespace ctermbg=red ctermfg=white guibg=#592929
 "match NoTabs /\t/
+"match ExtraWhitespace /\s\+$/
 
 " Expert way
 set nolist
@@ -77,9 +79,9 @@ if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
-"=== statusline
+"=== StatusLine (Warning: can be in conflict with lightline plugin)
 set statusline=2
-" TODO Visual/Normal/Insert mode, filepath, git status, tabs
+"set noshowmode
 
 "=== Buffer
 " :e to edit
@@ -92,14 +94,7 @@ set statusline=2
 " gt    Next tab
 " gT    Prev tab
 
-"TODO Exuberant CTags ?
 
+"=== Plugins
 source ~/.vim/plugin/cscope_maps.vim
 
-" TODO
-" plug
-" ALE (c, rust, python, shell, ps1)
-" NerdTree
-" fugitive
-" airline / lightline
-" fzf
