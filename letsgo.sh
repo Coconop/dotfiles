@@ -7,6 +7,12 @@
 
 # TODO discriminate Ubuntu vs Debian
 
+# TODO Options to skip apt update/upgrade
+
+# TODO Handle offline install 
+
+# TODO Handle proxy
+
 # Colors for fancy output
 Red='\033[0;31m'; BRed='\033[1;31m';
 Gre='\033[0;32m'; BGre='\033[1;32m';
