@@ -64,6 +64,10 @@ export VISUAL=vim
 export EDITOR="$VISUAL"
 export GIT_EDITOR=vim
 
+# Local folder for custom scripts/exe
+mkdir -p ${HOME}/.local/bin
+export PATH=${HOME}/.local/bin:${PATH}
+
 # Easier life with git
 if [ -f ~/.bash_git ]; then
     source ~/.bash_git
@@ -73,7 +77,7 @@ if [ -f ~/.bash_git_completion ]; then
     source ~/.bash_git_completion
 fi
 
-# Pimp my prompt 
+# Pimp my prompt
 if [ -f ~/.bash_prompt ]; then
     source ~/.bash_prompt
 fi
@@ -82,4 +86,3 @@ fi
 if [ -f ~/.bash_priv ]; then
     source ~/.bash_priv
 fi
-

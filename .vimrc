@@ -45,7 +45,7 @@ set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 
-"=== Formatting & syntax 
+"=== Formatting & syntax
 syntax enable
 
 " Highlight Tabulations
@@ -66,7 +66,7 @@ hi SpecialKey guifg=#fff2cc
 "set colorcolumn=80
 highlight ColorColumn ctermbg=235 guibg=#303030
 
-"=== Persistence 
+"=== Persistence
 " Keep undo history across sessions, by storing in file.
 " Only works all the time.
 silent !mkdir ~/.vim/backups > /dev/null 2>&1
@@ -94,7 +94,10 @@ set noshowmode
 " gt    Next tab
 " gT    Prev tab
 
+"=== Rust
+packadd termdebug
+let g:termdebugger="rust-gdb"
+let g:termdebug_wide=1
 
 "=== Plugins
 source ~/.vim/plugin/my_plugins.vim
-

@@ -9,7 +9,7 @@
 
 # TODO Options to skip apt update/upgrade
 
-# TODO Handle offline install 
+# TODO Handle offline install
 
 # TODO Handle proxy
 
@@ -46,14 +46,14 @@ sudo apt autoremove -y
 # Update trust store certificates
 echo -e "${Cya}Updating certificates...${None}"
 sudo apt install apt-transport-https ca-certificates -y
-sudo update-ca-certificates 
+sudo update-ca-certificates
 
 # Installing useful/required packets
 echo -e "${Cya}Installing packets...${None}"
-sudo apt install --no-install-recommends vim tmux curl tree git git-lfs rsync -y
+sudo apt install --no-install-recommends vim tmux curl tree git git-lfs rsync silversearcher-ag 7z -y
 sudo apt install --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
 sudo apt install --no-install-recommends python3-wheel python3-venv -y
-sudo apt install --no-install-recommends make gcc cmake cscope -y
+sudo apt install --no-install-recommends gdb make gcc cmake cscope fzf -y
 
 # Create SSH folder if it does not exists yet
 mkdir -p ${HOME}/.ssh
@@ -64,7 +64,7 @@ else
     # Generate SSH key
     echo -e "${Cya}Generating Passphrase...${None}"
     echo -e "${Yel}Be sure to remember the passhrase !${None}"
-    ssh-keygen -t rsa -b 4096 
+    ssh-keygen -t rsa -b 4096
 fi
 
 # Get the directory containing the script
@@ -127,5 +127,9 @@ touch ${HOME}/.hushlogin
 
 # Git config TODO complete
 git config --global core.editor "vim"
+
+# Rust stuff
+#curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
+#chmod +x ~/.local/bin/rust-analyzer
 
 echo -e "${Gre}All set up Captain! ${None}"
