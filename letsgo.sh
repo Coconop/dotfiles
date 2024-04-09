@@ -23,6 +23,34 @@ Cya='\033[0;36m'; BCya='\033[1;36m';
 Whi='\033[0;37m'; BWhi='\033[1;37m';
 None='\033[0m' # Return to default colour
 
+# Function to display help message
+display_help() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  -u, --skip_update   Skip the update process"
+    echo "  -h, --help          Display this help message"
+}
+
+# If help argument provided or too many arguments
+if [[ $# -gt 1 || "$1" == "--help" || "$1" == "-h" ]]; then
+    display_help
+    exit 0
+fi
+
+if [[ $# -eq 1 ]]; then
+    # Check if skip_update argument provided
+    if [[ "$1" == "--skip_update" || "$1" == "-u" ]]; then
+        echo -e "${Yel}Skipping update process ${None}"
+        SKIP_UPDATE=1
+    else
+        echo -e "${Red}Invalid argument '$1' ${None}"
+        display_help
+        exit 1
+    fi
+else
+    SKIP_UPDATE=0
+fi
+
 set -e
 if grep -qEi "(icrosoft|WSL)" /proc/sys/kernel/osrelease &> /dev/null ; then
     echo -e "${Red}Damn, we are in Microsoft WSL :(${None}"
@@ -32,44 +60,46 @@ else
     IS_IN_WSL=0
 fi
 
-# TODO test if we have connection (ping)
-# TODO test if we need a proxy (curl)
+if [[ $SKIP_UPDATE -eq 0 ]]; then
+    # TODO test if we have connection (ping)
+    # TODO test if we need a proxy (curl)
 
-# Any update ?
-echo -e "${Cya}Updating system...${None}"
-sudo apt update
-echo -e "${Cya}Upgrading system...${None}"
-sudo apt upgrade -y
-echo -e "${Cya}Cleaing up...${None}"
-sudo apt autoremove -y
+    # Any update ?
+    echo -e "${Cya}Updating system...${None}"
+    sudo apt update
+    echo -e "${Cya}Upgrading system...${None}"
+    sudo apt upgrade -y
+    echo -e "${Cya}Cleaing up...${None}"
+    sudo apt autoremove -y
 
-# Update trust store certificates
-echo -e "${Cya}Updating certificates...${None}"
-sudo apt install apt-transport-https ca-certificates -y
-sudo update-ca-certificates
+    # Update trust store certificates
+    echo -e "${Cya}Updating certificates...${None}"
+    sudo apt install apt-transport-https ca-certificates -y
+    sudo update-ca-certificates
 
-# Installing useful/required packets
-echo -e "${Cya}Installing packets...${None}"
-sudo apt install --no-install-recommends vim tmux curl tree git git-lfs rsync silversearcher-ag 7z -y
-sudo apt install --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
-sudo apt install --no-install-recommends python3-wheel python3-venv -y
-sudo apt install --no-install-recommends gdb make gcc cmake cscope fzf -y
+    # Installing useful/required packets
+    echo -e "${Cya}Installing packets...${None}"
+    sudo apt install --no-install-recommends vim tmux curl tree git git-lfs rsync silversearcher-ag 7z -y
+    sudo apt install --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
+    sudo apt install --no-install-recommends python3-wheel python3-venv -y
+    sudo apt install --no-install-recommends gdb make gcc cmake cscope fzf -y
 
-# Create SSH folder if it does not exists yet
-mkdir -p ${HOME}/.ssh
+    # Create SSH folder if it does not exists yet
+    mkdir -p ${HOME}/.ssh
 
-if [ -f ${HOME}/.ssh/id_rsa ]; then
-    echo -e "${Yel}An SSH key is already present!${None}"
-else
-    # Generate SSH key
-    echo -e "${Cya}Generating Passphrase...${None}"
-    echo -e "${Yel}Be sure to remember the passhrase !${None}"
-    ssh-keygen -t rsa -b 4096
+    if [ -f ${HOME}/.ssh/id_rsa ]; then
+        echo -e "${Yel}An SSH key is already present!${None}"
+    else
+        # Generate SSH key
+        echo -e "${Cya}Generating Passphrase...${None}"
+        echo -e "${Yel}Be sure to remember the passhrase !${None}"
+        ssh-keygen -t rsa -b 4096
+    fi
 fi
 
 # Get the directory containing the script
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-echo -e "${Cya}Copying files from ${script_dir} to ${HOME}/ ...${None}"
+echo -e "${Cya}Linking files from ${script_dir} to ${HOME}/ ...${None}"
 
 sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
 sudo ln -sfnv ${script_dir}/.vim ${HOME}/.vim
@@ -83,11 +113,29 @@ sudo ln -sfnv ${script_dir}/.tmux.conf ${HOME}/.tmux.conf
 
 sudo ln -sfnv ${script_dir}/.dir_colors ${HOME}/.dir_colors
 
+sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
+sudo ln -sfnv ${script_dir}/.vim ${HOME}/.vim
+
+echo -e "${Cya}Linking files from ${script_dir} to /root/ ...${None}"
+sudo ln -sfnv ${script_dir}/.bashrc /root/.bashrc
+sudo ln -sfnv ${script_dir}/.bash_prompt /root/.bash_prompt
+sudo ln -sfnv ${script_dir}/.bash_git /root/.bash_git
+sudo ln -sfnv ${script_dir}/.bash_git_completion /root/.bash_git_completion
+
+sudo ln -sfnv ${script_dir}/.tmux.conf /root/.tmux.conf
+
+sudo ln -sfnv ${script_dir}/.dir_colors /root/.dir_colors
+
+sudo ln -sfnv ${script_dir}/.vimrc /root/.vimrc
+sudo ln -sfnv ${script_dir}/.vim /root/.vim
+
 # In WSL we need to tweak tmux config
 if [ $IS_IN_WSL -eq 1 ]; then
     sudo ln -sfnv ${script_dir}/.tmux_wsl.conf ${HOME}/.tmux_wsl.conf
+    sudo ln -sfnv ${script_dir}/.tmux_wsl.conf /root/.tmux_wsl.conf
 else
     touch ${HOME}/.tmux_wsl.conf
+    touch /root/.tmux_wsl.conf
 fi
 
 # Moment of truth !
@@ -112,15 +160,6 @@ else
          echo "set bell-style none" | sudo tee -a "$inputrc_file"
     fi
 fi
-
-echo -e "${Cya}Pimping root...${None}"
-sudo ln -sfnv ${HOME}/.vimrc /root/.vimrc
-sudo ln -sfnv ${HOME}/.vim /root/.vim
-sudo ln -sfnv ${HOME}/.dir_colors /root/.dir_colors
-sudo ln -sfnv ${HOME}/.bash_prompt /root/.bash_prompt
-sudo ln -sfnv ${HOME}/.bash_git /root/.bash_git
-sudo ln -sfnv ${HOME}/.bash_git_completion /root/.bash_git_completion
-sudo ln -sfnv ${HOME}/.bashrc /root/.bashrc
 
 # Hush !
 touch ${HOME}/.hushlogin
