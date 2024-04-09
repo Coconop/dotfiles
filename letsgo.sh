@@ -135,7 +135,7 @@ if [ $IS_IN_WSL -eq 1 ]; then
     sudo ln -sfnv ${script_dir}/.tmux_wsl.conf /root/.tmux_wsl.conf
 else
     touch ${HOME}/.tmux_wsl.conf
-    touch /root/.tmux_wsl.conf
+    sudo touch /root/.tmux_wsl.conf
 fi
 
 # Moment of truth !
@@ -166,6 +166,9 @@ touch ${HOME}/.hushlogin
 
 # Git config TODO complete
 git config --global core.editor "vim"
+
+# Launch Vim and execute PlugInstall command
+vim -c 'PlugInstall' -c 'qa!'
 
 # Rust stuff
 #curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
