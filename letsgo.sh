@@ -74,15 +74,15 @@ if [[ $SKIP_UPDATE -eq 0 ]]; then
 
     # Update trust store certificates
     echo -e "${Cya}Updating certificates...${None}"
-    sudo apt install apt-transport-https ca-certificates -y
+    sudo apt install --ignore_failures apt-transport-https ca-certificates -y
     sudo update-ca-certificates
 
     # Installing useful/required packets
     echo -e "${Cya}Installing packets...${None}"
-    sudo apt install --no-install-recommends vim tmux curl tree git git-lfs rsync silversearcher-ag 7z -y
-    sudo apt install --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
-    sudo apt install --no-install-recommends python3-wheel python3-venv -y
-    sudo apt install --no-install-recommends gdb make gcc cmake cscope fzf -y
+    sudo apt install --ignore_failures --no-install-recommends vim tmux curl tree git git-lfs rsync silversearcher-ag -y
+    sudo apt install --ignore_failures --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
+    sudo apt install --ignore_failures --no-install-recommends python3-wheel python3-venv -y
+    sudo apt install --ignore_failures --no-install-recommends gdb make gcc cmake cscope fzf p7zip-full -y
 
     # Create SSH folder if it does not exists yet
     mkdir -p ${HOME}/.ssh
