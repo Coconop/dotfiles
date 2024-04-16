@@ -26,7 +26,7 @@ unset __colourise_prompt && __colour_enabled && __colourise_prompt=1
 __set_bash_prompt()
 {
     local exit="$?" # Save the exit status of the last command
-   
+
     if [[ $__colourise_prompt ]]; then
         export GIT_PS1_SHOWCOLORHINTS=1
 
@@ -60,11 +60,12 @@ __set_bash_prompt()
         local Mag=''; local BMag=''
         local Cya=''; local BCya=''
         local Whi=''; local BWhi=''
-        local None='' 
+        local None=''
     fi
 
     local time="\t"
     local cur_dir="\w"
+    local usr="\u@\h"
     local is_root="\$"
     local clr=""
 
@@ -74,7 +75,7 @@ __set_bash_prompt()
     else
         clr=${HCya}
     fi
- 
+
 
     # Visual last status code
     if [ $exit -eq 0 ]; then
@@ -91,14 +92,14 @@ __set_bash_prompt()
         export VENV="-"
     fi
 
-    local PreGitPS1="${clr}[${HBlu}${time}${clr}]${VENV}[${Whi}${cur_dir}${clr}]("
+    local PreGitPS1="${clr}[${usr}][${HBlu}${time}${clr}]${VENV}[${Whi}${cur_dir}${clr}]("
 
     local PostGitPS1="${clr}) ${status}\r\n"
     PostGitPS1+="${clr}└─${is_root}${None} "
 
     __git_ps1 "$PreGitPS1" "$PostGitPS1" '%s'
 
-    # echo '$PS1='"$PS1" # debug    
+    # echo '$PS1='"$PS1" # debug
 }
 
 # This tells bash to reinterpret PS1 after every command, Which we
