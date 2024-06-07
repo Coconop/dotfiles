@@ -24,8 +24,12 @@ let g:ale_sign_column_always = 1
 let g:ale_fix_on_save = 1
 
 " Custom printed signs
-"let g:ale_sign_error = 'E'
-"let g:ale_sign_warning = 'W'
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+highlight ALEErrorSign ctermbg=NONE ctermfg=red
+highlight ALEWarningSign ctermbg=NONE ctermfg=yellow
+highlight ALEWarning ctermbg=NONE  ctermfg=238
+
 
 " Define fixers for auto formatting
 let g:ale_fixers = {
@@ -51,7 +55,8 @@ call plug#begin()
 
 " Make sure you use single quotes
 
-Plug 'junegunn/fzf'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
 Plug 'tpope/vim-fugitive'
 Plug 'itchyny/lightline.vim'
