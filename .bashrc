@@ -86,3 +86,4 @@ fi
 if [ -f ~/.bash_priv ]; then
     source ~/.bash_priv
 fi
+. "$HOME/.cargo/env"
