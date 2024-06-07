@@ -83,6 +83,7 @@ if [[ $SKIP_UPDATE -eq 0 ]]; then
     sudo apt install  --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
     sudo apt install  --no-install-recommends python3-wheel python3-venv -y
     sudo apt install  --no-install-recommends gdb make gcc cmake cscope fzf p7zip-full -y
+    sudo apt install  --no-install-recommends autoconf automake -y
 
     # Create SSH folder if it does not exists yet
     mkdir -p ${HOME}/.ssh
@@ -166,6 +167,7 @@ touch ${HOME}/.hushlogin
 
 # Git config TODO complete
 git config --global core.editor "vim"
+git config --global core.autocrlf input
 
 # Launch Vim and execute PlugInstall command
 vim -c 'PlugInstall' -c 'qa!'
@@ -173,5 +175,16 @@ vim -c 'PlugInstall' -c 'qa!'
 # Rust stuff
 #curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
 #chmod +x ~/.local/bin/rust-analyzer
+
+# Install universal ctags to use woth fzf
+# TODO catch errors
+mkdir -p ${HOME}/git
+cd ${HOME}/git
+git clone https://github.com/universal-ctags/ctags.git
+cd ctags
+./autogen.sh
+./configure
+make
+sudo make install
 
 echo -e "${Gre}All set up Captain! ${None}"
