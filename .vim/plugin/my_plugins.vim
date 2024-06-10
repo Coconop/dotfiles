@@ -33,7 +33,7 @@ highlight ALEWarning ctermbg=NONE  ctermfg=238
 
 " Define fixers for auto formatting
 let g:ale_fixers = {
-    \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+    \ '*': ['trim_whitespace'],
     \ 'rust': ['rustfmt'],
 \}
 
@@ -42,6 +42,11 @@ let g:ale_linters = {
     \  'rust': ['analyzer'],
 \}
 " WARNING: Ensure rust-analyzer is installed: $ rust-analyzer --version
+
+" Rusty-tags (must be installed with cargo)
+" export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src/
+autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty-tags.vi
+autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
 
 "=== Vim Plug Manager
 call plug#begin()
