@@ -38,6 +38,10 @@ set showmode        " Show current mode down the bottom
 set number          " Show current line number
 set relativenumber  " Show relative numbers around
 
+" === Keys mapping
+nnoremap <Space> <Nop>
+map <Space> <Leader>
+
 "=== Indentation
 set expandtab       "Use spaces rather than tabulations
 " Now we can replace tabs by spaces with :retab

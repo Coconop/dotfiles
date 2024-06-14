@@ -82,8 +82,11 @@ if [ -f ~/.bash_prompt ]; then
     source ~/.bash_prompt
 fi
 
+. "$HOME/.cargo/env"
+
 # Private/Pro stuff (untracked)
 if [ -f ~/.bash_priv ]; then
     source ~/.bash_priv
 fi
-. "$HOME/.cargo/env"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
