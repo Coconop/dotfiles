@@ -59,6 +59,7 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+alias tt='tree -L'
 # Default editor shall be vim
 export VISUAL=vim
 export EDITOR="$VISUAL"
