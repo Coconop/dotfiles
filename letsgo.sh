@@ -79,11 +79,12 @@ if [[ $SKIP_UPDATE -eq 0 ]]; then
 
     # Installing useful/required packets
     echo -e "${Cya}Installing packets...${None}"
-    sudo apt install  --no-install-recommends vim tmux curl tree git git-lfs rsync silversearcher-ag -y
+    sudo apt install  --no-install-recommends neovim vim tmux curl tree git git-lfs rsync silversearcher-ag -y
     sudo apt install  --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
-    sudo apt install  --no-install-recommends python3-wheel python3-venv -y
+    sudo apt install  --no-install-recommends python3-wheel python3-venv pipx -y
     sudo apt install  --no-install-recommends gdb make gcc cmake cscope fzf p7zip-full -y
     sudo apt install  --no-install-recommends autoconf automake -y
+    sudo apt install  --no-install-recommends ripgrep bat fd-find -y
 
     # Create SSH folder if it does not exists yet
     mkdir -p ${HOME}/.ssh
@@ -98,12 +99,19 @@ if [[ $SKIP_UPDATE -eq 0 ]]; then
     fi
 fi
 
+# Use fd instead of fdfind
+ln -s $(which fdfind) ~/.local/bin/fd
+
+mkdir -p ${HOME}/.config
+sudo mkdir -p root/.config
+
 # Get the directory containing the script
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 echo -e "${Cya}Linking files from ${script_dir} to ${HOME}/ ...${None}"
 
 sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
 sudo ln -sfnv ${script_dir}/.vim ${HOME}/.vim
+sudo ln -sfnv ${script_dir}/nvim ${HOME}/.config/nvim
 
 sudo ln -sfnv ${script_dir}/.bashrc ${HOME}/.bashrc
 sudo ln -sfnv ${script_dir}/.bash_prompt ${HOME}/.bash_prompt
@@ -129,6 +137,7 @@ sudo ln -sfnv ${script_dir}/.dir_colors /root/.dir_colors
 
 sudo ln -sfnv ${script_dir}/.vimrc /root/.vimrc
 sudo ln -sfnv ${script_dir}/.vim /root/.vim
+sudo ln -sfnv ${script_dir}/nvim root/.config/nvim
 
 # In WSL we need to tweak tmux config
 if [ $IS_IN_WSL -eq 1 ]; then
@@ -169,12 +178,17 @@ touch ${HOME}/.hushlogin
 git config --global core.editor "vim"
 git config --global core.autocrlf input
 
+# Todo test if it is installed
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+
 # Launch Vim and execute PlugInstall command
 vim -c 'PlugInstall' -c 'qa!'
 
 # Rust stuff
 #curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
 #chmod +x ~/.local/bin/rust-analyzer
+#cargo install eza
 
 # Install universal ctags to use woth fzf
 # TODO catch errors
@@ -186,5 +200,7 @@ cd ctags
 ./configure
 make
 sudo make install
+
+pipx install fuck
 
 echo -e "${Gre}All set up Captain! ${None}"
