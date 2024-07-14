@@ -55,15 +55,12 @@ test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+alias ll='eza -alF'
 
-alias tt='tree -L'
-# Default editor shall be vim
-export VISUAL=vim
+# Default editor shall be [n]vim
+export VISUAL=nvim
 export EDITOR="$VISUAL"
-export GIT_EDITOR=vim
+export GIT_EDITOR=nvim
 
 # Local folder for custom scripts/exe
 mkdir -p ${HOME}/.local/bin
@@ -73,7 +70,7 @@ export PATH=${HOME}/.local/bin:${PATH}
 if [ -f ~/.bash_git ]; then
     source ~/.bash_git
 fi
-
+# Sweet Git autocomplete
 if [ -f ~/.bash_git_completion ]; then
     source ~/.bash_git_completion
 fi
@@ -83,14 +80,23 @@ if [ -f ~/.bash_prompt ]; then
     source ~/.bash_prompt
 fi
 
+# Private/Pro stuff (untracked)
+if [ -f ~/.bash_local ]; then
+    source ~/.bash_local
+fi
+
+# Rust
 . "$HOME/.cargo/env"
 
-# Private/Pro stuff (untracked)
-if [ -f ~/.bash_priv ]; then
-    source ~/.bash_priv
-fi
+# Go
+export PATH=${HOME}/go/bin:${PATH}
+export PATH=$PATH:/usr/local/go/bin
 
 # Set up fzf key bindings and fuzzy completion
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+# Autocorrect bad commands
 eval "$(thefuck --alias)"
+
+# Modern CLI File Explorer tool
+source /home/david/.config/broot/launcher/bash/br

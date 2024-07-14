@@ -7,8 +7,6 @@
 
 # TODO discriminate Ubuntu vs Debian
 
-# TODO Options to skip apt update/upgrade
-
 # TODO Handle offline install
 
 # TODO Handle proxy
@@ -23,69 +21,175 @@ Cya='\033[0;36m'; BCya='\033[1;36m';
 Whi='\033[0;37m'; BWhi='\033[1;37m';
 None='\033[0m' # Return to default colour
 
-# Function to display help message
-display_help() {
-    echo "Usage: $0 [options]"
-    echo "Options:"
-    echo "  -u, --skip_update   Skip the update process"
-    echo "  -h, --help          Display this help message"
+check_distro() {
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    echo -e "${Cya}Running on $NAME${None}"
+  elif [ -f /etc/lsb-release ]; then
+    . /etc/lsb-release
+    echo -e "${Cya}Running on $DISTRIB_DESCRIPTION${None}"
+  elif [ -f /etc/debian_version ]; then
+    echo -e "${Cya}Running on Debian $(cat /etc/debian_version)${None}"
+  elif [ -f /etc/redhat-release ]; then
+    echo -e "${Cya}Running on $(cat /etc/redhat-release)${None}"
+  else
+    echo -e "${Cya}Linux distribution not recognized${None}"
+  fi
 }
 
-# If help argument provided or too many arguments
-if [[ $# -gt 1 || "$1" == "--help" || "$1" == "-h" ]]; then
-    display_help
-    exit 0
+detect_package_manager() {
+
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+
+    case "$ID" in
+      debian|ubuntu)
+        package_manager="apt"
+        ;;
+      rocky|centos|rhel)
+        package_manager="dnf"
+        ;;
+      *)
+        echo -e "${Cya}Unsupported distribution: $ID${None}"
+        package_manager=""
+        exit 1
+        ;;
+    esac
+  else
+    echo -e "${Cya}Unable to detect OS${None}"
+    package_manager=""
+  fi
+
+  echo -e "${Cya}Package Manager: $package_manager${None}"
+}
+
+# TODO Check for minimal rust version required by tools
+check_rust() {
+  if command -v rustc >/dev/null 2>&1; then
+    rust_version=$(rustc --version)
+    echo -e "${Cya}Rust is installed: $rust_version${None}"
+    install_rust=false
+  else
+    echo -e "${Cya}Rust is not installed${None}"
+    install_rust=true
+  fi
+}
+
+check_go() {
+  if command -v go >/dev/null 2>&1; then
+    go_version=$(go version)
+    echo -e "${Cya}Go is installed: $go_version${None}"
+    install_go=false
+  else
+    echo -e "${Cya}Go is not installed${None}"
+    install_go=true
+  fi
+}
+
+check_rust_analyzer() {
+  if command -v rust-analyzer >/dev/null 2>&1; then
+    echo -e "${Cya}rust-analyzer is installed${None}"
+    install_rust_analyzer=false
+  else
+    echo -e "${Cya}rust-analyzer is not installed${None}"
+    install_rust_analyzer=true
+  fi
+}
+
+# Function to display help message
+display_help() {
+    echo -e "${Yel}Usage: $0 [options]${None}"
+    echo -e "${Yel}Options:${None}"
+    echo -e "${Yel}  -u       Update and install packets${None}"
+    echo -e "${Yel}  -s       Create a SSH key if absent${None}"
+    echo -e "${Yel}  -r       Install Rust Env and tools${None}"
+    echo -e "${Yel}  -g       Install Go Env and tools${None}"
+    echo -e "${Yel}  -t       Install tools from source${None}"
+    echo -e "${Yel}  -o       Upgrade OS${None}"
+    exit 1
+}
+
+ask_for_confirmation() {
+  local prompt="$1"
+  
+  while true; do
+    read -rp "$prompt (y/n): " response
+    case "$response" in
+      [Yy]* ) return 0;;  # Return true (0) for yes
+      [Nn]* ) return 1;;  # Return false (1) for no
+      * ) echo -e "${Red}Please answer yes or no.${None}";;
+    esac
+  done
+}
+
+while getopts "usrgto" opt; do
+  case $opt in
+    u) update_packets=true ;;
+    s) ssh_gen=true ;;
+    r) rust_tools=true ;;
+    g) go_tools=true ;;
+    t) src_tools=true ;;
+    o) os_upd=true ;;
+    \?) display_help ;;
+  esac
+done
+
+# Avoid Owner issues
+if [ "$EUID" -eq 0 ]; then
+    echo -e "${Red} Do NOT run me with sudo${None}"
+    exit 1
 fi
 
-if [[ $# -eq 1 ]]; then
-    # Check if skip_update argument provided
-    if [[ "$1" == "--skip_update" || "$1" == "-u" ]]; then
-        echo -e "${Yel}Skipping update process ${None}"
-        SKIP_UPDATE=1
-    else
-        echo -e "${Red}Invalid argument '$1' ${None}"
-        display_help
-        exit 1
-    fi
-else
-    SKIP_UPDATE=0
-fi
+detect_package_manager
 
 set -e
 if grep -qEi "(icrosoft|WSL)" /proc/sys/kernel/osrelease &> /dev/null ; then
     echo -e "${Red}Damn, we are in Microsoft WSL :(${None}"
     IS_IN_WSL=1
 else
-    echo -e "${Yel}Native linux here :) ${None}"
     IS_IN_WSL=0
 fi
 
-if [[ $SKIP_UPDATE -eq 0 ]]; then
+check_distro
+
+if [[ $update_packets = true ]]; then
     # TODO test if we have connection (ping)
     # TODO test if we need a proxy (curl)
 
     # Any update ?
     echo -e "${Cya}Updating system...${None}"
-    sudo apt update
-    echo -e "${Cya}Upgrading system...${None}"
-    sudo apt upgrade -y
-    echo -e "${Cya}Cleaing up...${None}"
-    sudo apt autoremove -y
+    sudo ${package_manager} update
 
     # Update trust store certificates
     echo -e "${Cya}Updating certificates...${None}"
-    sudo apt install  apt-transport-https ca-certificates -y
+    sudo ${package_manager} install  apt-transport-https ca-certificates -y
     sudo update-ca-certificates
 
     # Installing useful/required packets
     echo -e "${Cya}Installing packets...${None}"
-    sudo apt install  --no-install-recommends neovim vim tmux curl tree git git-lfs rsync silversearcher-ag -y
-    sudo apt install  --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
-    sudo apt install  --no-install-recommends python3-wheel python3-venv pipx -y
-    sudo apt install  --no-install-recommends gdb make gcc cmake cscope fzf p7zip-full -y
-    sudo apt install  --no-install-recommends autoconf automake -y
-    sudo apt install  --no-install-recommends ripgrep bat fd-find -y
+    sudo ${package_manager} install  --no-install-recommends neovim vim tmux curl tree git git-lfs rsync silversearcher-ag -y
+    sudo ${package_manager} install  --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
+    sudo ${package_manager} install  --no-install-recommends python3-wheel python3-venv pipx -y
+    sudo ${package_manager} install  --no-install-recommends gdb make gcc clang cmake cscope fzf p7zip-full -y
+    sudo ${package_manager} install  --no-install-recommends autoconf automake -y
+    sudo ${package_manager} install  --no-install-recommends build-essential libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev -y
+    # Could be installed via Cargo but shell completion scripts would not be installed
+    sudo ${package_manager} install  --no-install-recommends bat -y
 
+fi
+
+if [[ $os_upd = true ]]; then
+    if ask_for_confirmation "Are you sure you want to upgrade system?"; then
+        echo -e "${Cya}Upgrading system...${None}"
+        sudo ${package_manager} upgrade -y
+        echo -e "${Cya}Cleaing up...${None}"
+        sudo ${package_manager} autoremove -y
+    else
+        echo -e "${Yel}Skipping upgrade${None}"
+    fi
+fi
+
+if [[ $ssh_gen = true ]]; then
     # Create SSH folder if it does not exists yet
     mkdir -p ${HOME}/.ssh
 
@@ -99,11 +203,71 @@ if [[ $SKIP_UPDATE -eq 0 ]]; then
     fi
 fi
 
-# Use fd instead of fdfind
-ln -s $(which fdfind) ~/.local/bin/fd
+if [[ $rust_tools = true ]]; then
 
+    check_rust
+    if [[ $install_rust = true ]]; then
+        echo -e "${Cya}Installing Rust...${None}"
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    fi
+
+    check_rust_analyzer
+    if [[ $install_rust_analyzer = true ]]; then
+        curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
+        chmod +x ~/.local/bin/rust-analyzer
+    fi
+
+    echo -e "${Cya}Installing rust-written tools${None}"
+    cargo install ripgrep
+    cargo install eza
+#    cargo install --locked bat
+    cargo install --locked broot
+    cargo install fd-find
+    cargo install du-dust
+
+    ln -s $(which fdfind) ~/.local/bin/fd
+
+fi
+
+if [[ $go_tools = true ]]; then
+    check_go
+    if [[ $install_go = true ]]; then
+        echo -e "${Cya}Installing Go...${None}"
+        # TODO retrieve last version
+        wget https://go.dev/dl/go1.22.5.linux-amd64.tar.gz
+        sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.5.linux-amd64.tar.gz
+        rm go1.22.5.linux-amd64.tar.gz
+        export PATH=$PATH:/usr/local/go/bin
+    fi
+
+    echo -e "${Cya}Installing go-written tools${None}"
+    go install github.com/jesseduffield/lazygit@latest
+fi
+
+if [[ $src_tools = true ]]; then
+    # Todo test if it is installed
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install
+
+    # Install universal ctags to use with fzf
+    # TODO catch errors
+    work_dir = pwd
+    mkdir -p ${HOME}/git
+    cd ${HOME}/git
+    git clone https://github.com/universal-ctags/ctags.git
+    cd ctags
+    ./autogen.sh
+    ./configure
+    make
+    sudo make install
+    cd $work_dir
+
+    pipx install fuck
+fi
+
+# For Neovim, btw
 mkdir -p ${HOME}/.config
-sudo mkdir -p root/.config
+sudo mkdir -p /root/.config
 
 # Get the directory containing the script
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -137,7 +301,7 @@ sudo ln -sfnv ${script_dir}/.dir_colors /root/.dir_colors
 
 sudo ln -sfnv ${script_dir}/.vimrc /root/.vimrc
 sudo ln -sfnv ${script_dir}/.vim /root/.vim
-sudo ln -sfnv ${script_dir}/nvim root/.config/nvim
+sudo ln -sfnv ${script_dir}/nvim /root/.config/nvim
 
 # In WSL we need to tweak tmux config
 if [ $IS_IN_WSL -eq 1 ]; then
@@ -157,8 +321,9 @@ inputrc_file="/etc/inputrc"
 
 # Check if the file exists
 if [ ! -f "$inputrc_file" ]; then
-    echo "Error: $inputrc_file does not exist."
+    echo -e "${Cya}Error: $inputrc_file does not exist.${None}"
 else
+    echo -e "${Cya}Disable terminal bell${None}"
     # Uncomment the line if it's commented
     sudo sed -i 's/#set bell-style/set bell-style/' "$inputrc_file"
 
@@ -172,35 +337,17 @@ else
 fi
 
 # Hush !
+echo -e "${Cya}Hush login${None}"
 touch ${HOME}/.hushlogin
 
 # Git config TODO complete
-git config --global core.editor "vim"
+echo -e "${Cya}Global git config${None}"
+git config --global core.editor "nvim"
 git config --global core.autocrlf input
 
-# Todo test if it is installed
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
-
-# Launch Vim and execute PlugInstall command
+# Launch Vim and Neovim and execute PlugInstall command
+echo -e "${Cya}Setting up [Neo]Vim...${None}"
 vim -c 'PlugInstall' -c 'qa!'
-
-# Rust stuff
-#curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
-#chmod +x ~/.local/bin/rust-analyzer
-#cargo install eza
-
-# Install universal ctags to use woth fzf
-# TODO catch errors
-mkdir -p ${HOME}/git
-cd ${HOME}/git
-git clone https://github.com/universal-ctags/ctags.git
-cd ctags
-./autogen.sh
-./configure
-make
-sudo make install
-
-pipx install fuck
+nvim -c 'PlugInstall' -c 'qa!'
 
 echo -e "${Gre}All set up Captain! ${None}"
