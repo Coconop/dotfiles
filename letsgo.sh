@@ -67,7 +67,7 @@ detect_package_manager() {
 check_rust() {
   if command -v rustc >/dev/null 2>&1; then
     rust_version=$(rustc --version)
-    echo -e "${Cya}Rust is installed: $rust_version${None}"
+    echo -e "${Yel}Rust is installed: $rust_version${None}"
     install_rust=false
   else
     echo -e "${Cya}Rust is not installed${None}"
@@ -78,7 +78,7 @@ check_rust() {
 check_go() {
   if command -v go >/dev/null 2>&1; then
     go_version=$(go version)
-    echo -e "${Cya}Go is installed: $go_version${None}"
+    echo -e "${Yel}Go is installed: $go_version${None}"
     install_go=false
   else
     echo -e "${Cya}Go is not installed${None}"
@@ -88,7 +88,7 @@ check_go() {
 
 check_rust_analyzer() {
   if command -v rust-analyzer >/dev/null 2>&1; then
-    echo -e "${Cya}rust-analyzer is installed${None}"
+    echo -e "${Yel}rust-analyzer is installed${None}"
     install_rust_analyzer=false
   else
     echo -e "${Cya}rust-analyzer is not installed${None}"
@@ -96,6 +96,16 @@ check_rust_analyzer() {
   fi
 }
 
+check_fzf() {
+  if command -v fzf >/dev/null 2>&1; then
+    fzf_version=$(fzf --version)
+    echo -e "${Yel}FZF is installed: $fzf_version${None}"
+    install_fzf=false
+  else
+    echo -e "${Cya}FZF is not installed${None}"
+    install_fzf=true
+  fi
+}
 # Function to display help message
 display_help() {
     echo -e "${Yel}Usage: $0 [options]${None}"
@@ -106,12 +116,13 @@ display_help() {
     echo -e "${Yel}  -g       Install Go Env and tools${None}"
     echo -e "${Yel}  -t       Install tools from source${None}"
     echo -e "${Yel}  -o       Upgrade OS${None}"
+    echo -e "${Yel}  -c       Setup config${None}"
     exit 1
 }
 
 ask_for_confirmation() {
   local prompt="$1"
-  
+
   while true; do
     read -rp "$prompt (y/n): " response
     case "$response" in
@@ -122,7 +133,7 @@ ask_for_confirmation() {
   done
 }
 
-while getopts "usrgto" opt; do
+while getopts "usrgtoc" opt; do
   case $opt in
     u) update_packets=true ;;
     s) ssh_gen=true ;;
@@ -130,6 +141,7 @@ while getopts "usrgto" opt; do
     g) go_tools=true ;;
     t) src_tools=true ;;
     o) os_upd=true ;;
+    c) set_cfg=true ;;
     \?) display_help ;;
   esac
 done
@@ -170,11 +182,11 @@ if [[ $update_packets = true ]]; then
     sudo ${package_manager} install  --no-install-recommends neovim vim tmux curl tree git git-lfs rsync silversearcher-ag -y
     sudo ${package_manager} install  --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
     sudo ${package_manager} install  --no-install-recommends python3-wheel python3-venv pipx -y
-    sudo ${package_manager} install  --no-install-recommends gdb make gcc clang cmake cscope fzf p7zip-full -y
+    sudo ${package_manager} install  --no-install-recommends gdb make gcc clang cmake cscope p7zip-full -y
     sudo ${package_manager} install  --no-install-recommends autoconf automake -y
     sudo ${package_manager} install  --no-install-recommends build-essential libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev -y
-    # Could be installed via Cargo but shell completion scripts would not be installed
-    sudo ${package_manager} install  --no-install-recommends bat -y
+    # Could be installed via Cargo but would need manual config
+    sudo ${package_manager} install  --no-install-recommends bat ripgrep fd-find -y
 
 fi
 
@@ -218,14 +230,14 @@ if [[ $rust_tools = true ]]; then
     fi
 
     echo -e "${Cya}Installing rust-written tools${None}"
-    cargo install ripgrep
+#    cargo install ripgrep
     cargo install eza
 #    cargo install --locked bat
     cargo install --locked broot
-    cargo install fd-find
+#    cargo install fd-find
     cargo install du-dust
 
-    ln -s $(which fdfind) ~/.local/bin/fd
+    ln -snfv $(which fdfind) ~/.local/bin/fd
 
 fi
 
@@ -245,109 +257,123 @@ if [[ $go_tools = true ]]; then
 fi
 
 if [[ $src_tools = true ]]; then
-    # Todo test if it is installed
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-    ~/.fzf/install
+
+    # Sweet Fuzzy finder
+    check_fzf
+    if [[ $install_fzf = true ]]; then
+        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+        ~/.fzf/install
+    fi
 
     # Install universal ctags to use with fzf
-    # TODO catch errors
-    work_dir = pwd
+    work_dir=${pwd}
     mkdir -p ${HOME}/git
     cd ${HOME}/git
-    git clone https://github.com/universal-ctags/ctags.git
-    cd ctags
-    ./autogen.sh
-    ./configure
-    make
-    sudo make install
-    cd $work_dir
-
-    pipx install fuck
-fi
-
-# For Neovim, btw
-mkdir -p ${HOME}/.config
-sudo mkdir -p /root/.config
-
-# Get the directory containing the script
-script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-echo -e "${Cya}Linking files from ${script_dir} to ${HOME}/ ...${None}"
-
-sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
-sudo ln -sfnv ${script_dir}/.vim ${HOME}/.vim
-sudo ln -sfnv ${script_dir}/nvim ${HOME}/.config/nvim
-
-sudo ln -sfnv ${script_dir}/.bashrc ${HOME}/.bashrc
-sudo ln -sfnv ${script_dir}/.bash_prompt ${HOME}/.bash_prompt
-sudo ln -sfnv ${script_dir}/.bash_git ${HOME}/.bash_git
-sudo ln -sfnv ${script_dir}/.bash_git_completion ${HOME}/.bash_git_completion
-
-sudo ln -sfnv ${script_dir}/.tmux.conf ${HOME}/.tmux.conf
-
-sudo ln -sfnv ${script_dir}/.dir_colors ${HOME}/.dir_colors
-
-sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
-sudo ln -sfnv ${script_dir}/.vim ${HOME}/.vim
-
-echo -e "${Cya}Linking files from ${script_dir} to /root/ ...${None}"
-sudo ln -sfnv ${script_dir}/.bashrc /root/.bashrc
-sudo ln -sfnv ${script_dir}/.bash_prompt /root/.bash_prompt
-sudo ln -sfnv ${script_dir}/.bash_git /root/.bash_git
-sudo ln -sfnv ${script_dir}/.bash_git_completion /root/.bash_git_completion
-
-sudo ln -sfnv ${script_dir}/.tmux.conf /root/.tmux.conf
-
-sudo ln -sfnv ${script_dir}/.dir_colors /root/.dir_colors
-
-sudo ln -sfnv ${script_dir}/.vimrc /root/.vimrc
-sudo ln -sfnv ${script_dir}/.vim /root/.vim
-sudo ln -sfnv ${script_dir}/nvim /root/.config/nvim
-
-# In WSL we need to tweak tmux config
-if [ $IS_IN_WSL -eq 1 ]; then
-    sudo ln -sfnv ${script_dir}/.tmux_wsl.conf ${HOME}/.tmux_wsl.conf
-    sudo ln -sfnv ${script_dir}/.tmux_wsl.conf /root/.tmux_wsl.conf
-else
-    touch ${HOME}/.tmux_wsl.conf
-    sudo touch /root/.tmux_wsl.conf
-fi
-
-# Moment of truth !
-echo -e "${Cya}Sourcing...${None}"
-source ${HOME}/.bashrc
-
-echo -e "${Cya}Disable annoying bash bell (beep)${None}"
-inputrc_file="/etc/inputrc"
-
-# Check if the file exists
-if [ ! -f "$inputrc_file" ]; then
-    echo -e "${Cya}Error: $inputrc_file does not exist.${None}"
-else
-    echo -e "${Cya}Disable terminal bell${None}"
-    # Uncomment the line if it's commented
-    sudo sed -i 's/#set bell-style/set bell-style/' "$inputrc_file"
-
-    # Check if the line with "set bell-style" exists and edit it accordingly
-    if grep -q "^set bell-style" "$inputrc_file"; then
-        sudo sed -i 's/^set bell-style .*/set bell-style none/' "$inputrc_file"
+    if [ -d "ctags" ]; then
+        echo -e "${Yel}Ctags already installed${None}"
     else
-        # If the line doesn't exist, append it to the end of the file
-         echo "set bell-style none" | sudo tee -a "$inputrc_file"
+        git clone https://github.com/universal-ctags/ctags.git
+        cd ctags
+        ./autogen.sh
+        ./configure
+        make
+        sudo make install
     fi
+    cd ${work_dir}
+
+    # Fix bad command
+    pipx install thefuck
 fi
 
-# Hush !
-echo -e "${Cya}Hush login${None}"
-touch ${HOME}/.hushlogin
+if [[ $set_cfg = true ]]; then
+    # For Neovim, btw
+    mkdir -p ${HOME}/.config
+    sudo mkdir -p /root/.config
 
-# Git config TODO complete
-echo -e "${Cya}Global git config${None}"
-git config --global core.editor "nvim"
-git config --global core.autocrlf input
+    # Get the directory containing the script
+    script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+    echo -e "${Cya}Linking files from ${script_dir} to ${HOME}/ ...${None}"
 
-# Launch Vim and Neovim and execute PlugInstall command
-echo -e "${Cya}Setting up [Neo]Vim...${None}"
-vim -c 'PlugInstall' -c 'qa!'
-nvim -c 'PlugInstall' -c 'qa!'
+    sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
+    sudo ln -sfnv ${script_dir}/.vim ${HOME}/.vim
+    sudo ln -sfnv ${script_dir}/nvim ${HOME}/.config/nvim
 
-echo -e "${Gre}All set up Captain! ${None}"
+    sudo ln -sfnv ${script_dir}/.bashrc ${HOME}/.bashrc
+    sudo ln -sfnv ${script_dir}/.bash_prompt ${HOME}/.bash_prompt
+    sudo ln -sfnv ${script_dir}/.bash_git ${HOME}/.bash_git
+    sudo ln -sfnv ${script_dir}/.bash_git_completion ${HOME}/.bash_git_completion
+
+    sudo ln -sfnv ${script_dir}/.tmux.conf ${HOME}/.tmux.conf
+
+    sudo ln -sfnv ${script_dir}/.dir_colors ${HOME}/.dir_colors
+
+    sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
+    sudo ln -sfnv ${script_dir}/.vim ${HOME}/.vim
+
+    echo -e "${Cya}Linking files from ${script_dir} to /root/ ...${None}"
+    sudo ln -sfnv ${script_dir}/.bashrc /root/.bashrc
+    sudo ln -sfnv ${script_dir}/.bash_prompt /root/.bash_prompt
+    sudo ln -sfnv ${script_dir}/.bash_git /root/.bash_git
+    sudo ln -sfnv ${script_dir}/.bash_git_completion /root/.bash_git_completion
+
+    sudo ln -sfnv ${script_dir}/.tmux.conf /root/.tmux.conf
+
+    sudo ln -sfnv ${script_dir}/.dir_colors /root/.dir_colors
+
+    sudo ln -sfnv ${script_dir}/.vimrc /root/.vimrc
+    sudo ln -sfnv ${script_dir}/.vim /root/.vim
+    sudo ln -sfnv ${script_dir}/nvim /root/.config/nvim
+
+    # In WSL we need to tweak tmux config
+    if [ $IS_IN_WSL -eq 1 ]; then
+        sudo ln -sfnv ${script_dir}/.tmux_wsl.conf ${HOME}/.tmux_wsl.conf
+        sudo ln -sfnv ${script_dir}/.tmux_wsl.conf /root/.tmux_wsl.conf
+    else
+        touch ${HOME}/.tmux_wsl.conf
+        sudo touch /root/.tmux_wsl.conf
+    fi
+
+    # Moment of truth !
+    echo -e "${Cya}Sourcing...${None}"
+    source ${HOME}/.bashrc
+
+    echo -e "${Cya}Disable annoying bash bell (beep)${None}"
+    inputrc_file="/etc/inputrc"
+
+    # Check if the file exists
+    if [ ! -f "$inputrc_file" ]; then
+        echo -e "${Cya}Error: $inputrc_file does not exist.${None}"
+    else
+        echo -e "${Cya}Disable terminal bell${None}"
+        # Uncomment the line if it's commented
+        sudo sed -i 's/#set bell-style/set bell-style/' "$inputrc_file"
+
+        # Check if the line with "set bell-style" exists and edit it accordingly
+        if grep -q "^set bell-style" "$inputrc_file"; then
+            sudo sed -i 's/^set bell-style .*/set bell-style none/' "$inputrc_file"
+        else
+            # If the line doesn't exist, append it to the end of the file
+            echo "set bell-style none" | sudo tee -a "$inputrc_file"
+        fi
+        fi
+
+    # Hush !
+    echo -e "${Cya}Hush login${None}"
+    touch ${HOME}/.hushlogin
+
+    # Git config TODO complete
+    echo -e "${Cya}Global git config${None}"
+    git config --global core.editor "nvim"
+    git config --global core.autocrlf input
+
+    # Handy alias for bat
+    mkdir -p ~/.local/bin
+    ln -nfvs /usr/bin/batcat ~/.local/bin/bat
+
+    # Launch Vim and Neovim and execute PlugInstall command
+    echo -e "${Cya}Setting up [Neo]Vim...${None}"
+    vim -c 'PlugInstall' -c 'qa!'
+    nvim -c 'PlugInstall' -c 'qa!'
+fi
+
+    echo -e "${Gre}All set up Captain! ${None}"
