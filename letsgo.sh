@@ -45,13 +45,16 @@ detect_package_manager() {
     case "$ID" in
       debian|ubuntu)
         package_manager="apt"
+        package_opts="--no-install-recommends"
         ;;
       rocky|centos|rhel)
         package_manager="dnf"
+        package_opts=""
         ;;
       *)
         echo -e "${Cya}Unsupported distribution: $ID${None}"
         package_manager=""
+        package_opts=""
         exit 1
         ;;
     esac
@@ -172,22 +175,18 @@ if [[ $update_packets = true ]]; then
     echo -e "${Cya}Updating system...${None}"
     sudo ${package_manager} update
 
-    # Update trust store certificates
-    echo -e "${Cya}Updating certificates...${None}"
-    sudo ${package_manager} install  apt-transport-https ca-certificates -y
-    sudo update-ca-certificates
 
     # Installing useful/required packets
     echo -e "${Cya}Installing packets...${None}"
-    sudo ${package_manager} install  --no-install-recommends neovim vim tmux curl tree git git-lfs rsync silversearcher-ag -y
-    sudo ${package_manager} install  --no-install-recommends dos2unix python3-dev python3-pip python3-setuptools python3-tk -y
-    sudo ${package_manager} install  --no-install-recommends python3-wheel python3-venv pipx -y
-    sudo ${package_manager} install  --no-install-recommends gdb make gcc clang cmake cscope p7zip-full -y
-    sudo ${package_manager} install  --no-install-recommends autoconf automake -y
-    sudo ${package_manager} install  --no-install-recommends build-essential libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev -y
-    # Could be installed via Cargo but would need manual config
-    sudo ${package_manager} install  --no-install-recommends bat ripgrep fd-find -y
+    sudo ${package_manager} install  ${package_opts} neovim vim tmux curl tree git git-lfs rsync silversearcher-ag -y || true
+    sudo ${package_manager} install  ${package_opts} dos2unix python3-dev python3-pip python3-setuptools python3-tk -y || true
+    sudo ${package_manager} install  ${package_opts} python3-wheel python3-venv pipx -y || true
+    sudo ${package_manager} install  ${package_opts} gdb make gcc clang cmake cscope p7zip-full -y || true
+    sudo ${package_manager} install  ${package_opts} autoconf automake -y || true
+    sudo ${package_manager} install  ${package_opts} build-essential libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev -y || true
 
+    # Could be installed via Cargo but would need manual config
+    sudo ${package_manager} install  ${package_opts} bat ripgrep fd-find -y || true
 fi
 
 if [[ $os_upd = true ]]; then
@@ -196,6 +195,11 @@ if [[ $os_upd = true ]]; then
         sudo ${package_manager} upgrade -y
         echo -e "${Cya}Cleaing up...${None}"
         sudo ${package_manager} autoremove -y
+
+        # Update trust store certificates
+        echo -e "${Cya}Updating certificates...${None}"
+        sudo ${package_manager} install  apt-transport-https ca-certificates -y
+        sudo update-ca-certificates
     else
         echo -e "${Yel}Skipping upgrade${None}"
     fi
@@ -282,16 +286,19 @@ if [[ $src_tools = true ]]; then
     cd ${work_dir}
 
     # Fix bad command
-    pipx install thefuck
+    pipx install thefuck || true
 fi
 
 if [[ $set_cfg = true ]]; then
     # For Neovim, btw
     mkdir -p ${HOME}/.config
-    sudo mkdir -p /root/.config
 
     # Get the directory containing the script
     script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+    if [[ $script_dir -eq ${HOME} ]]; then
+	    echo -e "{Red}Script dir = $script_dir$, pwd = ${pwd}{None}"
+	    exit
+    fi
     echo -e "${Cya}Linking files from ${script_dir} to ${HOME}/ ...${None}"
 
     sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
@@ -307,30 +314,38 @@ if [[ $set_cfg = true ]]; then
 
     sudo ln -sfnv ${script_dir}/.dir_colors ${HOME}/.dir_colors
 
-    sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
-    sudo ln -sfnv ${script_dir}/.vim ${HOME}/.vim
+    sudo chown -h $USER:$USER ${HOME}/.vimrc ${HOME}/.vim ${HOME}/.config/nvim
+    sudo chown -h $USER:$USER ${HOME}/.bashrc ${HOME}/.bash_prompt ${HOME}/.bash_git ${HOME}/.bash_git_completion
 
-    echo -e "${Cya}Linking files from ${script_dir} to /root/ ...${None}"
-    sudo ln -sfnv ${script_dir}/.bashrc /root/.bashrc
-    sudo ln -sfnv ${script_dir}/.bash_prompt /root/.bash_prompt
-    sudo ln -sfnv ${script_dir}/.bash_git /root/.bash_git
-    sudo ln -sfnv ${script_dir}/.bash_git_completion /root/.bash_git_completion
+    if ask_for_confirmation "Do you want to create symlinks for root too?"; then
+        sudo mkdir -p /root/.config
+        echo -e "${Cya}Linking files from ${script_dir} to /root/ ...${None}"
+        sudo ln -sfnv ${script_dir}/.bashrc /root/.bashrc
+        sudo ln -sfnv ${script_dir}/.bash_prompt /root/.bash_prompt
+        sudo ln -sfnv ${script_dir}/.bash_git /root/.bash_git
+        sudo ln -sfnv ${script_dir}/.bash_git_completion /root/.bash_git_completion
 
-    sudo ln -sfnv ${script_dir}/.tmux.conf /root/.tmux.conf
+        sudo ln -sfnv ${script_dir}/.tmux.conf /root/.tmux.conf
 
-    sudo ln -sfnv ${script_dir}/.dir_colors /root/.dir_colors
+        sudo ln -sfnv ${script_dir}/.dir_colors /root/.dir_colors
 
-    sudo ln -sfnv ${script_dir}/.vimrc /root/.vimrc
-    sudo ln -sfnv ${script_dir}/.vim /root/.vim
-    sudo ln -sfnv ${script_dir}/nvim /root/.config/nvim
+        sudo ln -sfnv ${script_dir}/.vimrc /root/.vimrc
+        sudo ln -sfnv ${script_dir}/.vim /root/.vim
+        sudo ln -sfnv ${script_dir}/nvim /root/.config/nvim
+
+        # In WSL we need to tweak tmux config
+        if [ $IS_IN_WSL -eq 1 ]; then
+            sudo ln -sfnv ${script_dir}/.tmux_wsl.conf /root/.tmux_wsl.conf
+        else
+            sudo touch /root/.tmux_wsl.conf
+        fi
+    fi
 
     # In WSL we need to tweak tmux config
     if [ $IS_IN_WSL -eq 1 ]; then
         sudo ln -sfnv ${script_dir}/.tmux_wsl.conf ${HOME}/.tmux_wsl.conf
-        sudo ln -sfnv ${script_dir}/.tmux_wsl.conf /root/.tmux_wsl.conf
     else
         touch ${HOME}/.tmux_wsl.conf
-        sudo touch /root/.tmux_wsl.conf
     fi
 
     # Moment of truth !
@@ -355,7 +370,7 @@ if [[ $set_cfg = true ]]; then
             # If the line doesn't exist, append it to the end of the file
             echo "set bell-style none" | sudo tee -a "$inputrc_file"
         fi
-        fi
+    fi
 
     # Hush !
     echo -e "${Cya}Hush login${None}"
@@ -373,7 +388,7 @@ if [[ $set_cfg = true ]]; then
     # Launch Vim and Neovim and execute PlugInstall command
     echo -e "${Cya}Setting up [Neo]Vim...${None}"
     vim -c 'PlugInstall' -c 'qa!'
-    nvim -c 'PlugInstall' -c 'qa!'
+    #nvim -c 'PlugInstall' -c 'qa!'
 fi
 
-    echo -e "${Gre}All set up Captain! ${None}"
+echo -e "${Gre}All set up Captain! ${None}"
