@@ -87,16 +87,19 @@ fi
 
 # Rust
 . "$HOME/.cargo/env"
+export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/library/
 
 # Go
-export PATH=${HOME}/go/bin:${PATH}
-export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
+
+# GPG agent prompt in terminal
+export GPG_TTY=$(tty)
 
 # Set up fzf key bindings and fuzzy completion
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Autocorrect bad commands
-eval "$(thefuck --alias)"
+#eval "$(thefuck --alias)"
 
 # Modern CLI File Explorer tool
 source /home/david/.config/broot/launcher/bash/br
