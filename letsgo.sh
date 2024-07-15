@@ -242,6 +242,8 @@ if [[ $rust_tools = true ]]; then
     cargo install du-dust
 
     ln -snfv $(which fdfind) ~/.local/bin/fd
+    # Need to be launched once to install shell scripts
+    broot
 
 fi
 
@@ -286,7 +288,7 @@ if [[ $src_tools = true ]]; then
     cd ${work_dir}
 
     # Fix bad command
-    pipx install thefuck || true
+    #pipx install thefuck || true
 fi
 
 if [[ $set_cfg = true ]]; then
