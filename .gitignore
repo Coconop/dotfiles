@@ -5,3 +5,5 @@
 
 # TODO remove for "offline"nstall
 .vim/plugged
+
+*.log

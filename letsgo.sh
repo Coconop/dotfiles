@@ -136,6 +136,58 @@ ask_for_confirmation() {
   done
 }
 
+check_neovim() {
+  if command -v nvim >/dev/null 2>&1; then
+    neovim_version=$(nvim --version)
+    echo -e "${Yel}nvim is installed: $neovim_version${None}"
+  else
+    echo -e "${Cya}nvim is not installed${None}"
+  fi
+  #https://github.com/neovim/neovim/blob/master/INSTALL.md#install-from-source
+  if ask_for_confirmation "Install Last Neovim version from source ?"; then
+    echo -e "${Cya}Neovim will be launched interactively for 1st installation${None}"
+    sudo $package_manager remove neovim
+    # TODO check for neovim git repo, cd to it and:
+    # sudo cmake --build build/ --target uninstall
+    TOTO=`pwd`
+    mkdir -p $HOME/git
+    cd $HOME/git
+    git clone https://github.com/neovim/neovim.git || true
+    cd neovim
+    git checkout stable
+    make CMAKE_BUILD_TYPE=Release
+    sudo make install
+    cd $TOTO
+    source ${HOME}/.bashrc
+    /usr/local/bin/nvim
+  fi
+}
+
+check_tmux() {
+  if command -v tmux >/dev/null 2>&1; then
+    tmux_version=$(tmux -V)
+    echo -e "${Yel}tmux is installed: $tmux_version${None}"
+  else
+    echo -e "${Cya}tmux is not installed${None}"
+  fi
+  # https://github.com/tmux/tmux/wiki/Installing#from-version-control
+  if ask_for_confirmation "Install Last tmux version from source ?"; then
+    echo -e "${Yel}WARNING packet are probably missing. Better install manually${None}"
+    sudo $package_manager remove tmux
+    TOTO=`pwd`
+    mkdir -p $HOME/git
+    cd $HOME/git
+    git clone https://github.com/tmux/tmux.git || true
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm || true
+    cd tmux
+    git checkout 3.4
+    sh autogen.sh
+    ./configure
+    make && sudo make install
+    source ${HOME}/.bashrc
+  fi
+}
+
 while getopts "usrgtoc" opt; do
   case $opt in
     u) update_packets=true ;;
@@ -178,15 +230,25 @@ if [[ $update_packets = true ]]; then
 
     # Installing useful/required packets
     echo -e "${Cya}Installing packets...${None}"
-    sudo ${package_manager} install  ${package_opts} neovim vim tmux curl tree git git-lfs rsync silversearcher-ag -y || true
+    sudo ${package_manager} install  ${package_opts} vim tmux curl tree git git-lfs rsync silversearcher-ag -y || true
     sudo ${package_manager} install  ${package_opts} dos2unix python3-dev python3-pip python3-setuptools python3-tk -y || true
     sudo ${package_manager} install  ${package_opts} python3-wheel python3-venv pipx -y || true
-    sudo ${package_manager} install  ${package_opts} gdb make gcc clang cmake cscope p7zip-full -y || true
+    sudo ${package_manager} install  ${package_opts} gdb make gcc clang cscope p7zip-full -y || true
     sudo ${package_manager} install  ${package_opts} autoconf automake -y || true
-    sudo ${package_manager} install  ${package_opts} build-essential libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev -y || true
+    sudo ${package_manager} install  ${package_opts} ninja-build gettext cmake unzip build-essential -y || true
+    sudo ${package_manager} install  ${package_opts} libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev -y || true
+    sudo ${package_manager} install  ${package_opts} libevent-dev ncurses-dev build-essential bison pkg-config libevent ncurses -y || true #Debian/ubuntu
+    sudo ${package_manager} install  ${package_opts} libevent-2.1-7 ncurses-base ncurses-bin ncurses-term yacc libncurses-dev libncurses5 -y || true
+    sudo ${package_manager} install  ${package_opts} libevent-devel ncurses-devel gcc make bison pkg-config -y || true #  RHEL/CentOs
+
 
     # Could be installed via Cargo but would need manual config
     sudo ${package_manager} install  ${package_opts} bat ripgrep fd-find -y || true
+
+    echo -e "${Red}Do $package_manager search for missing packets and find their true name${None}"
+
+    check_neovim
+    check_tmux
 fi
 
 if [[ $os_upd = true ]]; then
@@ -230,6 +292,7 @@ if [[ $rust_tools = true ]]; then
     check_rust_analyzer
     if [[ $install_rust_analyzer = true ]]; then
         curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
+        # It might fail here. Checkout https://askubuntu.com/a/1387286 and https://askubuntu.com/a/1501564 for WSL
         chmod +x ~/.local/bin/rust-analyzer
     fi
 
@@ -297,8 +360,8 @@ if [[ $set_cfg = true ]]; then
 
     # Get the directory containing the script
     script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-    if [[ $script_dir -eq ${HOME} ]]; then
-	    echo -e "{Red}Script dir = $script_dir$, pwd = ${pwd}{None}"
+    if [[ $script_dir != *"dotfiles"* ]]; then
+	    echo -e "{Red}Script dir = $script_dir$, pwd = ${pwd} 'dotfiles' not found {None}"
 	    exit
     fi
     echo -e "${Cya}Linking files from ${script_dir} to ${HOME}/ ...${None}"
@@ -390,7 +453,8 @@ if [[ $set_cfg = true ]]; then
     # Launch Vim and Neovim and execute PlugInstall command
     echo -e "${Cya}Setting up [Neo]Vim...${None}"
     vim -c 'PlugInstall' -c 'qa!'
-    #nvim -c 'PlugInstall' -c 'qa!'
+    # Shall need time to load and install TODO
+    # nvim --headless +PlugInstall +qa
 fi
 
 echo -e "${Gre}All set up Captain! ${None}"
