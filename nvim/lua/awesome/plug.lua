@@ -34,5 +34,7 @@ Plug('VonHeikemen/lsp-zero.nvim', {['branch']='v3.x'})
 Plug 'folke/which-key.nvim'
 Plug 'nvim-tree/nvim-web-devicons'
 
+Plug 'nvim-lualine/lualine.nvim'
+
 vim.call('plug#end')
 
