@@ -87,6 +87,9 @@ endif
 "set statusline=2
 set noshowmode
 
+" https://stackoverflow.com/a/48237738
+cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+
 "=== Buffer
 " :e to edit
 " :b <Tab> to cycle around buffers
