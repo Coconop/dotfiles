@@ -112,7 +112,8 @@ check_fzf() {
 
 
 install_fonts() {
-  local font="JetBrainsMono"
+  # local font="JetBrainsMono"
+  local font="0xProto"
   local archive="$font.tar.xz"
   local destination_dir="/usr/local/share/fonts/$font"
 
