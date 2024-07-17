@@ -109,6 +109,31 @@ check_fzf() {
     install_fzf=true
   fi
 }
+
+
+install_fonts() {
+  local font="JetBrainsMono"
+  local archive="$font.tar.xz"
+  local destination_dir="/usr/local/share/fonts/$font"
+
+  # Check if the archive exists
+  if [ ! -f "$archive" ]; then
+    echo "Archive $archive not found."
+    curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$archive
+  fi
+
+  # Create the destination directory if it doesn't exist
+  sudo mkdir -p "$destination_dir"
+
+  # Extract the archive to the destination directory
+  sudo tar -xvf "$archive" -C "$destination_dir"
+
+  # Refresh the font cache
+  sudo fc-cache -f -v
+
+  echo "Fonts installed successfully."
+}
+
 # Function to display help message
 display_help() {
     echo -e "${Yel}Usage: $0 [options]${None}"
@@ -247,8 +272,6 @@ if [[ $update_packets = true ]]; then
 
     echo -e "${Red}Do $package_manager search for missing packets and find their true name${None}"
 
-    check_neovim
-    check_tmux
 fi
 
 if [[ $os_upd = true ]]; then
@@ -326,6 +349,14 @@ if [[ $go_tools = true ]]; then
 fi
 
 if [[ $src_tools = true ]]; then
+
+    check_neovim
+
+    check_tmux
+
+    if ask_for_confirmation "Do you want to install NerdFont ?"; then
+        install_fonts
+    fi
 
     # Sweet Fuzzy finder
     check_fzf
