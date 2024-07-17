@@ -255,7 +255,7 @@ if [[ $update_packets = true ]]; then
 
     # Installing useful/required packets
     echo -e "${Cya}Installing packets...${None}"
-    sudo ${package_manager} install  ${package_opts} vim tmux curl tree git git-lfs rsync silversearcher-ag -y || true
+    sudo ${package_manager} install  ${package_opts} vim curl tree git git-lfs rsync silversearcher-ag -y || true
     sudo ${package_manager} install  ${package_opts} dos2unix python3-dev python3-pip python3-setuptools python3-tk -y || true
     sudo ${package_manager} install  ${package_opts} python3-wheel python3-venv pipx -y || true
     sudo ${package_manager} install  ${package_opts} gdb make gcc clang cscope p7zip-full -y || true
