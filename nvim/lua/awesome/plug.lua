@@ -36,5 +36,7 @@ Plug 'nvim-tree/nvim-web-devicons'
 
 Plug 'nvim-lualine/lualine.nvim'
 
+Plug 'christoomey/vim-tmux-navigator'
+
 vim.call('plug#end')
 
