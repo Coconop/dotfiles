@@ -2,9 +2,8 @@
 *.swp
 *.swo
 vim/.vim/backups
-
-# TODO remove for "offline" install
 vim/.vim/plugged
+vim/.vim/undodir
 
 *.log
 *.netrwhist
