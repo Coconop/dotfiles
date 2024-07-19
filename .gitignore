@@ -1,10 +1,10 @@
 # Vim files
 *.swp
 *.swo
-.vim/backups
+vim/.vim/backups
 
-# TODO remove for "offline"nstall
-.vim/plugged
+# TODO remove for "offline" install
+vim/.vim/plugged
 
 *.log
 *.netrwhist

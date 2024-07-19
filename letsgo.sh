@@ -398,52 +398,7 @@ if [[ $set_cfg = true ]]; then
     fi
     echo -e "${Cya}Linking files from ${script_dir} to ${HOME}/ ...${None}"
 
-    sudo ln -sfnv ${script_dir}/.vimrc ${HOME}/.vimrc
-    sudo ln -sfnv ${script_dir}/.vim ${HOME}/.vim
-    sudo ln -sfnv ${script_dir}/nvim ${HOME}/.config/nvim
-
-    sudo ln -sfnv ${script_dir}/.bashrc ${HOME}/.bashrc
-    sudo ln -sfnv ${script_dir}/.bash_prompt ${HOME}/.bash_prompt
-    sudo ln -sfnv ${script_dir}/.bash_git ${HOME}/.bash_git
-    sudo ln -sfnv ${script_dir}/.bash_git_completion ${HOME}/.bash_git_completion
-
-    sudo ln -sfnv ${script_dir}/.tmux.conf ${HOME}/.tmux.conf
-
-    sudo ln -sfnv ${script_dir}/.dir_colors ${HOME}/.dir_colors
-
-    sudo chown -h $USER:$USER ${HOME}/.vimrc ${HOME}/.vim ${HOME}/.config/nvim
-    sudo chown -h $USER:$USER ${HOME}/.bashrc ${HOME}/.bash_prompt ${HOME}/.bash_git ${HOME}/.bash_git_completion
-
-    if ask_for_confirmation "Do you want to create symlinks for root too?"; then
-        sudo mkdir -p /root/.config
-        echo -e "${Cya}Linking files from ${script_dir} to /root/ ...${None}"
-        sudo ln -sfnv ${script_dir}/.bashrc /root/.bashrc
-        sudo ln -sfnv ${script_dir}/.bash_prompt /root/.bash_prompt
-        sudo ln -sfnv ${script_dir}/.bash_git /root/.bash_git
-        sudo ln -sfnv ${script_dir}/.bash_git_completion /root/.bash_git_completion
-
-        sudo ln -sfnv ${script_dir}/.tmux.conf /root/.tmux.conf
-
-        sudo ln -sfnv ${script_dir}/.dir_colors /root/.dir_colors
-
-        sudo ln -sfnv ${script_dir}/.vimrc /root/.vimrc
-        sudo ln -sfnv ${script_dir}/.vim /root/.vim
-        sudo ln -sfnv ${script_dir}/nvim /root/.config/nvim
-
-        # In WSL we need to tweak tmux config
-        if [ $IS_IN_WSL -eq 1 ]; then
-            sudo ln -sfnv ${script_dir}/.tmux_wsl.conf /root/.tmux_wsl.conf
-        else
-            sudo touch /root/.tmux_wsl.conf
-        fi
-    fi
-
-    # In WSL we need to tweak tmux config
-    if [ $IS_IN_WSL -eq 1 ]; then
-        sudo ln -sfnv ${script_dir}/.tmux_wsl.conf ${HOME}/.tmux_wsl.conf
-    else
-        touch ${HOME}/.tmux_wsl.conf
-    fi
+    bash "${script_dir}/linkall.sh"
 
     # Moment of truth !
     echo -e "${Cya}Sourcing...${None}"
