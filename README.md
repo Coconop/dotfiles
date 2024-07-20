@@ -1,14 +1,11 @@
 # dotfiles
-Configuration out-of-the-box
+My sweet setup.
 
 # Install
 
-Download/Clone the repository, go in there and just:
 ```
+$ git clone https://github.com/Coconop/dotfiles.git
+$ cd dotfiles
 $ chmod +x letsgo.sh
 $ ./letsgo.sh
 ```
-
-# TODO
- * WSL configuration (hostname, etc)
- * Better vim theme for coding (do not hardocde colotheme name in file)
