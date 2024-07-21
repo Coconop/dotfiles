@@ -67,6 +67,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'itchyny/lightline.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'dense-analysis/ale'
+Plug 'rhysd/conflict-marker.vim'
 
 " Initialize plugin system
 " - Automatically executes `filetype plugin indent on` and `syntax enable`.
