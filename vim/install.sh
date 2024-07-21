@@ -9,6 +9,8 @@
 # UPDATE ME
 local location="/usr/local"
 
+WORK_DIR=$(pwd)
+
 git clone https://github.com/vim/vim.git
 cd vim/src
 
@@ -51,7 +53,9 @@ make test
 # Install it (sudo might not be required depending on '--prexix')
 sudo make install
 
-echo -e "${Gre}Vim successfully installed in [${location}]{None}"
-echo -e "${Gre}"
+echo -e "Vim successfully installed in [${location}]"
 ${location}/vim --version
-echo -e "${None}"
+
+echo -e "Installing Plugins..."
+vim -c 'PlugInstall' -c 'qa!'
+cd ${WORK_DIR}

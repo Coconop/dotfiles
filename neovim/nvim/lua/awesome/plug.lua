@@ -39,5 +39,7 @@ Plug 'nvim-lualine/lualine.nvim'
 
 Plug 'christoomey/vim-tmux-navigator'
 
+Plug 'rhysd/conflict-marker.vim'
+
 vim.call('plug#end')
 
