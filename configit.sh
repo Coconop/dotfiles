@@ -9,3 +9,4 @@ git config --global merge.conflictStyle "merge"
 echo -e "Setting up localgit config"
 git config --local user.name "Coconop"
 git config --local user.email "Coconop_has_no_m@il.com"
+git config --local commit.gpgsign false
