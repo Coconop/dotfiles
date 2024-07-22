@@ -40,6 +40,9 @@ Plug 'nvim-lualine/lualine.nvim'
 Plug 'christoomey/vim-tmux-navigator'
 
 Plug 'rhysd/conflict-marker.vim'
+Plug 'tpope/vim-surround'
+
+Plug 'rbong/vim-flog'
 
 vim.call('plug#end')
 
