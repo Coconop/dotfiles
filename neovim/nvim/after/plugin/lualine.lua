@@ -9,7 +9,7 @@ local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis, always_tru
     local win_width = vim.fn.winwidth(0)
     if hide_width and win_width < hide_width then return ''
     elseif always_trunc then
-       return str:sub(1, trunc_len) .. ('...')
+       return str:sub(1, trunc_len) .. (string.len(str) < trunc_len and '' or '...')
     elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
        return str:sub(1, trunc_len) .. (no_ellipsis and '' or '...')
     end
@@ -39,7 +39,7 @@ require('lualine').setup {
     sections = {
         lualine_a = {'mode'},
         lualine_b = {
-            {'branch', fmt=trunc(80, 12, 10, false, true)},
+            {'branch', fmt=trunc(80, 21, 10, false, true)},
             'diff', 
             'diagnostics'},
         lualine_c = {
