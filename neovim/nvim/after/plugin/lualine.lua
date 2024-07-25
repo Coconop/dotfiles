@@ -2,11 +2,14 @@
 --- @param trunc_len number truncates component to trunc_len number of chars
 --- @param hide_width number hides component when window width is smaller than hide_width
 --- @param no_ellipsis boolean whether to disable adding '...' at end after truncation
+--- @param always_trunc boolean whether to truncate regardless of window width
 --- return function that can format the component accordingly
-local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
+local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis, always_trunc)
   return function(str)
     local win_width = vim.fn.winwidth(0)
     if hide_width and win_width < hide_width then return ''
+    elseif always_trunc then
+       return str:sub(1, trunc_len) .. ('...')
     elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
        return str:sub(1, trunc_len) .. (no_ellipsis and '' or '...')
     end
@@ -36,7 +39,7 @@ require('lualine').setup {
     sections = {
         lualine_a = {'mode'},
         lualine_b = {
-            {'branch', fmt=trunc(80, 12, 10)},
+            {'branch', fmt=trunc(80, 12, 10, false, true)},
             'diff', 
             'diagnostics'},
         lualine_c = {
