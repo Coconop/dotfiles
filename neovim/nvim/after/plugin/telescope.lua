@@ -33,6 +33,7 @@ require("telescope").setup({
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>tg', builtin.live_grep, {desc = "Live Grep"})
 vim.keymap.set('n', '<leader>td', builtin.diagnostics, {desc = "Browse diagnostics"})
+vim.keymap.set('n', '<leader>tr', builtin.grep_string, {desc = "Grep Str under cursor"})
 
 -- use native fzf for a boost
 require('telescope').load_extension('fzf')
