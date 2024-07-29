@@ -1,1 +1,3 @@
-require("awesome")
+require("options")
+require("keymaps")
+require("config.lazy")
