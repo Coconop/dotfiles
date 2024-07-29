@@ -9,4 +9,3 @@ vim.api.nvim_set_keymap('n', '<leader>ds', ':Step<CR>', { noremap = true, silent
 vim.api.nvim_set_keymap('n', '<leader>df', ':Finish<CR>', { noremap = true, silent = true })
 vim.g.termdebugger = 'rust-gdb'
 vim.g.termdebugger_wide = 1
-vim.g.termdebug_config['winbar'] = 0
