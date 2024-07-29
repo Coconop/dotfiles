@@ -37,6 +37,7 @@ if ask_for_confirmation "Painfully slowly Install blazlingly fast tools ?"; then
     cargo install --locked broot
     cargo install fd-find
     cargo install du-dust
+    cargo install tree-sitter-cli
     # Need some post-instlall config
     ln -snfv $(which fdfind) ~/.local/bin/fd
     echo -e "Please launch ${Gre}'broot'${None} to set it up"
