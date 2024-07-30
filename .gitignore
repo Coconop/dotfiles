@@ -4,6 +4,7 @@
 vim/.vim/backups
 vim/.vim/plugged
 vim/.vim/undodir
+codelldb/codelldb_adapter
 
 *.log
 *.netrwhist
