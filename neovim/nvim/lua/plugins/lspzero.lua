@@ -68,16 +68,20 @@ return {
     {
         'williamboman/mason-lspconfig.nvim',
         config = function()
+            local lsp_zero = require('lsp-zero')
             require('mason-lspconfig').setup({
                 ensure_installed = {
                     "lua_ls",
-                    "rust_analyzer", },
+                },
+                -- rustaean plugin got this
+                automatic_installation = { exclude = { "rust_analyzer" } },
                 handlers = {
                     --- this first function is the "default handler"
                     --- it applies to every language server without a "custom handler"
                     function(server_name)
                         require('lspconfig')[server_name].setup({})
                     end,
+                    rust_analyzer = lsp_zero.noop,
                 },
             })
         end
@@ -93,7 +97,7 @@ return {
                     timeout_ms = 10000,
                 },
                 servers = {
-                    ['rust_analyzer'] = { 'rust' },
+                    ['rustfmt'] = { 'rust' },
                     ['lua_ls'] = { 'lua' },
                 }
             })
