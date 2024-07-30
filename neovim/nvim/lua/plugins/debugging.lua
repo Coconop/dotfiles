@@ -6,7 +6,7 @@ return {
             "mfussenegger/nvim-dap",
             "nvim-neotest/nvim-nio"
         },
-        config = function ()
+        config = function()
             -- Attach UI on events
             local dap, dapui = require("dap"), require("dapui")
             dap.listeners.before.attach.dapui_config = function()
@@ -42,27 +42,26 @@ return {
             }
 
             -- key mappings
-            vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end)
-            vim.keymap.set('n', '<leader>do', function() require('dap').step_over() end)
-            vim.keymap.set('n', '<leader>dj', function() require('dap').step_into() end)
-            vim.keymap.set('n', '<leader>dk', function() require('dap').step_out() end)
-            vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() end)
-            vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end)
-            vim.keymap.set('n', '<Leader>dl', function() require('dap').run_last() end)
-            vim.keymap.set({'n', 'v'}, '<Leader>dh', function()
-                require('dap.ui.widgets').hover()
-            end)
-            vim.keymap.set({'n', 'v'}, '<Leader>dp', function()
+            vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end, { desc = "DAP Continue" })
+            vim.keymap.set('n', '<leader>do', function() require('dap').step_over() end, { desc = "DAP Step Over" })
+            vim.keymap.set('n', '<leader>dj', function() require('dap').step_into() end, { desc = "DAP Step Info" })
+            vim.keymap.set('n', '<leader>dk', function() require('dap').step_out() end, { desc = "DAP Out" })
+            vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() end,
+                { desc = "DAP Toggle Brkpt" })
+            vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end, { desc = "DAP Repl Open" })
+            vim.keymap.set({ 'n', 'v' }, '<Leader>dh', function() require('dap.ui.widgets').hover() end,
+                { desc = "UI hover" })
+            vim.keymap.set({ 'n', 'v' }, '<Leader>dp', function()
                 require('dap.ui.widgets').preview()
-            end)
+            end, { desc = "UI preview" })
             vim.keymap.set('n', '<Leader>df', function()
                 local widgets = require('dap.ui.widgets')
                 widgets.centered_float(widgets.frames)
-            end)
+            end, { desc = "UI Frames" })
             vim.keymap.set('n', '<Leader>ds', function()
                 local widgets = require('dap.ui.widgets')
                 widgets.centered_float(widgets.scopes)
-            end)
+            end, { desc = "UI Scopes" })
         end
     },
 }
