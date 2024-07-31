@@ -41,7 +41,7 @@ ARCHIVE="codelldb-${ARCH}-linux.zip"
 curl -L "${URL}" -o "${ARCHIVE}"
 
 echo "Unzipping required folders"
-unzip "${ARCHIVE}" "extension/adapter/*" "extension/lldb/*"
+unzip "${ARCHIVE}" "extension/adapter/*" "extension/lldb/*" "extension/formatters/*"
 mv extension/ codelldb_adapter
 
 echo "Cleaning archive..."
