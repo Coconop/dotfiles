@@ -40,8 +40,8 @@ cd ${SCRIPT_DIR}
 ARCHIVE="codelldb-${ARCH}-linux.zip"
 curl -L "${URL}" -o "${ARCHIVE}"
 
-echo "Unzipping required folders"
-unzip "${ARCHIVE}" "extension/adapter/*" "extension/lldb/*" "extension/formatters/*"
+echo "Unzipping"
+unzip "${ARCHIVE}" 
 mv extension/ codelldb_adapter
 
 echo "Cleaning archive..."
