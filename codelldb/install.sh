@@ -1,30 +1,55 @@
 #!/bin/bash
 
 set -e
-
+echo "Saving paths"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 WORKDIR=$(pwd)
 
-# Determine your CPU's architecture to download the correct version of codelldb
-ARCH=$(lscpu | grep -oP 'Architecture:\s*\K.+')
+echo "Checking architecture"
+ARCH="$(uname -m)"
 if [ "$ARCH" != "x86_64" ]; then
-  echo "WARNING: $ARCH might not be supported"
-  exit 1
+    echo "WARNING: $ARCH might not be supported"
 fi
 
-cd ${SCRIPT_DIR}
-sudo curl -L "https://github.com/vadimcn/vscode-lldb/releases/download/v1.7.0/codelldb-${ARCH}-linux.vsix" -o "codelldb-${ARCH}-linux.zip"
+curl -s --head https://github.com | head -n 1 | grep "HTTP/1.[01] [23].." > /dev/null
+if [ $? -ne 0 ]; then
+    echo "Unable to connect to GitHub."
+    exit 1
+else
+    echo "Connection test OK"
+fi
 
-# Unzip only the required folders (extension/adapter and extension/lldb)
-unzip "codelldb-${ARCH}-linux.zip" "extension/adapter/*" "extension/lldb/*"
+get_latest_release() {
+    curl -sLI https://github.com/vadimcn/vscode-lldb/releases/latest | grep tag/ | tr -d '\r' | awk '{print $2}' | sed 's/tag/download/'
+}
+
+
+LATEST_RELEASE="$(get_latest_release)"
+if [ -z "$LATEST_RELEASE" ]; then
+    echo "Failed to fetch the latest release version."
+    exit 1
+else
+    echo "Latest release: ${LATEST_RELEASE}"
+fi
+
+ZIP_NAME="codelldb-${ARCH}-linux.vsix"
+URL="$LATEST_RELEASE/$ZIP_NAME"
+
+echo "Downloading ${URL}..."
+cd ${SCRIPT_DIR}
+ARCHIVE="codelldb-${ARCH}-linux.zip"
+curl -L "${URL}" -o "${ARCHIVE}"
+
+echo "Unzipping required folders"
+unzip "${ARCHIVE}" "extension/adapter/*" "extension/lldb/*"
 mv extension/ codelldb_adapter
 
-# Remove the downloaded zip file
-sudo rm "codelldb-${ARCH}-linux.zip"
+echo "Cleaning archive..."
+sudo rm "${ARCHIVE}"
 
-# Create a symbolic link from codelldb_adapter/adapter/codelldb to /usr/bin/codelldb
+echo "Creating symlink..."
 sudo ln -s $(pwd)/codelldb_adapter/adapter/codelldb /usr/bin/codelldb
 
-# Test the installation by running codelldb -h
+cd $WORKDIR
 codelldb -h
 

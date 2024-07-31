@@ -5,6 +5,7 @@ vim/.vim/backups
 vim/.vim/plugged
 vim/.vim/undodir
 codelldb/codelldb_adapter
+neovim/nvim/lazy-lock.json
 
 *.log
 *.netrwhist
