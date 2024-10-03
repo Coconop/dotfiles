@@ -28,4 +28,7 @@ vim.opt.updatetime = 50
 
 vim.opt.cursorline = true
 
---vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "80"
+
+-- Suppresses the intro message on startup
+vim.opt.shortmess:append("I")
