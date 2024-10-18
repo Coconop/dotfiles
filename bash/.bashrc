@@ -12,7 +12,7 @@ esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
-HISTCONTROL=ignoreboth
+HISTCONTROL=ignoreboth:erasedups
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -24,6 +24,11 @@ HISTFILESIZE=20000
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# Reduce noise in history
+HISTIGNORE="ls*:tree*:cd*"
+
+HISTIMEFORMAT="%F %T  "
 
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
@@ -100,6 +105,3 @@ export GPG_TTY=$(tty)
 
 # Autocorrect bad commands
 #eval "$(thefuck --alias)"
-
-# Modern CLI File Explorer tool
-source /home/david/.config/broot/launcher/bash/br

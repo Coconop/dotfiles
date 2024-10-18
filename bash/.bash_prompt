@@ -105,3 +105,6 @@ __set_bash_prompt()
 # This tells bash to reinterpret PS1 after every command, Which we
 # need because __git_ps1 will return different text and colors
 PROMPT_COMMAND=__set_bash_prompt
+
+# Append each command to history, clear current session and reloads history
+PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
