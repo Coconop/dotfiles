@@ -26,7 +26,7 @@ HISTFILESIZE=20000
 shopt -s checkwinsize
 
 # Reduce noise in history
-HISTIGNORE="ls*:tree*:cd*"
+HISTIGNORE="ls*:ll*:cd*"
 
 HISTIMEFORMAT="%F %T  "
 

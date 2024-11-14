@@ -12,6 +12,9 @@ return {
             vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Help Tags' })
             vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = "Browse diagnostics" })
             vim.keymap.set('n', '<leader>fr', builtin.grep_string, { desc = "Grep Str under cursor" })
+            vim.keymap.set('n', '<leader>fi', builtin.lsp_incoming_calls, { desc = "Incoming calls" })
+            vim.keymap.set('n', '<leader>fo', builtin.lsp_outgoing_calls, { desc = "Outgoing calls" })
+            vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, { desc = "Find symbols" })
         end,
     },
     {
