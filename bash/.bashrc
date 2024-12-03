@@ -25,9 +25,6 @@ HISTFILESIZE=20000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# Reduce noise in history
-HISTIGNORE="ls*:ll*:cd*"
-
 HISTIMEFORMAT="%F %T  "
 
 # If set, the pattern "**" used in a pathname expansion context will
