@@ -92,7 +92,15 @@ __set_bash_prompt()
         export VENV="-"
     fi
 
-    local PreGitPS1="${clr}[${usr}][${HBlu}${time}${clr}]${VENV}[${Whi}${cur_dir}${clr}]("
+    # Add AWS CLI
+    if [ -n "$AWS_PROFILE" ];
+    then
+        export AWS_PS1="${HYel}[${AWS_PROFILE}/${AWS_REGION}]${HCya}"
+    else
+        export AWS_PS1=""
+    fi
+
+    local PreGitPS1="${clr}[${usr}]${AWS_PS1}[${HBlu}${time}${clr}]${VENV}[${Whi}${cur_dir}${clr}]("
 
     local PostGitPS1="${clr}) ${status}\r\n"
     PostGitPS1+="${clr}└─${is_root}${None} "
