@@ -6,18 +6,18 @@ later(function()
 end)
 
 later(function()
-  add('stevearc/conform.nvim')
+    add('stevearc/conform.nvim')
 
-  require('conform').setup({
-    -- Map of filetype to formatters
-    formatters_by_ft = {
-      javascript = { "prettier" },
-      json = { "prettier" },
-      lua = { "stylua" },
-      python = { "black" },
-      rust = { "rustfmt", lsp_format = "fallback" },
-    },
-  })
+    require('conform').setup({
+        -- Map of filetype to formatters
+        formatters_by_ft = {
+            javascript = { "prettier" },
+            json = { "prettier" },
+            lua = { "stylua" },
+            python = { "black" },
+            rust = { "rustfmt", lsp_format = "fallback" },
+        },
+    })
 end)
 
 later(function()
@@ -42,16 +42,48 @@ later(function()
     lspconfig.clangd.setup({ on_attach = custom_on_attach })
 
     -- Lua
-    lspconfig.lua_ls.setup({ on_attach = custom_on_attach })
+    lspconfig.lua_ls.setup({
+        on_attach = function(client, bufnr)
+            custom_on_attach(client, bufnr)
+            -- Reduce unnecessarily long list of completion triggers for better
+            -- 'mini.completion' experience
+            client.server_capabilities.completionProvider.triggerCharacters = { '.', ':' }
+        end,
+        settings = {
+            Lua = {
+                runtime = {
+                    -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                    version = 'LuaJIT',
+                    -- Setup your lua path
+                    path = vim.split(package.path, ';'),
+                },
+                diagnostics = {
+                    -- Get the language server to recognize common globals
+                    globals = { 'vim', 'describe', 'it', 'before_each', 'after_each', 'MiniDeps' },
+                    disable = { 'need-check-nil' },
+                    -- Don't make workspace diagnostic, as it consumes too much CPU and RAM
+                    workspaceDelay = -1,
+                },
+                workspace = {
+                    -- Don't analyze code from submodules
+                    ignoreSubmodules = true,
+                },
+                -- Do not send telemetry data containing a randomized but unique identifier
+                telemetry = {
+                    enable = false,
+                },
+            },
+        },
+    })
 
-    -- Python
-    --lspconfig.pyright.setup({ on_attach = custom_on_attach })
+-- Python
+--lspconfig.pyright.setup({ on_attach = custom_on_attach })
 
-    -- Typescript and Javascript
-    --lspconfig.ts_ls.setup({ on_attach = custom_on_attach })
+-- Typescript and Javascript
+--lspconfig.ts_ls.setup({ on_attach = custom_on_attach })
 
-    -- Go
-    --lspconfig.gopls.setup({ on_attach = custom_on_attach })
+-- Go
+--lspconfig.gopls.setup({ on_attach = custom_on_attach })
 end)
 
 later(function() add('rafamadriz/friendly-snippets') end)
