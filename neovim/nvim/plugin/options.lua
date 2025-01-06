@@ -27,8 +27,12 @@ vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50
 
 vim.opt.cursorline = true
-
 vim.opt.colorcolumn = "80"
 
 -- Suppresses the intro message on startup
 vim.opt.shortmess:append("I")
+
+-- Use rg
+vim.o.grepprg = [[rg --glob "!.git" --no-heading --vimgrep --follow $*]]
+-- Format grep results wiht Filename:LineNb:ColNb:Msg
+vim.opt.grepformat = vim.opt.grepformat ^ { "%f:%l:%c:%m" }
