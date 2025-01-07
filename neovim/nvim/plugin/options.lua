@@ -20,6 +20,16 @@ vim.opt.incsearch = true
 
 vim.opt.termguicolors = true
 
+vim.opt.list = false
+vim.opt.listchars = {
+    tab = "|-",
+    trail = "~",
+    extends = ">",
+    precedes = "<",
+    nbsp = "·",
+    eol = "¶"
+}
+
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")

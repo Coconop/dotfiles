@@ -2,7 +2,19 @@ local add, later = MiniDeps.add, MiniDeps.later
 
 later(function()
     add('williamboman/mason.nvim')
-    require('mason').setup()
+    require('mason').setup({
+        -- Look for system install first
+        PATH = "append"
+    })
+end)
+
+later(function()
+    add('williamboman/mason-lspconfig.nvim')
+    require('mason-lspconfig').setup({
+        ensure_installed = {"rust_analyzer"},
+        -- use system install
+        automatic_installation = { exclude = {"rust_analyzer", "clangd"}},
+    })
 end)
 
 later(function()
@@ -36,7 +48,16 @@ later(function()
     --lspconfig.bashls.setup({ on_attach = custom_on_attach })
 
     -- Rust
-    lspconfig.rust_analyzer.setup({ on_attach = custom_on_attach })
+    lspconfig.rust_analyzer.setup({
+        on_attach = custom_on_attach,
+        settings = {
+            ["rust-analyzer"] = {
+                checkOnSave = {
+                    command = "clippy"
+                }
+            }
+        },
+    })
 
     -- C/C++
     lspconfig.clangd.setup({ on_attach = custom_on_attach })
