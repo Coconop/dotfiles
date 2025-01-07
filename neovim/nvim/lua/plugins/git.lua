@@ -10,11 +10,5 @@ return {
         vim.keymap.set("n", "<leader>nc", "<cmd>ConflictMarkerNextHunk<cr>"),
         vim.keymap.set("n", "<leader>pc", "<cmd>ConflictMarkerPrevHunk<cr>"),
     },
-    {
-        "rbong/vim-flog",
-        config = function()
-            vim.keymap.set("n", '<leader>gg', vim.cmd.Flog, { desc = "Git Graph" })
-        end
-    },
     { "lewis6991/gitsigns.nvim", opts = {} },
 }
