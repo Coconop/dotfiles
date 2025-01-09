@@ -5,8 +5,38 @@ return {
 		config = function()
 			local lspconfig = require("lspconfig")
 
+			-- Global lsp config ----------------------------------------------
+
+			-- Always let space fro diagnostics, signs, etc
+			vim.opt.signcolumn = "yes"
+
+			-- Setup keymaps etc ONLY if there is an attached LSP
+			vim.api.nvim_create_autocmd("LspAttach", {
+				desc = "LSP actions",
+				callback = function(event)
+					local opts = { buffer = event.buf }
+
+					vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
+					vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
+					vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
+					vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
+					vim.keymap.set("n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
+					vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
+					vim.keymap.set("n", "<leader>r", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+					vim.keymap.set("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+					-- This is better used with telescope
+					--vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+				end,
+			})
+
+			-- Add autocompletion for all languages
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+			-- Per language config --------------------------------------------
+
 			-- Rust
 			lspconfig.rust_analyzer.setup({
+				capabilities = capabilities,
 				settings = {
 					["rust-analyzer"] = {
 						chechOnSave = {
@@ -17,10 +47,13 @@ return {
 			})
 
 			-- C/C++
-			lspconfig.clangd.setup({})
+			lspconfig.clangd.setup({
+				capabilities = capabilities,
+			})
 
 			-- Lua (Neovim)
 			lspconfig.lua_ls.setup({
+				capabilities = capabilities,
 				on_init = function(client)
 					if client.workspace_folders then
 						local path = client.workspace_folders[1].name
@@ -60,37 +93,6 @@ return {
 					Lua = {},
 				},
 			})
-
-			-- Extend config
-			-- Reserve a space in the gutter
-			-- This will avoid an annoying layout shift in the screen
-			vim.opt.signcolumn = "yes"
-
-			-- Add cmp_nvim_lsp capabilities settings to lspconfig
-			-- This should be executed before you configure any language server
-			local lspconfig_defaults = require("lspconfig").util.default_config
-			lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-				"force",
-				lspconfig_defaults.capabilities,
-				require("cmp_nvim_lsp").default_capabilities()
-			)
-
-			-- This is where you enable features that only work
-			-- if there is a language server active in the file
-			vim.api.nvim_create_autocmd("LspAttach", {
-				desc = "LSP actions",
-				callback = function(event)
-					local opts = { buffer = event.buf }
-
-					vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-					vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
-					vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-					vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-					vim.keymap.set("n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-					vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-					vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-				end,
-			})
 		end,
 	},
 
@@ -107,6 +109,16 @@ return {
 			})
 			-- We want to be able to toggle it if its to annyoing
 			vim.keymap.set("", "<Leader>vl", require("lsp_lines").toggle, { desc = "Toggle lsp virtual_lines" })
+			-- Disable for floating windows (Lazy, Mason)
+			vim.api.nvim_create_autocmd("WinEnter", {
+				callback = function()
+					local floating = vim.api.nvim_win_get_config(0).relative ~= ""
+					vim.diagnostic.config({
+						virtual_text = floating,
+						virtual_lines = not floating,
+					})
+				end,
+			})
 		end,
 	},
 
@@ -154,50 +166,18 @@ return {
 	-- nvim-cmp source for neovim's built-in language server client
 	{
 		"hrsh7th/cmp-nvim-lsp",
-		config = function()
-			local cmp = require("cmp").setup({
-				sources = {
-					{
-						name = "nvim_lsp",
-					},
-				},
-			})
-			-- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
-			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			local lspconfig = require("lspconfig")
-
-			lspconfig.clangd.setup({
-				capabilities = capabilities,
-			})
-			lspconfig.rust_analyzer.setup({
-				capabilities = capabilities,
-			})
-			lspconfig.lua_ls.setup({
-				capabilities = capabilities,
-			})
-		end,
 	},
 
 	-- Auto complete filesystem path
 	{
 		"hrsh7th/cmp-path",
-		config = function()
-			local cmp = require("cmp")
-			cmp.setup({
-				sources = {
-					{
-						name = "path",
-						option = {
-							-- Options go into this table
-						},
-					},
-				},
-			})
-		end,
 	},
+
 	-- Setup autocompletion
 	{
 		"L3MON4D3/LuaSnip",
+		version = "v2.*",
+		build = "make install_jsregexp",
 		dependencies = {
 			"saadparwaiz1/cmp_luasnip",
 			"rafamadriz/friendly-snippets",
@@ -212,10 +192,11 @@ return {
 			local cmp_select = { behavior = cmp.SelectBehavior.Select }
 			cmp.setup({
 				mapping = cmp.mapping.preset.insert({
-					--['<C-b>'] = cmp.mapping.scroll_docs(-4),
-					--['<C-f>'] = cmp.mapping.scroll_docs(4),
+					["<C-b>"] = cmp.mapping.scroll_docs(-4),
+					["<C-f>"] = cmp.mapping.scroll_docs(4),
 					["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
 					["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
+					["<CR>"] = cmp.mapping.confirm({ select = true }),
 					["<C-y>"] = cmp.mapping.confirm({ select = true }),
 					["<C-Space>"] = cmp.mapping.complete(),
 				}),
@@ -231,7 +212,6 @@ return {
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
-					-- { name = 'luasnip', option = { use_show_condition = false } },
 					-- more sources
 				}, {
 					{ name = "buffer" },
