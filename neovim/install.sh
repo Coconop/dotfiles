@@ -6,7 +6,7 @@ if command -v nvim >/dev/null 2>&1; then
     nvim --version
 else
     echo -e "Installing Neovim..."
-#https://github.com/neovim/neovim/blob/master/INSTALL.md#install-from-source
+    #https://github.com/neovim/neovim/blob/master/INSTALL.md#install-from-source
     echo -e "Neovim will be launched interactively for 1st installation"
     # TODO check for neovim git repo, cd to it and:
     # sudo cmake --build build/ --target uninstall
