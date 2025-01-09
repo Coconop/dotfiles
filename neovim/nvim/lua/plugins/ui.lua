@@ -14,4 +14,13 @@ return {
 			vim.keymap.set("n", "<Leader>nl", ":Notifications<CR>", { desc = "List notification history" })
 		end,
 	},
+	{
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {},
+	},
+	{
+		"stevearc/dressing.nvim",
+		opts = {},
+	},
 }
