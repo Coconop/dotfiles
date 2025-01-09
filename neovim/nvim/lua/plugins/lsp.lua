@@ -51,6 +51,11 @@ return {
 				capabilities = capabilities,
 			})
 
+			-- Bash
+			--			lspconfig.bashls.setup({
+			--				capabilities = capabilities,
+			--			})
+
 			-- Lua (Neovim)
 			lspconfig.lua_ls.setup({
 				capabilities = capabilities,
@@ -237,6 +242,7 @@ return {
 				ensure_installed = {
 					"lua_ls",
 					"clangd",
+					--"bashls",
 					-- Prefer system install
 					--"rust_analyzer"
 				},
