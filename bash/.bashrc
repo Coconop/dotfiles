@@ -1,5 +1,3 @@
-########## Vanilla bashrc #####################################################
-
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -53,21 +51,6 @@ fi
 
 test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
 
-# colored GCC warnings and errors
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-alias ll='eza -alF'
-
-# Default editor shall be [n]vim
-export VISUAL=nvim
-export EDITOR="$VISUAL"
-export GIT_EDITOR=nvim
-
-# Local folder for custom scripts/exe
-mkdir -p ${HOME}/.local/bin
-export PATH=${HOME}/.local/bin:${PATH}
-
 # Personnal setup
 if [ -d ~/.bash.d ]; then
     for file in ~/.bash.d/*.bash; do
@@ -82,18 +65,3 @@ if [ -d ~/.bash_local.d ]; then
     done
 fi
 
-# Rust
-. "$HOME/.cargo/env"
-export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/library/
-
-# Go
-export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
-
-# GPG agent prompt in terminal
-export GPG_TTY=$(tty)
-
-# Set up fzf key bindings and fuzzy completion
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
-# Autocorrect bad commands
-#eval "$(thefuck --alias)"
