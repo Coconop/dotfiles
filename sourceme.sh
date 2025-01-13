@@ -1,7 +1,5 @@
 #!/bin/bash
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
 # Colors for fancy output
 Red='\033[0;31m'; BRed='\033[1;31m';
 Gre='\033[0;32m'; BGre='\033[1;32m';
