@@ -1,24 +1,23 @@
 #!/bin/bash
+# Install latest version of shellcheck to run smoothly with
+# bash-langage-server version installed via Mason
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source ${SCRIPT_DIR}/../sourceme.sh
+source "${SCRIPT_DIR}/../sourceme.sh"
 
 FOLDER="shellcheck-stable"
 ARCHIVE="${FOLDER}.linux.x86_64.tar.xz"
 LATEST_VERSION_URL="https://github.com/koalaman/shellcheck/releases/download/stable/${ARCHIVE}"
 
 echo -e "Downloading ${LATEST_VERSION_URL}"
-curl -OL "${LATEST_VERSION_URL}"
 
-if [ $? -ne 0 ]; then
+if ! curl -OL "${LATEST_VERSION_URL}"; then
   echo "Failed to download ${ARCHIVE}"
   exit 1
 fi
 
 echo "Extracting..."
-tar -xf "${ARCHIVE}"
-
-if [ $? -ne 0 ]; then
+if ! tar -xf "${ARCHIVE}"; then
   echo "Failed to extract ${ARCHIVE}"
   exit 1
 fi
@@ -30,7 +29,7 @@ export PATH="$(pwd)/${FOLDER}:${PATH}"
 
 SOURCE_DIR="${SCRIPT_DIR}/.bash.d/shellcheck.bash"
 echo "Create/overwrite file to be sourced..."
-echo "export PATH=\"$(pwd)/${FOLDER}:\${PATH}\"" > ${SOURCE_DIR}
+echo "export PATH=\"$(pwd)/${FOLDER}:\${PATH}\"" > "${SOURCE_DIR}"
 echo -e "\nDone"
 
 echo -e "Please re-source ${Yel}.bashrc${None} so change can be effective!"
