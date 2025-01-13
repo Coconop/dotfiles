@@ -52,9 +52,9 @@ return {
 			})
 
 			-- Bash
-			--			lspconfig.bashls.setup({
-			--				capabilities = capabilities,
-			--			})
+			--lspconfig.bashls.setup({
+			--	capabilities = capabilities,
+			--})
 
 			-- Lua (Neovim)
 			lspconfig.lua_ls.setup({
