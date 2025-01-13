@@ -8,3 +8,4 @@ codelldb/codelldb_adapter
 neovim/nvim/lazy-lock.json
 *.log
 *.netrwhist
+bash/.bash_local.d

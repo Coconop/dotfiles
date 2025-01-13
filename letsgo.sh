@@ -46,6 +46,7 @@ if [[ $update_packets = true ]]; then
     sudo ${package_manager} install  ${package_opts} gdb make gcc clang cscope p7zip-full -y || true
     sudo ${package_manager} install  ${package_opts} autoconf automake -y || true
     sudo ${package_manager} install  ${package_opts} ninja-build gettext cmake unzip build-essential -y || true
+    sudo ${package_manager} install  ${package_opts} shellcheck || true
 fi
 
 if [[ $os_upd = true ]]; then

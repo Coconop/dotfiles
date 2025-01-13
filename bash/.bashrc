@@ -68,23 +68,18 @@ export GIT_EDITOR=nvim
 mkdir -p ${HOME}/.local/bin
 export PATH=${HOME}/.local/bin:${PATH}
 
-# Easier life with git
-if [ -f ~/.bash_git ]; then
-    source ~/.bash_git
-fi
-# Sweet Git autocomplete
-if [ -f ~/.bash_git_completion ]; then
-    source ~/.bash_git_completion
+# Personnal setup
+if [ -d ~/bash.d ]; then
+    for file in ~/.bash.d/*.sh; do
+        [ -r "$file" ] && source "$file"
+    done
 fi
 
-# Pimp my prompt
-if [ -f ~/.bash_prompt ]; then
-    source ~/.bash_prompt
-fi
-
-# Private/Pro stuff (untracked)
-if [ -f ~/.bash_local ]; then
-    source ~/.bash_local
+# Pro setup
+if [ -d ~/bash_local.d ]; then
+    for file in ~/.bash_local.d/*.sh; do
+        [ -r "$file" ] && source "$file"
+    done
 fi
 
 # Rust

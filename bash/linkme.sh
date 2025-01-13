@@ -4,6 +4,5 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 ln -sfnv ${SCRIPT_DIR}/.bashrc 	            ${HOME}/.bashrc
-ln -sfnv ${SCRIPT_DIR}/.bash_git 	        ${HOME}/.bash_git
-ln -sfnv ${SCRIPT_DIR}/.bash_git_completion	${HOME}/.bash_git_completion
-ln -sfnv ${SCRIPT_DIR}/.bash_prompt	        ${HOME}/.bash_prompt
+ln -sfnv ${SCRIPT_DIR}/.bash.d 	            ${HOME}/.bash.d
+ln -sfnv ${SCRIPT_DIR}/.bash.local          ${HOME}/.bash.local
