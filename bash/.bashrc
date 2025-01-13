@@ -69,16 +69,16 @@ mkdir -p ${HOME}/.local/bin
 export PATH=${HOME}/.local/bin:${PATH}
 
 # Personnal setup
-if [ -d ~/bash.d ]; then
-    for file in ~/.bash.d/*.sh; do
-        [ -r "$file" ] && source "$file"
+if [ -d ~/.bash.d ]; then
+    for file in ~/.bash.d/*.bash; do
+        source "$file"
     done
 fi
 
 # Pro setup
-if [ -d ~/bash_local.d ]; then
-    for file in ~/.bash_local.d/*.sh; do
-        [ -r "$file" ] && source "$file"
+if [ -d ~/.bash_local.d ]; then
+    for file in ~/.bash_local.d/*.bash; do
+        source "$file"
     done
 fi
 

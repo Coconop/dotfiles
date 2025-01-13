@@ -29,19 +29,21 @@ if ask_for_confirmation "(Re)install last version of Rust-Analyzer ?"; then
 fi
 
 if ask_for_confirmation "Painfully slowly Install blazlingly fast tools ?"; then
-    # TODO Update PATH to give priority to cargo/bin
-    echo -e "Installing rust-written tools"
+    echo -e "${Yel}If you have system-version of these tools, ensure carg/bin has priority in PATH ${None}"
+    # Better grep
+    echo -e "Installing ripgrep"
     cargo install ripgrep
+    # Better ls
+    echo -e "Installing eza"
     cargo install eza
+    # Better cat
+    echo -e "Installing bat"
     cargo install --locked bat
-    cargo install --locked broot
-    cargo install fd-find
-    cargo install du-dust
-    cargo install tree-sitter-cli
-    # Need some post-instlall config
-    ln -snfv $(which fdfind) ~/.local/bin/fd
-    echo -e "Please launch ${Gre}'broot'${None} to set it up"
-    # Handy alias for bat
     mkdir -p ~/.local/bin
     ln -nfvs /usr/bin/batcat ~/.local/bin/bat
+    # Better find
+    echo -e "Installing fd"
+    cargo install fd-find
+    ln -snfv $(which fdfind) ~/.local/bin/fd
+    echo -e "Done."
 fi
