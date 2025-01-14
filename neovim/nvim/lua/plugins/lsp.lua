@@ -14,18 +14,18 @@ return {
 			vim.api.nvim_create_autocmd("LspAttach", {
 				desc = "LSP actions",
 				callback = function(event)
-					local opts = { buffer = event.buf }
-
-					vim.keymap.set("n", "<leader>K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-					vim.keymap.set("n", "<leader>gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
-					vim.keymap.set("n", "<leader>gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-					vim.keymap.set("n", "<leader>gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-					vim.keymap.set("n", "<leader>gt", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-					vim.keymap.set("n", "<leader>gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-					vim.keymap.set("n", "<leader>r", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-					vim.keymap.set("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-					-- This is better used with telescope
-					--vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+					local map = function(keys, func, desc, mode)
+						mode = mode or "n"
+						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+					end
+					map("<leader>ld", require("telescope.builtin").lsp_definitions, "goto [D]efinition")
+					map("<leader>lD", vim.lsp.buf.declaration, "goto [D]eclaration")
+					map("<leader>lr", require("telescope.builtin").lsp_references, "goto [R]eferences")
+					map("<leader>lI", require("telescope.builtin").lsp_implementations, "goto [I]mplementation")
+					map("<leader>lt", require("telescope.builtin").lsp_type_definitions, "goto [T]ype definition")
+					map("<leader>ls", require("telescope.builtin").lsp_document_symbols, "document [S]ymbols")
+					map("<leader>lR", vim.lsp.buf.rename, "[R]ename")
+					map("<leader>lc", vim.lsp.buf.code_action, "[C]ode action", { "n", "x" })
 				end,
 			})
 
@@ -113,7 +113,7 @@ return {
 				underline = { severity = { min = vim.diagnostic.severity.INFO } },
 			})
 			-- We want to be able to toggle it if its to annyoing
-			vim.keymap.set("", "<Leader>vl", require("lsp_lines").toggle, { desc = "Toggle lsp virtual_lines" })
+			vim.keymap.set("", "<Leader>vl", require("lsp_lines").toggle, { desc = "[V]irtual [L]ines toggle" })
 			-- Disable for floating windows (Lazy, Mason)
 			vim.api.nvim_create_autocmd("WinEnter", {
 				callback = function()
@@ -135,12 +135,12 @@ return {
 		keys = {
 			{
 				-- Customize or remove this keymap to your liking
-				"<leader>cf",
+				"<leader>bf",
 				function()
 					require("conform").format({ async = true })
 				end,
 				mode = "",
-				desc = "Format buffer",
+				desc = "[B]uffer [F]ormat",
 			},
 		},
 		opts = { -- Define your formatters
