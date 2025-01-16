@@ -1,5 +1,7 @@
 return {
-	{ "nvim-tree/nvim-web-devicons", opts = {} },
+	-- Sweet pretty icons
+	{ "nvim-tree/nvim-web-devicons", enabled = true, opts = {} },
+	-- Fancy notifications
 	{
 		"rcarriga/nvim-notify",
 		config = function()
@@ -14,18 +16,23 @@ return {
 			vim.keymap.set("n", "<Leader>nl", ":Notifications<CR>", { desc = "[N]otif [L]ist history" })
 		end,
 	},
+	-- Highlight comments TODO, NOTE, FIXME...
 	{
 		"folke/todo-comments.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
 		vim.keymap.set("n", "<leader>ft", ":TodoTelescope<CR>", { desc = "[F]ind [T]odo" }),
 	},
+	-- Pretty UI (floating windows)
 	{
 		"stevearc/dressing.nvim",
 		opts = {},
 	},
+	-- Snitch on LSP doing
 	{
 		"j-hui/fidget.nvim",
 		opts = {},
 	},
+	-- Auto-detect tabstop and shiftwidth
+	{ "tpope/vim-sleuth" },
 }
