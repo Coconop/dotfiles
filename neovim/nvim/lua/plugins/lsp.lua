@@ -253,15 +253,19 @@ return {
 					end,
 				},
 
-				-- Disabling completion in certain contexts, such as comments
+				-- Disabling completion in certain contexts
 				enabled = function()
 					local context = require("cmp.config.context")
-					-- keep command mode completion enabled when cursor is in a comment
-					if vim.api.nvim_get_mode().mode == "c" then
-						return true
-					else
-						return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
+
+					-- disable autocompletion in prompt (ex: telescope)
+					---@diagnostic disable-next-line: deprecated
+					local buftype = vim.api.nvim_buf_get_option(0, "buftype")
+					if buftype == "prompt" then
+						return false
 					end
+
+					-- disable autocompletion in comments
+					return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
 				end,
 
 				mapping = cmp.mapping.preset.insert({
