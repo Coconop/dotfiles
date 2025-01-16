@@ -193,9 +193,70 @@ return {
 		config = function()
 			local cmp = require("cmp")
 			require("luasnip.loaders.from_vscode").lazy_load()
-
 			local cmp_select = { behavior = cmp.SelectBehavior.Select }
+
+			-- Add parentheses after selecting function or method item
+			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+
+			-- Add fancy icons to display completion source
+			local kind_icons = {
+				Text = "",
+				Method = "󰆧",
+				Function = "󰊕",
+				Constructor = "",
+				Field = "󰇽",
+				Variable = "󰂡",
+				Class = "󰠱",
+				Interface = "",
+				Module = "",
+				Property = "󰜢",
+				Unit = "",
+				Value = "󰎠",
+				Enum = "",
+				Keyword = "󰌋",
+				Snippet = "",
+				Color = "󰏘",
+				File = "󰈙",
+				Reference = "",
+				Folder = "󰉋",
+				EnumMember = "",
+				Constant = "󰏿",
+				Struct = "",
+				Event = "",
+				Operator = "󰆕",
+				TypeParameter = "󰅲",
+			}
+
 			cmp.setup({
+
+				formatting = {
+					format = function(entry, vim_item)
+						-- Kind icons
+						vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) -- This concatenates the icons with the name of the item kind
+						-- Source
+						vim_item.menu = ({
+							buffer = "[Buffer]",
+							nvim_lsp = "[LSP]",
+							luasnip = "[LuaSnip]",
+							nvim_lua = "[Lua]",
+							latex_symbols = "[LaTeX]",
+						})[entry.source.name]
+						return vim_item
+					end,
+				},
+
+				-- Disabling completion in certain contexts, such as comments
+				enabled = function()
+					local context = require("cmp.config.context")
+					-- keep command mode completion enabled when cursor is in a comment
+					if vim.api.nvim_get_mode().mode == "c" then
+						return true
+					else
+						return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
+					end
+				end,
+
 				mapping = cmp.mapping.preset.insert({
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
