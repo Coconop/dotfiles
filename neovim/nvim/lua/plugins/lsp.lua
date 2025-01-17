@@ -33,7 +33,7 @@ return {
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 			-- Change diagnostic symbols in the sign column (gutter)
-			local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
+			local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 			for type, icon in pairs(signs) do
 				local hl = "DiagnosticSign" .. type
 				vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
@@ -132,6 +132,8 @@ return {
 				end,
 			})
 		end,
+		-- Disabled by default, toggle to enable
+		vim.diagnostic.config({ virtual_lines = false }),
 	},
 
 	-- Auto format code on save
