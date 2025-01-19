@@ -89,12 +89,7 @@ return {
 							checkThirdParty = false,
 							library = {
 								vim.env.VIMRUNTIME,
-								-- Depending on the usage, you might want to add additional paths here.
-								-- "${3rd}/luv/library"
-								-- "${3rd}/busted/library",
 							},
-							-- or pull in all of 'runtimepath'. NOTE: this is a lot slower and will cause issues when working on your own configuration (see https://github.com/neovim/nvim-lspconfig/issues/3189)
-							-- library = vim.api.nvim_get_runtime_file("", true)
 						},
 						telemetry = {
 							enable = false,
@@ -131,9 +126,9 @@ return {
 					})
 				end,
 			})
+			-- Disabled by default, toggle to enablv
+			vim.diagnostic.config({ virtual_lines = false })
 		end,
-		-- Disabled by default, toggle to enable
-		vim.diagnostic.config({ virtual_lines = false }),
 	},
 
 	-- Auto format code on save
@@ -164,12 +159,6 @@ return {
 			},
 			-- Set up format-on-save
 			format_on_save = { timeout_ms = 500 },
-			-- Customize formatters
-			--formatters = {
-			--    shfmt = {
-			--        prepend_args = { "-i", "2" },
-			--    },
-			--},
 		},
 		init = function()
 			-- If you want the formatexpr, here is the place to set it
