@@ -9,7 +9,7 @@ export FZF_DEFAULT_OPTS="--preview 'bat --style=numbers --color=always --line-ra
 # Print tree structure in the preview window
 export FZF_ALT_C_OPTS="
   --walker-skip .git,node_modules,target
-  --preview 'tree -C {} | head -200'"
+  --preview 'tree -a -C -I \".git|.node_modules|target\" {} | head -200'"
 
 
 # Set up fzf key bindings and fuzzy completion
