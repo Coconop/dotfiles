@@ -29,5 +29,3 @@ mkdir -p ${HOME}/.local/bin
 
 export PATH=${HOME}/.local/bin:${PATH}
 
-# Set up fzf key bindings and fuzzy completion
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
