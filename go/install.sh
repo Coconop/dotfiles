@@ -14,3 +14,4 @@ fi
 
 echo -e "Installing go-written tools"
 go install github.com/jesseduffield/lazygit@latest
+go install github.com/rs/curlie@latest
