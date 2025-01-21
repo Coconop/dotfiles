@@ -1,5 +1,9 @@
+dir_preview='eza -T --icons=always -a -L 2 -I ".git|target|node_modules" --color=always {}'
+file_preview='bat -n --color=always --line-range :500 {}'
+show_file_or_dir_preview="if [ -d {} ]; then $dir_preview; else $file_preview; fi"
+
 # Use ripgrep, show hidden files, ignore files from .git/ directories
-export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git/*"'
+export FZF_DEFAULT_COMMAND='rg --hidden --glob "!.git/**"'
 
 # Catppuccin theme
 export FZF_DEFAULT_OPTS=" \
@@ -12,12 +16,12 @@ export FZF_DEFAULT_OPTS=" \
 # Ctrl+t: find file/dir
 export FZF_CTRL_T_OPTS="
   --walker-skip .git,node_modules,target
-  --preview 'bat -n --color=always {}'"
+  --preview '$show_file_or_dir_preview'"
 
 # Alt+c: change dir
 export FZF_ALT_C_OPTS="
   --walker-skip .git,node_modules,target
-  --preview 'tree -a -C -I \".git|.node_modules|target\" {} | head -200'"
+  --preview '$dir_preview'"
 
 # Options to fzf command
 export FZF_COMPLETION_OPTS='--border --info=inline'
@@ -39,6 +43,7 @@ bind -m vi-insert '"\ef": "\C-z\ec\C-z"'
 # Upgrade fzf
 alias fzfup='cd ~/git/fzf && git pull && ./install'
 
+
 # Advanced customization of fzf options via _fzf_comprun function
 # - The first argument to the function is the name of the command.
 # - You should make sure to pass the rest of the arguments ($@) to fzf.
@@ -47,10 +52,10 @@ _fzf_comprun() {
   shift
 
   case "$command" in
-    cd)           fzf --preview 'eza -T --icons=always -a -L 2 -I ".git|target|node_modules" --color=always {}'   "$@" ;;
-    export|unset) fzf --preview "eval 'echo \$'{}"         		"$@" ;;
-    ssh)          fzf --preview 'dig {}'                   		"$@" ;;
-    *)            fzf --preview 'bat -n --color=always {}' 		"$@" ;;
+    cd)           fzf --preview "$dir_preview"		    "$@" ;;
+    export|unset) fzf --preview "eval 'echo \$'{}"	    "$@" ;;
+    ssh)          fzf --preview 'dig {}'		    "$@" ;;
+    *)            fzf --preview "$show_file_or_dir_preview" "$@" ;;
   esac
 }
 
