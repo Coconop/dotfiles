@@ -10,16 +10,16 @@ else
     echo -e "Neovim will be launched interactively for 1st installation"
     # TODO check for neovim git repo, cd to it and:
     # sudo cmake --build build/ --target uninstall
-    WORK_DIR=`pwd`
-    mkdir -p $HOME/git
-    cd $HOME/git
+    WORK_DIR=$(pwd)
+    mkdir -p "$HOME/git"
+    cd "$HOME/git"
     git clone https://github.com/neovim/neovim.git || true
     cd neovim
     git checkout stable
     make CMAKE_BUILD_TYPE=Release
     sudo make install
-    cd $WORK_DIR
-    source ${HOME}/.bashrc
+    cd "$WORK_DIR"
+    source "${HOME}/.bashrc"
     # Do checkhealth & PlugInstall
     /usr/local/bin/nvim
 fi

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source ${SCRIPT_DIR}/../sourceme.sh
+source "${SCRIPT_DIR}/../sourceme.sh"
 
 # TODO Check for minimal rust version required by tools
 
@@ -30,20 +30,37 @@ fi
 
 if ask_for_confirmation "Painfully slowly Install blazlingly fast tools ?"; then
     echo -e "${Yel}If you have system-version of these tools, ensure carg/bin has priority in PATH ${None}"
+
     # Better grep
     echo -e "Installing ripgrep"
     cargo install ripgrep
+
     # Better ls
     echo -e "Installing eza"
     cargo install eza
+    # Use Catppuccin-mocha theme
+    WORK_DIR=$(pwd)
+    mkdir -p "$HOME/git"
+    cd "$HOME/git"
+    git clone https://github.com/eza-community/eza-themes.git
+    mkdir -p ~/.config/eza
+    ln -sf "$(pwd)/eza-themes/themes/catppuccin.yml" ~/.config/eza/theme.yml
+    cd "$WORK_DIR"
+    
     # Better cat
     echo -e "Installing bat"
     cargo install --locked bat
     mkdir -p ~/.local/bin
     ln -nfvs /usr/bin/batcat ~/.local/bin/bat
+    # Use Catppuccin-mocha theme
+    mkdir -p "$(bat --config-dir)/themes"
+    wget -P "$(bat --config-dir)/themes" https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme
+    bat cache --build
+    echo '--theme="Catppuccin Mocha"' > "$(bat --config-dir)/config" 
+
     # Better find
     echo -e "Installing fd"
     cargo install fd-find
-    ln -snfv $(which fdfind) ~/.local/bin/fd
+    ln -snfv "$(which fdfind)" ~/.local/bin/fd
     echo -e "Done."
 fi
