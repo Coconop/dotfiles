@@ -41,7 +41,7 @@ bind -m vi-command '"\ef": "\C-z\ec\C-z"'
 bind -m vi-insert '"\ef": "\C-z\ec\C-z"'
 
 # Upgrade fzf
-alias fzfup='cd ~/git/fzf && git pull && ./install'
+alias fzfup='cd "$(dirname $(which fzf))/.." && git pull && ./install'
 
 
 # Advanced customization of fzf options via _fzf_comprun function

@@ -65,3 +65,5 @@ if [ -d ~/.bash_local.d ]; then
     done
 fi
 
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
