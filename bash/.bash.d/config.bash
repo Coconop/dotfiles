@@ -29,18 +29,3 @@ mkdir -p "${HOME}/.local/bin"
 
 export PATH=${HOME}/.local/bin:${PATH}
 
-
-# Make it pretty
-bind 'set colored-stats On'
-bind 'set colored-completion-prefix On'
-
-# Completion settings
-bind 'set show-all-if-ambiguous on'
-bind 'set completion-ignore-case on'
-bind 'set completion-display-width 0'
-bind 'set completion-query-items 1000'
-bind 'TAB:menu-complete'
-
-# Command history search
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'

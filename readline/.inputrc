@@ -1,0 +1,28 @@
+# Do not ring bell (for ex when there is no completion available)
+set bell-style none
+
+# Enable 8-bit I/O (support Non-ASCII Characters)
+set input-meta on
+set output-meta on
+set convert-meta off
+set meta-flag on
+
+# Make it pretty
+set colored-stats On
+set colored-completion-prefix On
+
+# Completion settings
+set completion-ignore-case on
+# Cycle through completion candidates
+TAB:menu-complete
+# Disabled because it pollutes the output too much
+#set show-all-if-ambiguous on
+set completion-display-width 0
+set completion-query-items 1000
+
+# Command history search: start typing and use up/down arrows to complete
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# Completed names which are symlinks to dir have a slash appended 
+set mark-symlinked-directories on
