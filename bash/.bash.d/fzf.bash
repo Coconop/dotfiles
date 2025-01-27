@@ -74,4 +74,4 @@ fzf --ansi --disabled --query "$INITIAL_QUERY" \
     --bind 'enter:become(nvim {1} +{2})'
 }
 
-alias nn=_fzf_find_word
+alias nw=_fzf_find_word
