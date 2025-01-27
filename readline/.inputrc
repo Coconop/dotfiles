@@ -11,14 +11,13 @@ set meta-flag on
 set colored-stats On
 set colored-completion-prefix On
 
-# Completion settings
+# Auto-complete fix case if there is a match
 set completion-ignore-case on
-# Cycle through completion candidates
-TAB:menu-complete
-# Disabled because it pollutes the output too much
-#set show-all-if-ambiguous on
+set show-all-if-ambiguous on
 set completion-display-width 0
 set completion-query-items 1000
+# Cycle through completion candidates
+#TAB:menu-complete
 
 # Command history search: start typing and use up/down arrows to complete
 "\e[A": history-search-backward

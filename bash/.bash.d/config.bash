@@ -2,6 +2,8 @@
 export VISUAL=nvim
 export EDITOR="$VISUAL"
 export GIT_EDITOR=nvim
+# Use vi mode in Readline (Warning: it is NOT VIM)
+#set -o vi
 
 # Use blazingly fast and pretty tool
 alias ll='eza -alF --icons=always'
@@ -26,6 +28,10 @@ export PATH=${PATH}:/usr/local/go/bin:${HOME}/go/bin
 
 # Local folder for custom scripts/exe
 mkdir -p "${HOME}/.local/bin"
-
 export PATH=${HOME}/.local/bin:${PATH}
 
+# Disable Ctrl-s/Ctrl-q Flow Control (Pause/Resume)
+stty -ixon
+
+# Replaces dir names with the results of word expansion when using completion
+shopt -s direxpand

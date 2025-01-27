@@ -63,10 +63,6 @@ __set_bash_prompt()
         local None=''
     fi
 
-    local time="\t"
-    local cur_dir="\w"
-    local usr="\u@\h"
-    local is_root="\$"
     local clr=""
 
     if [[ ${EUID} == 0 ]]; then
@@ -76,31 +72,42 @@ __set_bash_prompt()
         clr=${HCya}
     fi
 
-
     # Visual last status code
-    if [ $exit -eq 0 ]; then
+    if [[ $exit -eq 0 ]]; then
         status="${Gre}•${None}"
     else
         status="${Red}•${None}"
     fi
 
-    # Add virtual env
-    if [ -n "$VIRTUAL_ENV" ];
+    # Detect virtual env
+    if [[ -n "$VIRTUAL_ENV" ]];
     then
-        export VENV="${HYel}($(basename $VIRTUAL_ENV))${HCya}"
+        local ven_ps1="${HYel}($(basename $VIRTUAL_ENV))${HCya}"
     else
-        export VENV="-"
+        local ven_ps1="-"
     fi
 
-    # Add AWS CLI
-    if [ -n "$AWS_PROFILE" ];
+    # Detect AWS CLI
+    if [[ -n "$AWS_PROFILE" ]];
     then
-        export AWS_PS1="${HYel}[${AWS_PROFILE}/${AWS_REGION}]${HCya}"
+        local aws_ps1="${HYel}[${AWS_PROFILE}/${AWS_REGION}]${HCya}"
     else
-        export AWS_PS1=""
+        local aws_ps1=""
     fi
 
-    local PreGitPS1="${clr}[${usr}]${AWS_PS1}[${HBlu}${time}${clr}]${VENV}[${Whi}${cur_dir}${clr}]("
+    # Detect SSH session
+    if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
+        local ssh_ps1="${Yel}󰒍${clr}"
+    else
+        local ssh_ps1="${Gre}󰌢${clr}"
+    fi
+
+    local time="\t"
+    local cur_dir="\w"
+    local usr="\u${ssh_ps1}\h"
+    local is_root="\$"
+
+    local PreGitPS1="${clr}[${usr}][${aws_ps1}${HBlu}${time}${clr}]${ven_ps1}[${Whi}${cur_dir}${clr}]("
 
     local PostGitPS1="${clr}) ${status}\r\n"
     PostGitPS1+="${clr}└─${is_root}${None} "
