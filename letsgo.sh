@@ -101,6 +101,8 @@ if [[ $set_cfg = true ]]; then
     bash "${SCRIPT_DIR}/linkall.sh"
 fi
 
+touch ${HOME}/.hushlogin
+
 echo -e "${Cya}Sourcing...${None}"
 source ${HOME}/.bashrc
 echo -e "${Gre}All set up Captain! ${None}"
