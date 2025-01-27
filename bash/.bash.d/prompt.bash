@@ -25,7 +25,7 @@ unset __colourise_prompt && __colour_enabled && __colourise_prompt=1
 
 __set_bash_prompt()
 {
-    local exit="$?" # Save the exit status of the last command
+    local last=$? # Save the exit status of the last command
 
     if [[ $__colourise_prompt ]]; then
         export GIT_PS1_SHOWCOLORHINTS=1
@@ -64,6 +64,11 @@ __set_bash_prompt()
     fi
 
     local clr=""
+    local time="\t"
+    local cur_dir="\w"
+    local is_root="\$"
+    local usr="\u@\h"
+    local status="·"
 
     if [[ ${EUID} == 0 ]]; then
         is_root="${HRed}#${None}"
@@ -73,7 +78,7 @@ __set_bash_prompt()
     fi
 
     # Visual last status code
-    if [[ $exit -eq 0 ]]; then
+    if [[ ${last} == 0 ]]; then
         status="${Gre}${None}"
     else
         status="${Red}${None}"
@@ -101,11 +106,7 @@ __set_bash_prompt()
     else
         local ssh_ps1="${Gre}${clr}"
     fi
-
-    local time="\t"
-    local cur_dir="\w"
-    local usr="\u${ssh_ps1}\h"
-    local is_root="\$"
+    usr="\u${ssh_ps1}\h"
 
     local PreGitPS1="${clr}[${usr}][${aws_ps1}${HBlu}${time}${clr}]${ven_ps1}[${Whi}${cur_dir}${clr}]("
 
@@ -117,9 +118,9 @@ __set_bash_prompt()
     # echo '$PS1='"$PS1" # debug
 }
 
-# This tells bash to reinterpret PS1 after every command, Which we
-# need because __git_ps1 will return different text and colors
+# Run command BEFORE displaying the prompt
+# The function shall be the first as it capture '$?'
 PROMPT_COMMAND=__set_bash_prompt
 
 # Append each command to history, clear current session and reloads history
-PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+PROMPT_COMMAND="$PROMPT_COMMAND;history -a; history -c; history -r";
