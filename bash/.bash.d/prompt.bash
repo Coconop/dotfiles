@@ -74,9 +74,9 @@ __set_bash_prompt()
 
     # Visual last status code
     if [[ $exit -eq 0 ]]; then
-        status="${Gre}•${None}"
+        status="${Gre}${None}"
     else
-        status="${Red}•${None}"
+        status="${Red}${None}"
     fi
 
     # Detect virtual env
@@ -97,9 +97,9 @@ __set_bash_prompt()
 
     # Detect SSH session
     if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
-        local ssh_ps1="${Yel}󰒍${clr}"
+        local ssh_ps1="${Yel}${clr}"
     else
-        local ssh_ps1="${Gre}󰌢${clr}"
+        local ssh_ps1="${Gre}${clr}"
     fi
 
     local time="\t"
