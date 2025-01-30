@@ -180,6 +180,11 @@ return {
 		"hrsh7th/cmp-path",
 	},
 
+	-- Auto complete cmdline
+	{
+		"hrsh7th/cmp-cmdline",
+	},
+
 	-- Setup autocompletion
 	{
 		"L3MON4D3/LuaSnip",
@@ -287,6 +292,8 @@ return {
 					-- more sources
 				}, {
 					{ name = "buffer" },
+					{ name = "path" },
+					{ name = "cmdline" },
 				}),
 			})
 		end,
