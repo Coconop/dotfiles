@@ -53,15 +53,15 @@ return {
 				},
 			})
 
-			-- C/C++
-			lspconfig.clangd.setup({
-				capabilities = capabilities,
-			})
+			-- -- C/C++
+			-- lspconfig.clangd.setup({
+			-- 	capabilities = capabilities,
+			-- })
 
-			-- Bash
-			lspconfig.bashls.setup({
-				capabilities = capabilities,
-			})
+			-- -- Bash
+			-- lspconfig.bashls.setup({
+			-- 	capabilities = capabilities,
+			-- })
 
 			-- Lua (Neovim)
 			lspconfig.lua_ls.setup({
@@ -315,8 +315,8 @@ return {
 			require("mason-lspconfig").setup({
 				ensure_installed = {
 					"lua_ls",
-					"clangd",
-					"bashls",
+					-- "clangd",
+					-- "bashls",
 					-- Prefer system install
 					--"rust_analyzer"
 				},
