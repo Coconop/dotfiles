@@ -24,6 +24,7 @@ fi
 if ask_for_confirmation "(Re)install last version of Rust-Analyzer ?"; then
     echo -e "Installing Rust-analyzer"
     curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
+    # Might need a tac-tac: https://stackoverflow.com/a/28879552/3194340
     # It might fail here. Checkout https://askubuntu.com/a/1387286 and https://askubuntu.com/a/1501564 for WSL
     chmod +x ~/.local/bin/rust-analyzer
 fi
