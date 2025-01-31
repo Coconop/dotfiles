@@ -35,3 +35,9 @@ stty -ixon
 
 # Replaces dir names with the results of word expansion when using completion
 shopt -s direxpand
+
+# Launch ssh-agent and add key
+function addssh() {
+  eval $(ssh-agent -s)
+  ssh-add ~/.ssh/id_rsa
+}
