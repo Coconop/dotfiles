@@ -17,6 +17,7 @@ vim.opt.wrap = false
 
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
+vim.opt.smartcase = true
 
 vim.opt.termguicolors = true
 
@@ -32,3 +33,6 @@ vim.opt.colorcolumn = "80"
 
 -- Suppresses the intro message on startup
 vim.opt.shortmess:append("I")
+
+-- TODO fallback to good old cscope (cf vim) when clang LSP not available
+-- https://github.com/dhananjaylatkar/cscope_maps.nvim
