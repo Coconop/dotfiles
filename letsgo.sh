@@ -105,6 +105,8 @@ fi
 
 touch ${HOME}/.hushlogin
 
-echo -e "${Cya}Sourcing...${None}"
-source ${HOME}/.bashrc
-echo -e "${Gre}All set up Captain! ${None}"
+echo -e "${Cya}Configuring local git repo...${None}"
+bash "${SCRIPT_DIR}/configit.sh"
+
+echo -e "${Gre}All set up Captain! Just:${None}"
+echo -e "${Cya}source ~/.bashrc${None}"
