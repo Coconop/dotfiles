@@ -22,5 +22,9 @@ else
     echo -e "Installing TPM..."
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm || true
 
+    echo -e "Installing Catppuccin..."
+    mkdir -p ~/.config/tmux/plugins/catppuccin
+    git clone -b v2.1.2 https://github.com/catppuccin/tmux.git ~/.config/tmux/plugins/catppuccin/tmux
+
     cd $WORK_DIR
 fi
