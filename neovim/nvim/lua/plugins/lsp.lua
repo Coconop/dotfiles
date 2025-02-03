@@ -7,7 +7,7 @@ return {
 
 			-- Global lsp config ----------------------------------------------
 
-			-- Always let space fro diagnostics, signs, etc
+			-- Always let space for diagnostics, signs, etc
 			vim.opt.signcolumn = "yes"
 
 			-- Setup keymaps etc ONLY if there is an attached LSP
