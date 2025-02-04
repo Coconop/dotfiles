@@ -64,42 +64,42 @@ return {
 			-- })
 
 			-- Lua (Neovim)
-			lspconfig.lua_ls.setup({
-				capabilities = capabilities,
-				on_init = function(client)
-					if client.workspace_folders then
-						local path = client.workspace_folders[1].name
-						if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
-							return
-						end
-					end
-
-					client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
-						runtime = {
-							-- Tell the language server which version of Lua you're using
-							-- (most likely LuaJIT in the case of Neovim)
-							version = "LuaJIT",
-						},
-						diagnostics = {
-							globals = { "vim" },
-							workspaceDelay = -1,
-						},
-						-- Make the server aware of Neovim runtime files
-						workspace = {
-							checkThirdParty = false,
-							library = {
-								vim.env.VIMRUNTIME,
-							},
-						},
-						telemetry = {
-							enable = false,
-						},
-					})
-				end,
-				settings = {
-					Lua = {},
-				},
-			})
+		-- 	lspconfig.lua_ls.setup({
+		-- 		capabilities = capabilities,
+		-- 		on_init = function(client)
+		-- 			if client.workspace_folders then
+		-- 				local path = client.workspace_folders[1].name
+		-- 				if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
+		-- 					return
+		-- 				end
+		-- 			end
+		--
+		-- 			client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+		-- 				runtime = {
+		-- 					-- Tell the language server which version of Lua you're using
+		-- 					-- (most likely LuaJIT in the case of Neovim)
+		-- 					version = "LuaJIT",
+		-- 				},
+		-- 				diagnostics = {
+		-- 					globals = { "vim" },
+		-- 					workspaceDelay = -1,
+		-- 				},
+		-- 				-- Make the server aware of Neovim runtime files
+		-- 				workspace = {
+		-- 					checkThirdParty = false,
+		-- 					library = {
+		-- 						vim.env.VIMRUNTIME,
+		-- 					},
+		-- 				},
+		-- 				telemetry = {
+		-- 					enable = false,
+		-- 				},
+		-- 			})
+		-- 		end,
+		-- 		settings = {
+		-- 			Lua = {},
+		-- 		},
+		-- 	})
 		end,
 	},
 
@@ -186,6 +186,10 @@ return {
 	{
 		"hrsh7th/cmp-cmdline",
 	},
+
+    {
+        "delphinus/cmp-ctags",
+    },
 
 	-- Setup autocompletion
 	{
@@ -291,6 +295,19 @@ return {
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
+					{
+                        name = "ctags",
+                        option = {
+                            -- path to Universal Ctags binary
+                            executable = "ctags",
+                            -- Char that triggers completion
+                            trigger_characters = { "." },
+                            -- Chars by filetype
+                            trigger_characters_ft = {
+                                c = { ".", "->" },
+                            },
+                        },
+					}
 					-- more sources
 				}, {
 					{ name = "buffer" },
@@ -317,7 +334,7 @@ return {
 		config = function()
 			require("mason-lspconfig").setup({
 				ensure_installed = {
-					"lua_ls",
+					--"lua_ls",
 					-- "clangd",
 					-- "bashls",
 					-- Prefer system install
@@ -343,7 +360,7 @@ return {
 			-- Take word under cursor as input
 			skip_input_prompt = true,
 			-- prefix to trigger maps
-			prefix = "<leader>c",
+			prefix = "<leader>g",
 			-- do not open picker for single result, just JUMP
 			skip_picker_for_single_result = true,
 			-- custom script can be used for db build
