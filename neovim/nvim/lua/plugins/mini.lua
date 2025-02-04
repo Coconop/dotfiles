@@ -15,4 +15,6 @@ return {
 	},
 	-- Handy comments
 	{ 'echasnovski/mini.comment', version = false },
+	-- Align/Justify/Merge
+	{ 'echasnovski/mini.align',   version = false },
 }
