@@ -1,10 +1,10 @@
 
-
 "=== Custom/Old plugins
 source ~/.vim/plugin/cscope_maps.vim
 
 "=== Enable lightline
 set laststatus=2
+let g:lightline = {'colorscheme': 'catppuccin_mocha'}
 
 "=== ALE/Rust config
 let g:ale_history_log_output = 1
@@ -24,8 +24,8 @@ let g:ale_sign_column_always = 1
 let g:ale_fix_on_save = 1
 
 " Custom printed signs
-let g:ale_sign_error = '✘'
-let g:ale_sign_warning = '⚠'
+let g:ale_sign_error = 'X'
+let g:ale_sign_warning = '!'
 highlight ALEErrorSign ctermbg=NONE ctermfg=red
 highlight ALEWarningSign ctermbg=NONE ctermfg=yellow
 highlight ALEWarning ctermbg=NONE  ctermfg=238
@@ -62,12 +62,15 @@ call plug#begin()
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'preservim/nerdtree'
-Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-vinegar'
 Plug 'itchyny/lightline.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'dense-analysis/ale'
 Plug 'rhysd/conflict-marker.vim'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+" TODO Keep an eye on it (BETA)... Rust :) Seems bloated :(
+" The bang version will try to download the prebuilt binary if `cargo` does not exist.
+"Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
 
 " Initialize plugin system
 " - Automatically executes `filetype plugin indent on` and `syntax enable`.
@@ -77,6 +80,7 @@ call plug#end()
 "   syntax off            " Disable syntax highlighting
 
 "=== Custom shortcuts
+" TODO use <leader>
 nmap <silent> <C-a>g :ALEGoToDefinition<CR>
 nmap <silent> <C-a>s :ALEFindReferences<CR>
 " Navigate through errors
@@ -94,6 +98,7 @@ imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
 " Path completion with custom source command
+" TODO fallback if fd and rg are not installed
 inoremap <expr> <c-x><c-f> fzf#vim#complete#path('fd')
 inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')
 
@@ -104,6 +109,7 @@ inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'window': { 'width': 0.2, 'hei
 inoremap <silent><expr><TAB>
     \ pumvisible() ? "\<C-n>" : "\<TAB>"
 
+" TODO Overlap with ALE/Cscope ?
 " ctags jump to definition
 nnoremap <leader>d <C-]>
 " ctags jump back
@@ -111,3 +117,7 @@ nnoremap <leader>b <C-T>
 
 nnoremap <leader>f :FZF<CR>
 nnoremap <leader>t :Tags<CR>
+
+" Update colorscheme
+colorscheme catppuccin_mocha
+
