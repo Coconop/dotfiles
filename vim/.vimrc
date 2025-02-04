@@ -20,6 +20,7 @@ set nocompatible
 set termguicolors
 set term=xterm-256color
 set background=dark
+" Should be available locally (catppuccin is dl via plugin)
 colorscheme codedark
 
 " === General config
@@ -89,17 +90,6 @@ set noshowmode
 
 " https://stackoverflow.com/a/48237738
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
-
-"=== Buffer
-" :e to edit
-" :b <Tab> to cycle around buffers
-" :bd to close a buffer
-
-"=== Tabs
-" :tabe Open new tab
-" :tabc Close current tab
-" gt    Next tab
-" gT    Prev tab
 
 "=== Rust
 packadd termdebug
