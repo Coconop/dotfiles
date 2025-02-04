@@ -6,6 +6,10 @@ return {
 			require("mini.ai").setup({ n_lines = 500 })
 			-- Fast and feature-rich surround actions
 			require("mini.surround").setup()
+			-- Align/Justify/Merge
+			require("mini.align").setup()
+			-- Handy comments
+			require("mini.comment").setup()
 			-- Visualize current scope
 			require("mini.indentscope").setup({
 				delay = 0,
@@ -13,8 +17,4 @@ return {
 			})
 		end,
 	},
-	-- Handy comments
-	{ 'echasnovski/mini.comment', version = false },
-	-- Align/Justify/Merge
-	{ 'echasnovski/mini.align',   version = false },
 }

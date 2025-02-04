@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -d "${HOME}ctags" ]; then
+if [ -d "${HOME}/ctags" ]; then
     echo "Ctags already installed"
     exit 0
 fi
