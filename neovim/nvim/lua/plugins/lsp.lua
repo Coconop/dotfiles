@@ -381,6 +381,7 @@ return {
 				change_cwd = true,
 			},
 		},
+		-- Build cscope.files (required to build database)
 		vim.keymap.set("n", "<leader>cl", function()
 			-- List files with fd
 			local cmd = 'fd -t f -e c -e h > cscope.files'
@@ -392,6 +393,19 @@ return {
 
 			-- Notify the user
 			print("cscope.files generated")
-		end, { desc = "[C]scope [L]ist files in cscope.files" })
+		end, { desc = "Generate files in cscope.files" }),
+		-- View callers in picker
+		vim.keymap.set("n", "<leader>gvi", function()
+			local func = vim.fn.expand("<cword>")
+			local command = ":CsStackView open down " .. func
+			vim.cmd(command)
+		end, { desc = "View callers in picker" }),
+		-- View callers in picker
+		vim.keymap.set("n", "<leader>gvo", function()
+			local func = vim.fn.expand("<cword>")
+			local command = ":CsStackView open up " .. func
+			vim.cmd(command)
+		end, { desc = "View callees in picker" }),
+
 	},
 }
