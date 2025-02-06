@@ -16,14 +16,20 @@ return {
 				callback = function(event)
 					local map = function(keys, func, desc, mode)
 						mode = mode or "n"
-						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+						vim.keymap.set(mode, keys, func,
+							{ buffer = event.buf, desc = "LSP: " .. desc })
 					end
-					map("<leader>ld", require("telescope.builtin").lsp_definitions, "goto [D]efinition")
+					map("<leader>ld", require("telescope.builtin").lsp_definitions,
+						"goto [D]efinition")
 					map("<leader>lD", vim.lsp.buf.declaration, "goto [D]eclaration")
-					map("<leader>lr", require("telescope.builtin").lsp_references, "goto [R]eferences")
-					map("<leader>lI", require("telescope.builtin").lsp_implementations, "goto [I]mplementation")
-					map("<leader>lt", require("telescope.builtin").lsp_type_definitions, "goto [T]ype definition")
-					map("<leader>ls", require("telescope.builtin").lsp_document_symbols, "document [S]ymbols")
+					map("<leader>lr", require("telescope.builtin").lsp_references,
+						"goto [R]eferences")
+					map("<leader>lI", require("telescope.builtin").lsp_implementations,
+						"goto [I]mplementation")
+					map("<leader>lt", require("telescope.builtin").lsp_type_definitions,
+						"goto [T]ype definition")
+					map("<leader>ls", require("telescope.builtin").lsp_document_symbols,
+						"document [S]ymbols")
 					map("<leader>lR", vim.lsp.buf.rename, "[R]ename")
 					map("<leader>lc", vim.lsp.buf.code_action, "[C]ode action", { "n", "x" })
 				end,
@@ -64,42 +70,42 @@ return {
 			-- })
 
 			-- Lua (Neovim)
-		-- 	lspconfig.lua_ls.setup({
-		-- 		capabilities = capabilities,
-		-- 		on_init = function(client)
-		-- 			if client.workspace_folders then
-		-- 				local path = client.workspace_folders[1].name
-		-- 				if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
-		-- 					return
-		-- 				end
-		-- 			end
-		--
-		-- 			client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
-		-- 				runtime = {
-		-- 					-- Tell the language server which version of Lua you're using
-		-- 					-- (most likely LuaJIT in the case of Neovim)
-		-- 					version = "LuaJIT",
-		-- 				},
-		-- 				diagnostics = {
-		-- 					globals = { "vim" },
-		-- 					workspaceDelay = -1,
-		-- 				},
-		-- 				-- Make the server aware of Neovim runtime files
-		-- 				workspace = {
-		-- 					checkThirdParty = false,
-		-- 					library = {
-		-- 						vim.env.VIMRUNTIME,
-		-- 					},
-		-- 				},
-		-- 				telemetry = {
-		-- 					enable = false,
-		-- 				},
-		-- 			})
-		-- 		end,
-		-- 		settings = {
-		-- 			Lua = {},
-		-- 		},
-		-- 	})
+			-- 	lspconfig.lua_ls.setup({
+			-- 		capabilities = capabilities,
+			-- 		on_init = function(client)
+			-- 			if client.workspace_folders then
+			-- 				local path = client.workspace_folders[1].name
+			-- 				if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
+			-- 					return
+			-- 				end
+			-- 			end
+			--
+			-- 			client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+			-- 				runtime = {
+			-- 					-- Tell the language server which version of Lua you're using
+			-- 					-- (most likely LuaJIT in the case of Neovim)
+			-- 					version = "LuaJIT",
+			-- 				},
+			-- 				diagnostics = {
+			-- 					globals = { "vim" },
+			-- 					workspaceDelay = -1,
+			-- 				},
+			-- 				-- Make the server aware of Neovim runtime files
+			-- 				workspace = {
+			-- 					checkThirdParty = false,
+			-- 					library = {
+			-- 						vim.env.VIMRUNTIME,
+			-- 					},
+			-- 				},
+			-- 				telemetry = {
+			-- 					enable = false,
+			-- 				},
+			-- 			})
+			-- 		end,
+			-- 		settings = {
+			-- 			Lua = {},
+			-- 		},
+			-- 	})
 		end,
 	},
 
@@ -118,7 +124,8 @@ return {
 			})
 
 			-- We want to be able to toggle it if its to annyoing
-			vim.keymap.set("", "<Leader>vl", require("lsp_lines").toggle, { desc = "[V]irtual [L]ines toggle" })
+			vim.keymap.set("", "<Leader>vl", require("lsp_lines").toggle,
+				{ desc = "[V]irtual [L]ines toggle" })
 
 			-- Disable for floating windows (Lazy, Mason)
 			vim.api.nvim_create_autocmd("WinEnter", {
@@ -187,9 +194,9 @@ return {
 		"hrsh7th/cmp-cmdline",
 	},
 
-    {
-        "delphinus/cmp-ctags",
-    },
+	{
+		"delphinus/cmp-ctags",
+	},
 
 	-- Setup autocompletion
 	{
@@ -246,7 +253,8 @@ return {
 				formatting = {
 					format = function(entry, vim_item)
 						-- Kind icons
-						vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) -- This concatenates the icons with the name of the item kind
+						vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind],
+							vim_item.kind) -- This concatenates the icons with the name of the item kind
 						-- Source
 						vim_item.menu = ({
 							buffer = "[Buffer]",
@@ -271,7 +279,8 @@ return {
 					end
 
 					-- disable autocompletion in comments
-					return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
+					return not context.in_treesitter_capture("comment") and
+						not context.in_syntax_group("Comment")
 				end,
 
 				mapping = cmp.mapping.preset.insert({
@@ -296,17 +305,17 @@ return {
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
 					{
-                        name = "ctags",
-                        option = {
-                            -- path to Universal Ctags binary
-                            executable = "ctags",
-                            -- Char that triggers completion
-                            trigger_characters = { "." },
-                            -- Chars by filetype
-                            trigger_characters_ft = {
-                                c = { ".", "->" },
-                            },
-                        },
+						name = "ctags",
+						option = {
+							-- path to Universal Ctags binary
+							executable = "ctags",
+							-- Char that triggers completion
+							trigger_characters = { "." },
+							-- Chars by filetype
+							trigger_characters_ft = {
+								c = { ".", "->" },
+							},
+						},
 					}
 					-- more sources
 				}, {
@@ -356,7 +365,7 @@ return {
 	{
 		"dhananjaylatkar/cscope_maps.nvim",
 		dependencies = {},
-		opts = {
+		opt = {
 			-- Take word under cursor as input
 			skip_input_prompt = true,
 			-- prefix to trigger maps
@@ -364,7 +373,7 @@ return {
 			-- do not open picker for single result, just JUMP
 			skip_picker_for_single_result = true,
 			-- custom script can be used for db build
-			db_build_cmd = { script = "default", args = { "-bqkv" } },
+			db_build_cmd = { script = "default", args = { "-bqkvR" } },
 			-- try to locate db_file in parent dir(s)
 			project_rooter = {
 				enable = true,
@@ -372,5 +381,17 @@ return {
 				change_cwd = true,
 			},
 		},
+		vim.keymap.set("n", "<leader>cl", function()
+			-- List files with fd
+			local cmd = 'fd -t f -e c -e h > cscope.files'
+			-- List files with find
+			-- local cmd = 'find . -type f \\( -name "*.c" -o -name "*.h" \\) > cscope.files'
+
+			-- Run the command
+			vim.fn.system(cmd)
+
+			-- Notify the user
+			print("cscope.files generated")
+		end, { desc = "[C]scope [L]ist files in cscope.files" })
 	},
 }
