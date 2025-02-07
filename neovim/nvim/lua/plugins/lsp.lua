@@ -59,7 +59,7 @@ return {
 				},
 			})
 
-			-- -- C/C++
+			-- -- C/C++ (requires cmake OR bear+Makefile: https://github.com/rizsotto/Bear)
 			-- lspconfig.clangd.setup({
 			-- 	capabilities = capabilities,
 			-- })
@@ -194,10 +194,6 @@ return {
 		"hrsh7th/cmp-cmdline",
 	},
 
-	{
-		"delphinus/cmp-ctags",
-	},
-
 	-- Setup autocompletion
 	{
 		"L3MON4D3/LuaSnip",
@@ -304,20 +300,6 @@ return {
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
-					{
-						name = "ctags",
-						option = {
-							-- path to Universal Ctags binary
-							executable = "ctags",
-							-- Char that triggers completion
-							trigger_characters = { "." },
-							-- Chars by filetype
-							trigger_characters_ft = {
-								c = { ".", "->" },
-							},
-						},
-					}
-					-- more sources
 				}, {
 					{ name = "buffer" },
 					{ name = "path" },
@@ -365,24 +347,27 @@ return {
 	{
 		"dhananjaylatkar/cscope_maps.nvim",
 		dependencies = {},
-		opt = {
-			-- Take word under cursor as input
-			skip_input_prompt = true,
-			-- prefix to trigger maps
-			prefix = "<leader>g",
-			-- do not open picker for single result, just JUMP
-			skip_picker_for_single_result = true,
-			-- custom script can be used for db build
-			db_build_cmd = { script = "default", args = { "-bqkvR" } },
-			-- try to locate db_file in parent dir(s)
-			project_rooter = {
-				enable = true,
-				-- change cwd to where db_file is located
-				change_cwd = true,
-			},
-		},
+		config = function()
+			require("cscope_maps").setup({
+				-- Take word under cursor as input
+				skip_input_prompt = true,
+				-- prefix to trigger maps
+				prefix = "<leader>g",
+				-- do not open picker for single result, just JUMP
+				skip_picker_for_single_result = true,
+				-- custom script can be used for db build
+				db_build_cmd = { script = "default", args = { "-bqkvR" } },
+				-- try to locate db_file in parent dir(s)
+				project_rooter = {
+					enable = true,
+					-- change cwd to where db_file is located
+					change_cwd = true,
+				},
+			})
+		end,
+
 		-- Build cscope.files (required to build database)
-		vim.keymap.set("n", "<leader>cl", function()
+		vim.keymap.set("n", "<leader>gl", function()
 			-- List files with fd
 			local cmd = 'fd -t f -e c -e h > cscope.files'
 			-- List files with find
@@ -393,19 +378,20 @@ return {
 
 			-- Notify the user
 			print("cscope.files generated")
-		end, { desc = "Generate files in cscope.files" }),
+		end, { desc = "Generate cscope.files list" }),
+
 		-- View callers in picker
 		vim.keymap.set("n", "<leader>gvi", function()
 			local func = vim.fn.expand("<cword>")
 			local command = ":CsStackView open down " .. func
 			vim.cmd(command)
 		end, { desc = "View callers in picker" }),
-		-- View callers in picker
+
+		-- View callee in picker
 		vim.keymap.set("n", "<leader>gvo", function()
 			local func = vim.fn.expand("<cword>")
 			local command = ":CsStackView open up " .. func
 			vim.cmd(command)
 		end, { desc = "View callees in picker" }),
-
 	},
 }
