@@ -37,5 +37,9 @@ vim.opt.shortmess:append("I")
 -- TODO fallback to good old cscope (cf vim) when clang LSP not available
 -- https://github.com/dhananjaylatkar/cscope_maps.nvim
 
-vim.opt.undodir = "~/.local/share/nvim/"
+local undodir = vim.fn.expand("~/.config/nvim/undo")
+if vim.fn.isdirectory(undodir) == 0 then
+    vim.fn.mkdir(undodir, "p")
+end
+vim.opt.undodir = undodir
 vim.opt.undofile = true
