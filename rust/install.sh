@@ -16,7 +16,6 @@ if ask_for_confirmation "(Re)install last version of Rust ?"; then
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 fi
 
-# TODO just use LSP via Neovim + Mason 
 if command -v rust-analyzer >/dev/null 2>&1; then
     echo -e "rust-analyzer is installed"
 fi

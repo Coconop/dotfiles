@@ -9,9 +9,11 @@ else
     wget https://go.dev/dl/go1.22.5.linux-amd64.tar.gz
     sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.5.linux-amd64.tar.gz
     rm go1.22.5.linux-amd64.tar.gz
-    export PATH=$PATH:/usr/local/go/bin
 fi
 
-echo -e "Installing go-written tools"
+echo -e "Installing Lazygit"
 go install github.com/jesseduffield/lazygit@latest
-go install github.com/rs/curlie@latest
+# echo -e "Installing Curlie"
+# go install github.com/rs/curlie@latest
+
+echo -e "Re-source bashrc for PATH update"

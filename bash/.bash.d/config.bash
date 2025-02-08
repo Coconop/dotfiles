@@ -5,8 +5,12 @@ export GIT_EDITOR=nvim
 # Use vi mode in Readline (Warning: it is NOT VIM)
 #set -o vi
 
-# Use blazingly fast and pretty tool
-alias ll='eza -alF --icons=always'
+if command -v eza &> /dev/null; then
+  # Use blazingly fast and pretty tool
+  alias ll='eza -alF --icons=always'
+else
+  alias ll='ls -la' 
+fi
 
 # Prompt for SSH credentials from Terminal, no GUI
 unset SSH_ASKPASS
@@ -34,7 +38,7 @@ export PATH=${HOME}/.local/bin:${PATH}
 stty -ixon
 
 # Replaces dir names with the results of word expansion when using completion
-shopt -s direxpand
+# shopt -s direxpand
 
 # Launch ssh-agent and add key
 function addssh() {

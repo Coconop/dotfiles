@@ -13,5 +13,6 @@ else
     mkdir -p ${HOME}/.fonts/${FONT_0xPROTO}
     tar -xvf ${SCRIPT_DIR}/${FONT_0xPROTO}.tar.xz -C ${HOME}/.fonts/${FONT_0xPROTO}
     echo "${FONT_0xPROTO} installed"
-    echo "$ sudo fd-cache -f -v \nto refresh font cache"
+    echo "Refreshing cache (sudo)..."
+    sudo fc-cache -fv
 fi

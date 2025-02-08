@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Stop at 1st error
+set -e
+
 # Colors for fancy output
 Red='\033[0;31m'; BRed='\033[1;31m';
 Gre='\033[0;32m'; BGre='\033[1;32m';
@@ -11,7 +14,7 @@ Whi='\033[0;37m'; BWhi='\033[1;37m';
 None='\033[0m' # Return to default colour
 
 if [ "$EUID" -eq 0 ]; then
-    echo -e "${Red} Do NOT run me with sudo${None}"
+    echo -e "${Red}Do NOT run me with sudo!${None}"
     exit 1
 fi
 
@@ -70,6 +73,3 @@ ask_for_confirmation() {
       esac
   done
 }
-
-# Stop at 1st error
-set -e

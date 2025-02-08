@@ -109,90 +109,6 @@ return {
 		end,
 	},
 
-	-- Use virtual lines to display accurate LSP diagnostics
-	-- TODO Remove it when it reaches Neovim builtin !
-	{
-		"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-		config = function()
-			require("lsp_lines").setup()
-			-- Disable virtual_text since it's redundant due to lsp_lines.
-			vim.diagnostic.config({ virtual_text = false })
-
-			-- Don't underline HINTs, can be annoying with #[cfg()]
-			vim.diagnostic.config({
-				underline = { severity = { min = vim.diagnostic.severity.INFO } },
-			})
-
-			-- We want to be able to toggle it if its to annyoing
-			vim.keymap.set("", "<Leader>vl", require("lsp_lines").toggle,
-				{ desc = "[V]irtual [L]ines toggle" })
-
-			-- Disable for floating windows (Lazy, Mason)
-			vim.api.nvim_create_autocmd("WinEnter", {
-				callback = function()
-					local floating = vim.api.nvim_win_get_config(0).relative ~= ""
-					vim.diagnostic.config({
-						virtual_text = floating,
-						-- Keep it disabled by default
-						virtual_lines = false
-					})
-				end,
-			})
-			-- Disable it by default, enable it via keymaps
-			vim.diagnostic.config({ virtual_lines = false })
-		end,
-	},
-
-	-- Auto format code on save
-	-- TODO remove it: it should be a keybinding to external tool
-	{
-		"stevearc/conform.nvim",
-		event = { "BufWritePre" },
-		cmd = { "ConformInfo" },
-		keys = {
-			{
-				-- Customize or remove this keymap to your liking
-				"<leader>bf",
-				function()
-					require("conform").format({ async = true })
-				end,
-				mode = "",
-				desc = "[B]uffer [F]ormat",
-			},
-		},
-		opts = { -- Define your formatters
-			formatters_by_ft = {
-				lua = { "stylua" },
-				--python = { "isort", "black" },
-				rust = { "rustfmt" },
-			},
-			-- Set default options
-			default_format_opts = {
-				lsp_format = "fallback",
-			},
-			-- Set up format-on-save
-			format_on_save = { timeout_ms = 500 },
-		},
-		init = function()
-			-- If you want the formatexpr, here is the place to set it
-			vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-		end,
-	},
-
-	-- nvim-cmp source for neovim's built-in language server client
-	{
-		"hrsh7th/cmp-nvim-lsp",
-	},
-
-	-- Auto complete filesystem path
-	{
-		"hrsh7th/cmp-path",
-	},
-
-	-- Auto complete cmdline
-	{
-		"hrsh7th/cmp-cmdline",
-	},
 
 	-- Setup autocompletion
 	{
@@ -206,14 +122,15 @@ return {
 	},
 	{
 		"hrsh7th/nvim-cmp",
+		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-path",
+			"hrsh7th/cmp-cmdline",
+		},
 		config = function()
 			local cmp = require("cmp")
 			require("luasnip.loaders.from_vscode").lazy_load()
 			local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-			-- Add parentheses after selecting function or method item
-			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 			-- Add fancy icons to display completion source
 			local kind_icons = {
@@ -307,91 +224,5 @@ return {
 				}),
 			})
 		end,
-	},
-
-	-- Auto-install LSP, Formatters, linters
-	-- TODO: Remove it. No real needs: better to setup by usage
-	{
-		"williamboman/mason.nvim",
-		config = function()
-			require("mason").setup({
-				-- Prioritize system install over Mason install
-				PATH = "append",
-			})
-		end,
-	},
-	{
-		"williamboman/mason-lspconfig.nvim",
-		config = function()
-			require("mason-lspconfig").setup({
-				ensure_installed = {
-					--"lua_ls",
-					-- "clangd",
-					-- "bashls",
-					-- Prefer system install
-					--"rust_analyzer"
-				},
-				-- Use system install
-				automatic_installation = { exclude = { "rust_analyzer" } },
-				handlers = {
-					--- this first function is the "default handler"
-					--- it applies to every language server without a "custom handler"
-					function(server_name)
-						require("lspconfig")[server_name].setup({})
-					end,
-				},
-			})
-		end,
-	},
-
-	{
-		"dhananjaylatkar/cscope_maps.nvim",
-		dependencies = {},
-		config = function()
-			require("cscope_maps").setup({
-				-- Take word under cursor as input
-				skip_input_prompt = true,
-				-- prefix to trigger maps
-				prefix = "<leader>g",
-				-- do not open picker for single result, just JUMP
-				skip_picker_for_single_result = true,
-				-- custom script can be used for db build
-				db_build_cmd = { script = "default", args = { "-bqkvR" } },
-				-- try to locate db_file in parent dir(s)
-				project_rooter = {
-					enable = true,
-					-- change cwd to where db_file is located
-					change_cwd = true,
-				},
-			})
-		end,
-
-		-- Build cscope.files (required to build database)
-		vim.keymap.set("n", "<leader>gl", function()
-			-- List files with fd
-			local cmd = 'fd -t f -e c -e h > cscope.files'
-			-- List files with find
-			-- local cmd = 'find . -type f \\( -name "*.c" -o -name "*.h" \\) > cscope.files'
-
-			-- Run the command
-			vim.fn.system(cmd)
-
-			-- Notify the user
-			print("cscope.files generated")
-		end, { desc = "Generate cscope.files list" }),
-
-		-- View callers in picker
-		vim.keymap.set("n", "<leader>gvi", function()
-			local func = vim.fn.expand("<cword>")
-			local command = ":CsStackView open down " .. func
-			vim.cmd(command)
-		end, { desc = "View callers in picker" }),
-
-		-- View callee in picker
-		vim.keymap.set("n", "<leader>gvo", function()
-			local func = vim.fn.expand("<cword>")
-			local command = ":CsStackView open up " .. func
-			vim.cmd(command)
-		end, { desc = "View callees in picker" }),
 	},
 }
