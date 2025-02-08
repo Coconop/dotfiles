@@ -38,3 +38,12 @@ if vim.fn.isdirectory(undodir) == 0 then
 end
 vim.opt.undodir = undodir
 vim.opt.undofile = true
+
+vim.opt.listchars = {
+  tab = "| ",      -- tabs
+  trail = "_",     -- trailing spaces
+  extends = ">",   -- line extends past the window
+  precedes = "<",  -- there's text before the window
+  nbsp = "~",      -- Non-breaking space
+  eol = "$",       -- Line feeds
+}

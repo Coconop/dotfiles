@@ -1,6 +1,7 @@
 # dotfiles
 
 My personnal setup.
+
 Download some tools and symlink config into `$HOME`.
 
 # Dependencies
