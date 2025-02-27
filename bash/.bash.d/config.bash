@@ -27,6 +27,9 @@ export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/library/
 # Go
 export PATH=${PATH}:/usr/local/go/bin:${HOME}/go/bin
 
+# lua_ls
+export PATH="${PATH}:${HOME}/git/lua-language-server/bin"
+
 # Autocorrect bad commands
 #eval "$(thefuck --alias)"
 
