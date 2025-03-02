@@ -28,8 +28,14 @@ end)
 now(function()
   require('mini.notify').setup()
   vim.notify = require('mini.notify').make_notify()
+  vim.keymap.set("n", "<leader>ns", ":lua require('mini.notify').show_history()<CR>", { desc = "[N]otifications [S]how" })
 end)
-now(function() require('mini.icons').setup() end)
+
+now(function()
+    require('mini.icons').setup()
+    require('mini.icons').mock_nvim_web_devicons()
+end)
+
 now(function() require('mini.clue').setup({
     triggers = {
     -- Leader triggers
@@ -112,6 +118,12 @@ end)
 
 now(function()
     add({
+        source = 'christoomey/vim-tmux-navigator'
+    })
+end)
+
+now(function()
+    add({
         source = 'nvim-telescope/telescope.nvim',
         depends = {'nvim-lua/plenary.nvim'},
         checkout = '0.1.8'
@@ -132,6 +144,10 @@ now(function()
         builtin.find_files({ cwd = vim.fn.stdpath("config") })
     end, { desc = "[F]ind [N]eovim files" })
 
+    -- Extensions
+
+    -- Custom function to have lazy:'build' or vimplug:'do' equivalent
+    -- It takes param that are passed to 'hooks' (cf mini.deps doc)
     local function make_fzf_native(params)
         vim.cmd("lcd " .. params.path)
         vim.cmd("!make -s")
@@ -139,17 +155,406 @@ now(function()
         vim.cmd("lcd -")
     end
 	add({
-		source = "nvim-telescope/telescope-fzf-native.nvim",
+        source = "nvim-telescope/telescope-fzf-native.nvim",
         hooks = {
             post_install = make_fzf_native,
             post_checkout = make_fzf_native
         },
-	})
+    })
     require("telescope").load_extension("fzf")
 
 	add({
-		"nvim-telescope/telescope-ui-select.nvim",
+		source = "nvim-telescope/telescope-ui-select.nvim",
 	})
     require("telescope").load_extension("ui-select")
 end)
 
+later(function()
+    add({
+        source = 'cameron-wags/rainbow_csv.nvim',
+        name = 'rainbow_csv'
+    })
+    local rainbow_csv = require('rainbow_csv')
+    rainbow_csv.config = true,
+    -- rainbow_csv.ft = {
+    --     'csv',
+    --     'tsv',
+    --     'csv_semicolon',
+    --     'csv_whitespace',
+    --     'csv_pipe',
+    --     'rfc_csv',
+    --     'rfc_semicolon'
+    -- },
+    -- rainbow_csv.cmd = {
+    --     'RainbowDelim',
+    --     'RainbowDelimSimple',
+    --     'RainbowDelimQuoted',
+    --     'RainbowMultiDelim'
+    -- }
+    rainbow_csv.setup()
+end)
+
+now(function()
+
+    --- @param trunc_width number trunctates component when screen width is less than trunc_width
+    --- @param trunc_len number truncates component to trunc_len number of chars
+    --- @param hide_width number hides component when window width is smaller than hide_width
+    --- @param no_ellipsis boolean whether to disable adding '...' at end after truncation
+    --- @param always_trunc boolean whether to truncate regardless of window width
+    --- return function that can format the component accordingly
+    local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis, always_trunc)
+        return function(str)
+            local win_width = vim.fn.winwidth(0)
+            if hide_width and win_width < hide_width then
+                return ""
+            elseif always_trunc then
+                return str:sub(1, trunc_len) .. (string.len(str) < trunc_len and "" or "...")
+            elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
+                return str:sub(1, trunc_len) .. (no_ellipsis and "" or "...")
+            end
+            return str
+        end
+    end
+
+    add({
+        source = "nvim-lualine/lualine.nvim",
+    })
+    require("lualine").setup({
+        options = {
+            icons_enabled = true,
+            theme = "auto",
+            component_separators = { left = "|", right = "|" },
+            section_separators = { left = "", right = "" },
+            disabled_filetypes = {
+                statusline = {},
+                winbar = {},
+            },
+            ignore_focus = {},
+            always_divide_middle = true,
+            globalstatus = false,
+            refresh = {
+                statusline = 1000,
+                tabline = 1000,
+                winbar = 1000,
+            },
+        },
+        sections = {
+            lualine_a = { "mode" },
+            lualine_b = {
+                { "branch", fmt = trunc(80, 21, 10, false, true) },
+                "diff",
+                "diagnostics",
+            },
+            lualine_c = {
+                {
+                    "buffers",
+                    show_filename_only = true, -- Shows shortened relative path when set to false.
+                    hide_filename_extension = true, -- Hide filename extension when set to true.
+                    show_modified_status = true, -- Shows indicator when the buffer is modified.
+                    mode = 0, -- 0: Shows buffer name
+                    -- 1: Shows buffer index
+                    -- 2: Shows buffer name + buffer index
+                    -- 3: Shows buffer number
+                    -- 4: Shows buffer name + buffer number
+                    max_length = vim.o.columns * 2 / 3, -- Maximum width of buffers component,
+                    -- it can also be a function that returns
+                    -- the value of `max_length` dynamically.
+                    filetype_names = {
+                        TelescopePrompt = "Telescope",
+                        dashboard = "Dashboard",
+                        fzf = "FZF",
+                    }, -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
+                    -- Automatically updates active buffer color to match color of other components (will be overidden if buffers_color is set)
+                    use_mode_colors = false,
+                    -- |!\ BUG
+                    --buffers_color = {
+                        --    -- Same values as the general color option can be used here.
+                        --    active = 'lualine_{section}_normal',     -- Color for active buffer.
+                        --    inactive = 'lualine_{section}_inactive', -- Color for inactive buffer.
+                        --},
+                        symbols = {
+                            modified = " ●", -- Text to show when the buffer is modified
+                            alternate_file = "#", -- Text to show to identify the alternate file
+                            directory = "", -- Text to show when the buffer is a directory
+                        },
+                    },
+                },
+                lualine_d = { "FugitiveHead" },
+                lualine_x = { "encoding", "fileformat", "filetype" },
+                lualine_y = { "progress" },
+                lualine_z = { "location" },
+            },
+            inactive_sections = {
+                lualine_a = {},
+                lualine_b = {},
+                lualine_c = { "filename" },
+                lualine_x = { "location" },
+                lualine_y = {},
+                lualine_z = {},
+            },
+            tabline = {},
+            winbar = {},
+            inactive_winbar = {},
+            extensions = {},
+        })
+end)
+
+
+-- Use virtual lines to display accurate LSP diagnostics
+-- TODO Remove it when it reaches Neovim builtin !
+later(function()
+    add({
+        source = "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    })
+    require("lsp_lines").setup()
+    -- Disable virtual_text since it's redundant due to lsp_lines.
+    vim.diagnostic.config({ virtual_text = false })
+
+    -- Don't underline HINTs, can be annoying with #[cfg()]
+    vim.diagnostic.config({
+        underline = { severity = { min = vim.diagnostic.severity.INFO } },
+    })
+
+    -- We want to be able to toggle it if its too annyoing
+    vim.keymap.set("", "<Leader>vl", require("lsp_lines").toggle, { desc = "[V]irtual [L]ines toggle" })
+
+    -- Disable for floating windows (Lazy, Mason)
+    vim.api.nvim_create_autocmd("WinEnter", {
+        callback = function()
+            local floating = vim.api.nvim_win_get_config(0).relative ~= ""
+            vim.diagnostic.config({
+                virtual_text = floating,
+                -- Keep it disabled by default
+                virtual_lines = false
+            })
+        end,
+    })
+    -- Disable it by default, enable it via keymaps
+    vim.diagnostic.config({ virtual_lines = false })
+end)
+
+later(function()
+    add({
+        source = "dhananjaylatkar/cscope_maps.nvim",
+        depends = {
+            "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
+        },
+    })
+    local opts = {
+        -- Take word under cursor as input
+        skip_input_prompt = true,
+        -- disables default keymaps
+        disable_maps = true,
+
+        cscope = {
+            exec = "cscope",
+            picker = "telescope", -- Then Ctrl-q to send to quickfix (or Resume Telescope last search)
+            -- do not open picker for single result, just JUMP
+            skip_picker_for_single_result = true,
+            -- custom script can be used for db build
+            db_build_cmd = { script = "default", args = { "-bqkvR" } },
+            -- try to locate db_file in parent dir(s)
+            project_rooter = {
+                enable = true,
+                -- change cwd to where db_file is located
+                change_cwd = true,
+            },
+        },
+    },
+    require('cscope_maps').setup(opts)
+
+    -- Build cscope.files (required to build database)
+    vim.keymap.set("n", "<leader>cl", function()
+        local use_fd = os.execute("fd --version > /dev/null 2>&1")
+        local cmd
+        if use_fd then
+            -- List files with fd
+            cmd = 'fd -t f -e c -e h > cscope.files'
+        else
+            -- List files with find
+            cmd = 'find . -type f \\( -name "*.c" -o -name "*.h" \\) > cscope.files'
+        end
+
+        -- Run the command
+        vim.fn.system(cmd)
+
+        -- Notify the user
+        print("cscope.files generated")
+    end, { desc = "[C]scope [l]ist files for DB gen" })
+
+    -- Use my own keymaps for better muscle memory
+    vim.keymap.set("n", "<leader>cs", "<cmd>CsPrompt s<cr>", {desc = "[C]scope Find [s]ymbol"})
+    vim.keymap.set("n", "<leader>cd", "<cmd>CsPrompt g<cr>", {desc = "[C]scope GoTo [d]efinition"})
+    vim.keymap.set("n", "<leader>cI", "<cmd>CsPrompt c<cr>", {desc = "[C]scope Find Caller ([i]n)"})
+    vim.keymap.set("n", "<leader>cO", "<cmd>CsPrompt d<cr>", {desc = "[C]scope Find Callee ([o]ut)"})
+    vim.keymap.set("n", "<leader>ct", "<cmd>CsPrompt t<cr>", {desc = "[C]scope Find [t]ext string"})
+    vim.keymap.set("n", "<leader>cg", "<cmd>CsPrompt e<cr>", {desc = "[C]scope Find [g]rep pattern"})
+    vim.keymap.set("n", "<leader>cf", "<cmd>CsPrompt f<cr>", {desc = "[C]scope Find [f]ile"})
+    vim.keymap.set("n", "<leader>ch", "<cmd>CsPrompt i<cr>", {desc = "[C]scope Find #include of this [h]eader"})
+    vim.keymap.set("n", "<leader>ca", "<cmd>CsPrompt a<cr>", {desc = "[C]scope Find [a]ssignments"})
+    vim.keymap.set("n", "<leader>cb", "<cmd>CsPrompt b<cr>", {desc = "[C]scope [b]uild DB"})
+
+    -- View call-in Stack hierarchy
+    vim.keymap.set("n", "<leader>ci", function()
+        local func = vim.fn.expand("<cword>")
+        local command = ":CsStackView open down " .. func
+        vim.cmd(command)
+    end, { desc = "[C]scope [i]n stack Call" })
+
+    -- View call-out Stack hierarchy
+    vim.keymap.set("n", "<leader>co", function()
+        local func = vim.fn.expand("<cword>")
+        local command = ":CsStackView open up " .. func
+        vim.cmd(command)
+    end, { desc = "[C]scope [o]ut stack call" })
+end)
+
+later(function()
+    add({
+        source = 'saecki/crates.nvim'
+    })
+    require('crates').setup()
+end)
+
+later(function()
+    add({
+		source = "rhysd/conflict-marker.vim",
+    })
+    vim.keymap.set("n", "<leader>mn", "<cmd>ConflictMarkerNextHunk<cr>", { desc = "[M]erge Conflict [N]ext" })
+    vim.keymap.set("n", "<leader>mp", "<cmd>ConflictMarkerPrevHunk<cr>", { desc = "[M]erge Conflict [P]rev" })
+end)
+
+later(function()
+	add({
+        source = "lewis6991/gitsigns.nvim"
+    })
+    require('gitsigns').setup()
+end)
+
+later(function()
+	add({
+        source = "nvim-treesitter/nvim-treesitter",
+        hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
+    })
+    local configs = require("nvim-treesitter.configs")
+    configs.setup({
+        ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "rust", "bash", "json", "toml", "python" },
+        sync_install = false,
+        highlight = { enable = true },
+        indent = { enable = true },
+        -- TODO https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#modules
+        -- Automatically install missing parsers when entering buffer (need tree-sitter CLI)
+        -- auto_install = true,
+    })
+end)
+
+now(function()
+    add({
+        source = "neovim/nvim-lspconfig",
+    })
+
+    local lspconfig = require("lspconfig")
+    local caps = vim.lsp.protocol.make_client_capabilities()
+
+    -- Global lsp config ----------------------------------------------
+
+    -- Always let space for diagnostics, signs, etc
+    vim.opt.signcolumn = "yes"
+
+    -- Setup keymaps etc ONLY if there is an attached LSP
+    vim.api.nvim_create_autocmd("LspAttach", {
+        desc = "LSP actions",
+        callback = function(event)
+            local map = function(keys, func, desc, mode)
+                mode = mode or "n"
+                vim.keymap.set(mode, keys, func,
+                { buffer = event.buf, desc = "LSP: " .. desc })
+            end
+            map("<leader>ld", require("telescope.builtin").lsp_definitions,
+            "goto [D]efinition")
+            map("<leader>lD", vim.lsp.buf.declaration, "goto [D]eclaration")
+            map("<leader>lr", require("telescope.builtin").lsp_references,
+            "goto [R]eferences")
+            map("<leader>lI", require("telescope.builtin").lsp_implementations,
+            "goto [I]mplementation")
+            map("<leader>lt", require("telescope.builtin").lsp_type_definitions,
+            "goto [T]ype definition")
+            map("<leader>ls", require("telescope.builtin").lsp_document_symbols,
+            "document [S]ymbols")
+            map("<leader>lR", vim.lsp.buf.rename, "[R]ename")
+            map("<leader>lc", vim.lsp.buf.code_action, "[C]ode action", { "n", "x" })
+        end,
+    })
+
+    -- Add autocompletion for all languages (disabled for mini)
+    -- local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+    -- Change diagnostic symbols in the sign column (gutter)
+    local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+    for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+    end
+
+    -- Per language config --------------------------------------------
+
+    -- Rust
+    lspconfig.rust_analyzer.setup({
+        capabilities = caps,
+        settings = {
+            ["rust-analyzer"] = {
+                chechOnSave = {
+                    command = "clippy",
+                },
+            },
+        },
+    })
+
+    -- C/C++ (requires cmake OR bear+Makefile: https://github.com/rizsotto/Bear)
+    -- lspconfig.clangd.setup({
+    --     capabilities = caps,
+    -- })
+
+    -- Bash
+    -- lspconfig.bashls.setup({
+    --     capabilities = caps,
+    -- })
+
+    -- Lua (Neovim)
+    lspconfig.lua_ls.setup({
+        capabilities = caps,
+        on_init = function(client)
+            if client.workspace_folders then
+                local path = client.workspace_folders[1].name
+                if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
+                    return
+                end
+            end
+
+            client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+                runtime = {
+                    -- Tell the language server which version of Lua you're using
+                    -- (most likely LuaJIT in the case of Neovim)
+                    version = "LuaJIT",
+                },
+                diagnostics = {
+                    globals = { "vim" },
+                    workspaceDelay = -1,
+                },
+                -- Make the server aware of Neovim runtime files
+                workspace = {
+                    checkThirdParty = false,
+                    library = {
+                        vim.env.VIMRUNTIME,
+                    },
+                },
+                telemetry = {
+                    enable = false,
+                },
+            })
+        end,
+        settings = {
+            Lua = {},
+        },
+    })
+end)
