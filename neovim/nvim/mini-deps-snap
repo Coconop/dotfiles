@@ -1,0 +1,18 @@
+return {
+  catppuccin = "5b5e3aef9ad7af84f463d17b5479f06b87d5c429",
+  ["conflict-marker.vim"] = "62742b2ffe7a433988759c67b5c5a22eff74a14b",
+  ["crates.nvim"] = "6bf1b4ceb62f205c903590ccc62061aafc17024a",
+  ["cscope_maps.nvim"] = "eaec5a81c99db98794a246bc30e311fbcef99854",
+  ["gitsigns.nvim"] = "4c40357994f386e72be92a46f41fc1664c84c87d",
+  ["lsp_lines.nvim"] = "a92c755f182b89ea91bd8a6a2227208026f27b4d",
+  ["lualine.nvim"] = "f4f791f67e70d378a754d02da068231d2352e5bc",
+  ["mini.nvim"] = "f40da50a3dfbbc53e6173beef8dc28626e1b5ebc",
+  ["nvim-lspconfig"] = "8e8fd432f05b126a9dd1635e8022c7e7d1a04e60",
+  ["nvim-treesitter"] = "186f35e1684c241baf13a3e6092eee00ac48631e",
+  ["plenary.nvim"] = "857c5ac632080dba10aae49dba902ce3abf91b35",
+  rainbow_csv = "7f3fddfe813641035fac2cdf94c2ff69bb0bf0b9",
+  ["telescope-fzf-native.nvim"] = "2a5ceff981501cff8f46871d5402cd3378a8ab6a",
+  ["telescope-ui-select.nvim"] = "6e51d7da30bd139a6950adf2a47fda6df9fa06d2",
+  ["telescope.nvim"] = "a0bbec21143c7bc5f8bb02e0005fa0b982edc026",
+  ["vim-tmux-navigator"] = "791dacfcfc8ccb7f6eb1c853050883b03e5a22fe"
+}
