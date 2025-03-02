@@ -52,10 +52,10 @@ return {
 
             -- Notifications and LSP progress
             -- TODO vim.notify = require('mini.notify').make_notify()
-            require('mini.notify').setup({})
+            require('mini.notify').setup({
+            })
 
             -- File navigation
-            -- :lua MiniFiles.open()
             require('mini.files').setup()
 
         end,
