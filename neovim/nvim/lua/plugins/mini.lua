@@ -45,13 +45,18 @@ return {
             require("mini.completion").setup()
 
             -- Animations (mostly for shared screen)
-            require('mini.animate').setup()
+            -- require('mini.animate').setup()
 
             -- Highlight word under cursor
             require('mini.cursorword').setup()
 
             -- Notifications and LSP progress
-            require('mini.notify').setup()
+            -- TODO vim.notify = require('mini.notify').make_notify()
+            require('mini.notify').setup({})
+
+            -- File navigation
+            -- :lua MiniFiles.open()
+            require('mini.files').setup()
 
         end,
     },
