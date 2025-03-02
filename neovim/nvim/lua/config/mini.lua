@@ -340,7 +340,7 @@ later(function()
             "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
         },
     })
-    local opts = {
+    require('cscope_maps').setup({
         -- Take word under cursor as input
         skip_input_prompt = true,
         -- disables default keymaps
@@ -360,8 +360,7 @@ later(function()
                 change_cwd = true,
             },
         },
-    },
-    require('cscope_maps').setup(opts)
+    })
 
     -- Build cscope.files (required to build database)
     vim.keymap.set("n", "<leader>cl", function()
