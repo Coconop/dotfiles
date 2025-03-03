@@ -10,14 +10,25 @@ later(function() require('mini.indentscope').setup({
 later(function() require('mini.cursorword').setup() end)
 
 -- Highlight known patterns
-later(function() require('mini.hipatterns').setup({
-    highlighters = {
-        fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
-        todo  = { pattern = '%f[%w]()TODO()%f[%W]',  group = 'MiniHipatternsTodo'  },
-        -- Highlight hex color strings (`#rrggbb`) using that color
-        hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
-    },
-}) end)
+later(function()
+    local minihip = require('mini.hipatterns')
+    local grp_conflict_start = minihip.compute_hex_color_group("#f38ba8", 'bg')
+    local grp_conflict_mid = minihip.compute_hex_color_group("#cba6f7", 'bg')
+    local grp_conflict_end = minihip.compute_hex_color_group("#f9e2af", 'bg')
+
+    require('mini.hipatterns').setup({
+        highlighters = {
+            fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+            todo  = { pattern = '%f[%w]()TODO()%f[%W]',  group = 'MiniHipatternsTodo'  },
+
+            git_conflict_start = { pattern = '^<<<<<<< .*$', group = grp_conflict_start },
+            git_conflict_middle = { pattern = '^=======$', group = grp_conflict_mid },
+            git_conflict_end = { pattern = '^>>>>>>> .*$', group = grp_conflict_end },
+            -- Highlight hex color strings (`#rrggbb`) using that color
+            hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
+        },})
+end)
+
 
 -- Code completion engine
 later(function() require('mini.completion').setup() end)

@@ -9,10 +9,5 @@ later(function()
     vim.keymap.set("n", "<leader>mp", "<cmd>ConflictMarkerPrevHunk<cr>", { desc = "[M]erge Conflict [P]rev" })
 end)
 
--- Visualize git changes in gutter bar
-later(function()
-	add({
-        source = "lewis6991/gitsigns.nvim"
-    })
-    require('gitsigns').setup()
-end)
+-- Work with diff hunks
+later(function() require('mini.diff').setup() end)
