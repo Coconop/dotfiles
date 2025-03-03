@@ -10,4 +10,11 @@ later(function()
 end)
 
 -- Work with diff hunks
-later(function() require('mini.diff').setup() end)
+later(function()
+    require('mini.diff').setup({
+        view = {
+            style = 'sign'
+        }
+    })
+    vim.keymap.set("n", "<leader>do", ":lua MiniDiff.toggle_overlay()<CR>", { desc = "[D]iff [O]verlay Toogle" })
+end)
