@@ -9,7 +9,11 @@ end)
 
 -- Hybrid filetree viewer with oil/vineagar spirit
 later(function()
-    require('mini.files').setup()
+    require('mini.files').setup({
+        windows = {
+            preview = true,
+        }
+    })
     vim.keymap.set("n", "<leader>ee", ":lua MiniFiles.open()<CR>", { desc = "[E]xplorer" })
 end)
 
