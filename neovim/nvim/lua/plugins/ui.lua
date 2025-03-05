@@ -179,6 +179,28 @@ now(function()
         source = 'catppuccin/nvim',
 		name = "catppuccin",
     })
-    vim.cmd([[colorscheme catppuccin-mocha]])
+    -- vim.cmd([[colorscheme catppuccin-mocha]])
 end)
 
+now(function()
+    add({
+        source = 'sainnhe/everforest',
+		name = "everforest",
+    })
+    -- vim.cmd([[colorscheme everforest]])
+end)
+
+now(function()
+    add({
+        source = 'rebelot/kanagawa.nvim',
+		name = "kanagawa",
+    })
+    vim.cmd([[colorscheme kanagawa]])
+end)
+
+now(function()
+    add({
+        source = 'EdenEast/nightfox.nvim',
+    })
+    vim.cmd([[colorscheme nightfox]])
+end)
