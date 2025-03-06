@@ -18,3 +18,9 @@ vim.keymap.set("n", "<leader>hh", vim.cmd.bp, { desc = "Prev Vim buffer" })
 -- Tags
 vim.keymap.set("n", "<leader>tj", "<C-]>", { desc = "{[T]ag [J]ump}" })
 
+-- diff-mode (nvim -d)
+vim.keymap.set("n", "<leader>dn", "]c<CR>", { desc = "[D]iff next" })
+vim.keymap.set("n", "<leader>dp", "]c<CR>", { desc = "[D]iff prev" })
+
+-- :[range]diffg  Modify the current buffer to undo difference with another buffer
+-- :[range]diffpu Modify another buffer to undo difference with the current buffer
