@@ -11,7 +11,7 @@ end)
 later(function()
     require('mini.files').setup({
         windows = {
-            preview = true,
+            preview = false,
         }
     })
     vim.keymap.set("n", "<leader>ee", ":lua MiniFiles.open()<CR>", { desc = "[E]xplorer" })

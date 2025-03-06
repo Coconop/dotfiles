@@ -11,6 +11,9 @@ vim.keymap.set("n", "<leader>zs", ":set spell<bar>normal! z=<CR>", { desc = "Ope
 vim.keymap.set({ "n", "x" }, "<leader>yy", '"+y', { desc = "Copy Vim -> System" })
 vim.keymap.set({ "n", "x" }, "<leader>pp", '"+p', { desc = "Paste System -> Vim" })
 
+vim.keymap.set({ "n", "x" }, "<leader>yx", '"*y', { desc = "Copy Vim -> X11" })
+vim.keymap.set({ "n", "x" }, "<leader>px", '"*p', { desc = "Paste X11 -> Vim" })
+
 -- Easy Buffer navigation
 vim.keymap.set("n", "<leader>ll", vim.cmd.bn, { desc = "Next Vim buffer" })
 vim.keymap.set("n", "<leader>hh", vim.cmd.bp, { desc = "Prev Vim buffer" })
