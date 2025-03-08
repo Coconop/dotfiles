@@ -158,7 +158,7 @@ now(function() require('mini.clue').setup({
 
         config = {
             -- Compute window width automatically
-            width = 'auto',
+            width = 50,
         },
     },
 
@@ -167,7 +167,9 @@ now(function() require('mini.clue').setup({
     require('mini.clue').gen_clues.builtin_completion(),
     require('mini.clue').gen_clues.g(),
     require('mini.clue').gen_clues.marks(),
-    require('mini.clue').gen_clues.registers(),
+    require('mini.clue').gen_clues.registers({
+            show_contents = true
+        }),
     require('mini.clue').gen_clues.windows(),
     -- require('mini.clue').gen_clues.z(),
   },

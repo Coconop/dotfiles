@@ -39,6 +39,8 @@ now(function()
     vim.keymap.set("n", "<leader>fn", function()
         builtin.find_files({ cwd = vim.fn.stdpath("config") })
     end, { desc = "[F]ind [N]eovim files" })
+    vim.keymap.set("n", "<leader>fm", builtin.marks, { desc = "[F]indings [M]arks" })
+    vim.keymap.set("n", "<leader>fz", builtin.current_buffer_fuzzy_find, { desc = "[F]indings Fu[Z]zy" })
 
     -- Extensions
 
