@@ -25,6 +25,28 @@ now(function()
         checkout = '0.1.8'
 
     })
+
+    require('telescope').setup{
+        defaults = {
+            vimgrep_arguments = {
+                "rg",
+                "--color=never",
+                "--no-heading",
+                "--with-filename",
+                "--line-number",
+                "--column",
+                "--hidden",
+                "--trim",
+                "--glob", "!.git/*",
+            }
+        },
+        pickers = {
+            find_files = {
+                -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
+                find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
+            },
+        },
+    }
     local builtin = require("telescope.builtin")
     vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind [F]iles" })
     vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind [G]rep live" })
