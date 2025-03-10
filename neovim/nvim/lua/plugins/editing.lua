@@ -28,4 +28,7 @@ end)
 later(function() require('mini.surround').setup() end)
 
 -- Quickly remove trailing spaces
-later(function() require('mini.trailspace').setup() end)
+later(function()
+    require('mini.trailspace').setup()
+    vim.keymap.set("n", "<leader>st", ":lua MiniTrailspace.trim()<CR>", { desc = "[S]pace/[T]rim" })
+end)
