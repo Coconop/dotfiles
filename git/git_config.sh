@@ -1,10 +1,15 @@
 #!/bin/bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+ln -sfnv ${SCRIPT_DIR}/.gitignore_global ${HOME}/.gitignore_global
+
 echo -e "Setting up global git config"
 git config --global core.editor "nvim"
 git config --global core.autocrlf input
 git config --global merge.tool "nvimdiff"
 git config --global merge.conflictStyle "merge"
+git config --global core.excludesFile ${HOME}/.gitignore_global
 
 echo -e "Setting up local git config"
 # Hey that's me :)
