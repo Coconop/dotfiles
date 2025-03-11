@@ -1,5 +1,21 @@
 #!/bin/bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source "${SCRIPT_DIR}/../sourceme.sh"
+
+if ask_for_confirmation "Do you need to install prerequisites ?"; then
+    echo -e "Ubuntu/Debian:"
+    echo -e "sudo apt-get install ninja-build gettext cmake curl build-essential"
+    echo -e ""
+    echo -e "RHEL/Fedora:"
+    echo -e "sudo dnf config-manager --set-enabled crb"
+    echo -e "sudo dnf -y install ninja-build cmake gcc make gettext curl glibc-gconv-extra"
+    echo -e ""
+    echo -e "Or, to build dependencies from sources:"
+    echo -e "sudo dnf groupinstall "Development Tools""
+
+    exit 1
+fi
 
 if command -v nvim >/dev/null 2>&1; then
     echo -e "neovim is installed:"
