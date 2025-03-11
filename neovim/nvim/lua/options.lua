@@ -80,3 +80,5 @@ vim.g.netrw_hide = 0
 vim.g.netrw_preview = 1
 
 -- TODO copy function to handle icons
+
+vim.g.c_syntax_for_h = 1           -- .h file use C filetype instead of C++
