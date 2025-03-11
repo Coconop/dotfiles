@@ -4,7 +4,6 @@ source ~/.vim/plugin/cscope_maps.vim
 
 "=== Enable lightline
 set laststatus=2
-let g:lightline = {'colorscheme': 'catppuccin_mocha'}
 
 "=== ALE/Rust config
 let g:ale_history_log_output = 1
@@ -67,7 +66,6 @@ Plug 'itchyny/lightline.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'dense-analysis/ale'
 Plug 'rhysd/conflict-marker.vim'
-Plug 'catppuccin/vim', { 'as': 'catppuccin' }
 " TODO Keep an eye on it (BETA)... Rust :) Seems bloated :(
 " The bang version will try to download the prebuilt binary if `cargo` does not exist.
 "Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }
@@ -117,7 +115,4 @@ nnoremap <leader>b <C-T>
 
 nnoremap <leader>f :FZF<CR>
 nnoremap <leader>t :Tags<CR>
-
-" Update colorscheme
-colorscheme catppuccin_mocha
 
