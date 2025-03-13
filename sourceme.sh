@@ -107,9 +107,7 @@ safe_symlink() {
     fi
 
     # Create the symlink
-    echo "Creating symlink from '$SOURCE' to '$TARGET'"
-    safe_symlink "$SOURCE" "$TARGET"
-
-    return $?
+    echo -e "${Gre}Creating symlink from '$SOURCE' to '$TARGET'${None}"
+    ln -snf "$SOURCE" "$TARGET"
 }
 
