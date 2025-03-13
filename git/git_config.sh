@@ -1,8 +1,9 @@
 #!/bin/bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source ../sourceme.sh
 
-ln -sfnv ${SCRIPT_DIR}/.gitignore_global ${HOME}/.gitignore_global
+safe_symlink ${SCRIPT_DIR}/.gitignore_global ${HOME}/.gitignore_global
 
 echo -e "Setting up global git config"
 git config --global core.editor "nvim"

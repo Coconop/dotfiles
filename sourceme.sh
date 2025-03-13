@@ -73,3 +73,43 @@ ask_for_confirmation() {
       esac
   done
 }
+
+safe_symlink() {
+    local SOURCE="$1"
+    local TARGET="$2"
+
+    # Check if source exists
+    if [ ! -e "$SOURCE" ]; then
+        echo -e "${Red}Error: Source '$SOURCE' does not exist.${None}" >&2
+        return 1
+    fi
+
+    # Check if target exists and is not already the correct symlink
+    if [ -e "$TARGET" ] || [ -L "$TARGET" ]; then
+        # Check if it's already the correct symlink
+        if [ -L "$TARGET" ] && [ "$(readlink "$TARGET")" = "$SOURCE" ]; then
+            echo -e "${Blue}Symlink already exists and points to the correct location.${None}"
+            return 0
+        fi
+
+        # Create a backup with timestamp
+        local TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+        local BACKUP="${TARGET}.backup_${TIMESTAMP}"
+
+        echo -e "${Yel}Backing up existing '$(basename "$TARGET")' to '$(basename "$BACKUP")'${None}"
+
+        # Handle the case where target is a symlink to a non-existent file
+        if [ -L "$TARGET" ] && [ ! -e "$TARGET" ]; then
+            mv "$TARGET" "$BACKUP"
+        else
+            cp -a "$TARGET" "$BACKUP"  # -a preserves permissions and works with directories
+        fi
+    fi
+
+    # Create the symlink
+    echo "Creating symlink from '$SOURCE' to '$TARGET'"
+    safe_symlink "$SOURCE" "$TARGET"
+
+    return $?
+}
+

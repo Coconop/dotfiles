@@ -52,18 +52,17 @@ fi
 test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
 
 # Personnal setup
-if [ -d ~/.bash.d ]; then
-    for file in ~/.bash.d/*.bash; do
+if [ -d ~/.my_bash ]; then
+    for file in ~/.my_bash/*.bash; do
         source "$file"
     done
 fi
 
 # Pro setup
-if [ -d ~/.bash_local.d ]; then
-    for file in ~/.bash_local.d/*.bash; do
+if [ -d ~/.pro_bash ]; then
+    for file in ~/.pro_bash/*.bash; do
         source "$file"
     done
 fi
-
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

@@ -1,7 +1,7 @@
 #!/bin/bash
+source ../sourceme.sh
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "${SCRIPT_DIR}/../sourceme.sh"
 
 # TODO Check for minimal rust version required by tools
 
@@ -42,11 +42,11 @@ if ask_for_confirmation "Painfully slowly Install blazlingly fast tools ?"; then
     echo -e "Installing bat"
     cargo install --locked bat
     mkdir -p ~/.local/bin
-    ln -nfvs /usr/bin/batcat ~/.local/bin/bat
+    safe_symlink /usr/bin/batcat ~/.local/bin/bat
 
     # Better find
     echo -e "Installing fd"
     cargo install fd-find
-    ln -snfv "$(which fdfind)" ~/.local/bin/fd
+    safe_symlink "$(which fdfind)" ~/.local/bin/fd
     echo -e "Done."
 fi
