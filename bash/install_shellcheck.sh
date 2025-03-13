@@ -3,7 +3,7 @@
 # bash-langage-server version installed via Mason
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "${SCRIPT_DIR}/../sourceme.sh"
+source ${SCRIPT_DIR}/../sourceme.sh
 
 FOLDER="shellcheck-stable"
 ARCHIVE="${FOLDER}.linux.x86_64.tar.xz"

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "${SCRIPT_DIR}/../sourceme.sh"
+source ${SCRIPT_DIR}/../sourceme.sh
 
 # TODO Check for minimal rust version required by tools
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "${SCRIPT_DIR}/../sourceme.sh"
+source ${SCRIPT_DIR}/../sourceme.sh
 
 if ask_for_confirmation "Do you need to install prerequisites ?"; then
     echo -e "Ubuntu/Debian:"

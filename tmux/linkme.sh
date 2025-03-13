@@ -1,5 +1,7 @@
 #!/bin/bash
-source ../sourceme.sh
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source ${SCRIPT_DIR}/../sourceme.sh
 
 if grep -qEi "(icrosoft|WSL)" /proc/sys/kernel/osrelease &> /dev/null ; then
     IS_IN_WSL=1
