@@ -71,7 +71,10 @@ now(function()
             "--background-index",
             "--suggest-missing-includes",
             "--clang-tidy",
-            "--header-insertion=iwyu"
+            "--header-insertion=iwyu",
+            "--all_scopes-completion",
+            "--completion-style=detailed",
+            "--cross-file-rename"
         }
     })
 

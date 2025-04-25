@@ -7,6 +7,8 @@ vim/.vim/undodir
 codelldb/codelldb_adapter
 neovim/nvim/lazy-lock.json
 neovim/nvim/undo
+neovim/nvim/backup
+neovim/nvim/swap
 *.log
 *.netrwhist
 bash/.bash_local.d/*

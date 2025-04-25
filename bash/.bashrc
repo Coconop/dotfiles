@@ -58,9 +58,7 @@ if [ -d ~/.my_bash ]; then
     done
 fi
 if [ -d ~/.scripts ]; then
-    for file in ~/.scripts/*.sh; do
-        source "$file"
-    done
+    export PATH="$PATH:$HOME/.scripts"
 fi
 
 # Pro setup
