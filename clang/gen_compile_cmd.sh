@@ -1,8 +1,7 @@
 #!/bin/bash
-# This script shall be placed at the root of project
-# Along with `compile_flags.txt`
-project_dir="$(pwd)"
-flags=$(cat compile_flags.txt | tr '\n' ' ')
+# TODO Help flag to pass Project ROOT dir and path to compile_flags.txt
+project_dir="$1"
+flags=$(cat $2 | tr '\n' ' ')
 
 echo "[" > compile_commands.json
 first=1

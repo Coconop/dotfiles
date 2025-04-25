@@ -1,6 +1,9 @@
 -Wall
 -Wextra
 -std=gnu99
--Iinclude
+-pipe
+-fexceptions
+-fstack-protector-strong
+-fpic
 -I.
 -D_GNU_SOURCE
