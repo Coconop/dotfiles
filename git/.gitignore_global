@@ -2,3 +2,5 @@
 cscope.*
 # Universal tags
 tags
+# clang LSP
+compile_flags.txt

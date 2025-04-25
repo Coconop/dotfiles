@@ -63,10 +63,17 @@ now(function()
         },
     })
 
-    -- C/C++ (requires cmake OR bear+Makefile: https://github.com/rizsotto/Bear)
-    -- lspconfig.clangd.setup({
-    --     capabilities = caps,
-    -- })
+    -- C/C++ (requires cmake OR bear+Makefile OR compile_flags.txt)
+    lspconfig.clangd.setup({
+        capabilities = caps,
+        cmd = {
+            "clangd",
+            "--background-index",
+            "--suggest-missing-includes",
+            "--clang-tidy",
+            "--header-insertion=iwyu"
+        }
+    })
 
     -- Bash
     -- lspconfig.bashls.setup({

@@ -1,0 +1,6 @@
+-Wall
+-Wextra
+-std=gnu99
+-Iinclude
+-I.
+-D_GNU_SOURCE
