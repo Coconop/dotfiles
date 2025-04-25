@@ -4,3 +4,9 @@ cscope.*
 tags
 # clang LSP
 compile_flags.txt
+compile_commands.json
+gen_compile_cmd.sh
+# Track those in dotfiles
+!clang/compile_flags.txt
+!clang/compile_commands.json
+!clang/gen_compile_cmd.sh
