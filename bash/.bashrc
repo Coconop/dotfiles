@@ -57,6 +57,11 @@ if [ -d ~/.my_bash ]; then
         source "$file"
     done
 fi
+if [ -d ~/.scripts ]; then
+    for file in ~/.scripts/*.sh; do
+        source "$file"
+    done
+fi
 
 # Pro setup
 if [ -d ~/.pro_bash ]; then

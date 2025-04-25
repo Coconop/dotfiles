@@ -9,7 +9,7 @@ if command -v eza &> /dev/null; then
   # Use blazingly fast and pretty tool
   alias ll='eza -alF --icons=always'
 else
-  alias ll='ls -la' 
+  alias ll='ls -la'
 fi
 
 # Prompt for SSH credentials from Terminal, no GUI

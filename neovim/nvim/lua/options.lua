@@ -10,9 +10,6 @@ vim.opt.smartindent = true
 
 vim.opt.wrap = false
 
---vim.opt.swapfile = false
---vim.opt.backup = false
-
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.ignorecase = true
@@ -39,6 +36,20 @@ if vim.fn.isdirectory(undodir) == 0 then
 end
 vim.opt.undodir = undodir
 vim.opt.undofile = true
+
+local swapdir = vim.fn.expand("~/.config/nvim/swap")
+if vim.fn.isdirectory(swapdir) == 0 then
+    vim.fn.mkdir(swapdir, "p")
+end
+vim.opt.directory = swapdir .. '//'
+vim.opt.swapfile = true
+
+local backupdir = vim.fn.expand("~/.config/nvim/backup")
+if vim.fn.isdirectory(backupdir) == 0 then
+    vim.fn.mkdir(backupdir, "p")
+end
+vim.opt.backupdir = backupdir
+vim.opt.backup = true
 
 vim.opt.listchars = {
   tab = "| ",      -- tabs

@@ -6,4 +6,5 @@ source ${SCRIPT_DIR}/../sourceme.sh
 safe_symlink ${SCRIPT_DIR}/.bashrc ${HOME}/.bashrc
 safe_symlink ${SCRIPT_DIR}/.my_bash ${HOME}/.my_bash
 safe_symlink ${SCRIPT_DIR}/.pro_bash ${HOME}/.pro_bash
+safe_symlink ${SCRIPT_DIR}/.scripts ${HOME}/.scripts
 touch ${HOME}/.pro_bash/hush.bash
