@@ -14,7 +14,7 @@ show_help() {
 
     Options:
         -h  Show this help message and exit
-        -r  Path to project root directory
+        -r  Absolute path to project root directory
         -f  Path to compile_flags.txt
 
 HELP
@@ -56,6 +56,14 @@ if [ -z "$flag_file" ]; then
     exit 4
 fi
 
+# clangd needs absolute paths to reliably resolve files
+if [[ "$root_dir" == "." || "$root_dir" == "./"* ]]; then
+    root_dir=$(realpath -s -m "$root_dir")
+    echo -e "\tUse absolute path: $root_dir"
+fi
+
+# It seems ok for compile_flags to have relative paths
+# However it could be parsed to also transform relative to absolute paths
 flags=$(cat "$flag_file" | tr '\n' ' ')
 json_db=$(echo "$root_dir"/compile_commands.json)
 

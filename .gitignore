@@ -12,3 +12,4 @@ neovim/nvim/swap
 *.log
 *.netrwhist
 bash/.bash_local.d/*
+*~
