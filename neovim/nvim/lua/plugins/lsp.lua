@@ -6,9 +6,6 @@ now(function()
         source = "neovim/nvim-lspconfig",
     })
 
-    local lspconfig = require("lspconfig")
-    local caps = vim.lsp.protocol.make_client_capabilities()
-
     -- Global lsp config ----------------------------------------------
 
     -- Always let space for diagnostics, signs, etc
@@ -39,91 +36,48 @@ now(function()
         end,
     })
 
-    -- Add autocompletion for all languages (disabled for mini)
-    -- local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-    -- Change diagnostic symbols in the sign column (gutter)
-    local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-    for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-    end
-
-    -- Per language config --------------------------------------------
-
-    -- Rust
-    lspconfig.rust_analyzer.setup({
-        capabilities = caps,
-        settings = {
-            ["rust-analyzer"] = {
-                chechOnSave = {
-                    command = "clippy",
-                },
+    -- Highlight entire line for errors
+    -- Highlight the line number for warnings
+    vim.diagnostic.config({
+        signs = {
+            text = {
+                [vim.diagnostic.severity.ERROR] = " ",
+                [vim.diagnostic.severity.WARN] = " ",
+                [vim.diagnostic.severity.HINT] = " ",
+                [vim.diagnostic.severity.INFO] = " ",
+            },
+            linehl = {
+                [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
+            },
+            numhl = {
+                [vim.diagnostic.severity.WARN] = 'WarningMsg',
             },
         },
-    })
-
-    -- C/C++ (requires cmake OR bear+Makefile OR compile_flags.txt)
-    lspconfig.clangd.setup({
-        capabilities = caps,
-        cmd = {
-            "clangd",
-            "--background-index",
-            "--clang-tidy",
-            "--header-insertion=iwyu",
-            "--all-scopes-completion",
-            "--completion-style=detailed",
-            "--function-arg-placeholders",
-            "--fallback-style=llvm",
-        },
-        init_options = {
-                usePlaceholders = true,
-                completeUnimported = true,
-                clangdFileStatus = true
-        },
-    })
-
-    -- Bash
-    -- lspconfig.bashls.setup({
-    --     capabilities = caps,
-    -- })
-
-    -- Lua (Neovim)
-    lspconfig.lua_ls.setup({
-        capabilities = caps,
-        on_init = function(client)
-            if client.workspace_folders then
-                local path = client.workspace_folders[1].name
-                if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
-                    return
-                end
-            end
-
-            client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
-                runtime = {
-                    -- Tell the language server which version of Lua you're using
-                    -- (most likely LuaJIT in the case of Neovim)
-                    version = "LuaJIT",
-                },
-                diagnostics = {
-                    globals = { "vim" },
-                    workspaceDelay = -1,
-                },
-                -- Make the server aware of Neovim runtime files
-                workspace = {
-                    checkThirdParty = false,
-                    library = {
-                        vim.env.VIMRUNTIME,
-                    },
-                },
-                telemetry = {
-                    enable = false,
-                },
-            })
-        end,
-        settings = {
-            Lua = {},
-        },
+        virtual_text = true,
     })
 end)
 
+-- Easily install LSP/DAP/Linters
+now(function()
+    add({
+        source = "mason-org/mason.nvim",
+    })
+    require("mason").setup{}
+end)
+
+now(function()
+    add({
+        source = "mason-org/mason-lspconfig.nvim",
+        depends = {"mason-org/mason.nvim"},
+    })
+    require("mason-lspconfig").setup{
+        ensure_installed = {
+            -- no rust_analyzer: shall use the one installed with rust
+            "lua_ls",
+            "clangd",
+            "bashls",
+            -- shellcheck Linter shall be installed manually
+        },
+        -- automatic_installation = true,
+    }
+end)
