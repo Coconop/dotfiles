@@ -36,6 +36,24 @@ now(function()
         end,
     })
 
+    vim.keymap.set({ "n", "x" }, "<leader>vt", function()
+        local current = vim.diagnostic.config().virtual_text
+        vim.diagnostic.config({ virtual_text = not current })
+        print("virtual_text: " .. tostring(not current))
+    end, {desc = "[V]irtualText [T]ext Diagnostics Toggle"})
+
+    vim.keymap.set({ "n", "x" }, "<leader>vl", function()
+        local current = vim.diagnostic.config().virtual_lines
+        vim.diagnostic.config({ virtual_lines = not current })
+        print("virtual_lines: " .. tostring(not current))
+    end, {desc = "[V]irtual [L]ines Diagnostics Toggle"})
+
+    vim.keymap.set({ "n", "x" }, "<leader>vu", function()
+        local current = vim.diagnostic.config().underline
+        vim.diagnostic.config({ underline = not current })
+        print("underline: " .. tostring(not current))
+    end, {desc = "[V]isual [U]nderlines Diagnostics Toggle"})
+
     -- Highlight entire line for errors
     -- Highlight the line number for warnings
     vim.diagnostic.config({
@@ -53,7 +71,10 @@ now(function()
                 [vim.diagnostic.severity.WARN] = 'WarningMsg',
             },
         },
-        virtual_text = true,
+        -- No distraction by default
+        virtual_text = false,
+        virtual_lines = false,
+        underline = false,
     })
 end)
 
