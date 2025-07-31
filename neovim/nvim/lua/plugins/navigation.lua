@@ -50,6 +50,13 @@ now(function()
     local builtin = require("telescope.builtin")
     vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind [F]iles" })
     vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind [G]rep live" })
+    vim.keymap.set("n", "<leader>fc", function()
+        builtin.live_grep({
+            glob_pattern = "*.{c,h}",
+            -- file_ignore_patterns = { "%.py$", "%.pyx$"},
+            prompt_title = "Live Grep (.c/.h files)",
+        })
+    end, { desc = "[F]ind grep live in [C]" })
     vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "[F]ind [B]uffers" })
     vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "[F]ind [H]elp tags" })
     vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })
