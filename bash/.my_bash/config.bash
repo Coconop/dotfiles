@@ -52,3 +52,6 @@ function addssh() {
 # Workaround when using `pass`: git commands ask for GPG password
 # But pincurse is in conflict with lazygit TTY: do simple fetch to cache pswd
 alias lazygit='git fetch && lazygit'
+
+# Fingers go Vrrrrrooommm
+alias gti='git'
