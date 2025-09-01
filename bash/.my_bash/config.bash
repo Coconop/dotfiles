@@ -45,6 +45,10 @@ stty -ixon
 
 # Launch ssh-agent and add key
 function addssh() {
-  eval $(ssh-agent -s)
+  eval "$(ssh-agent -s)"
   ssh-add ~/.ssh/id_rsa
 }
+
+# Workaround when using `pass`: git commands ask for GPG password
+# But pincurse is in conflict with lazygit TTY: do simple fetch to cache pswd
+alias lazygit='git fetch && lazygit'
