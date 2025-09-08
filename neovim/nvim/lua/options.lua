@@ -90,6 +90,70 @@ vim.g.netrw_hide = 0
 -- Preview files in a vertical split window
 vim.g.netrw_preview = 1
 
+--------------------------------------------------------------------------------
+
 -- TODO copy function to handle icons
 
-vim.g.c_syntax_for_h = 1           -- .h file use C filetype instead of C++
+-- Clipboard configuration
+-- '+' system clipboard register (C-c / C-V)
+-- '*' priamry selection register (select with mouse / middleclick)
+
+local function is_tmux()
+  return vim.env.TMUX ~= nil
+end
+
+if is_tmux() then
+  vim.g.clipboard = {
+    name = 'tmux',
+    copy = {
+      ['+'] = {'tmux', 'load-buffer', '-'},
+      ['*'] = {'tmux', 'load-buffer', '-'},
+    },
+    paste = {
+      ['+'] = {'tmux', 'save-buffer', '-'},
+      ['*'] = {'tmux', 'save-buffer', '-'},
+    },
+    cache_enabled = true,
+  }
+else
+  -- X11 clipboard configuration
+  local function has_command(cmd)
+    return vim.fn.executable(cmd) == 1
+  end
+
+  if has_command('xclip') then
+    vim.g.clipboard = {
+      name = 'xclip',
+      copy = {
+        ['+'] = {'xclip', '-quiet', '-i', '-selection', 'clipboard'},
+        ['*'] = {'xclip', '-quiet', '-i', '-selection', 'primary'},
+      },
+      paste = {
+        ['+'] = {'xclip', '-o', '-selection', 'clipboard'},
+        ['*'] = {'xclip', '-o', '-selection', 'primary'},
+      },
+      cache_enabled = true,
+    }
+  elseif has_command('xsel') then
+    vim.g.clipboard = {
+      name = 'xsel',
+      copy = {
+        ['+'] = {'xsel', '--nodetach', '--input', '--clipboard'},
+        ['*'] = {'xsel', '--nodetach', '--input', '--primary'},
+      },
+      paste = {
+        ['+'] = {'xsel', '--output', '--clipboard'},
+        ['*'] = {'xsel', '--output', '--primary'},
+      },
+      cache_enabled = true,
+    }
+  else
+    vim.opt.clipboard:append("unnamedplus")
+    print("Warning: Neither xclip nor xsel found. Using built-in clipboard.")
+  end
+end
+
+-- .h file use C filetype instead of C++
+vim.g.c_syntax_for_h = 1
+
+

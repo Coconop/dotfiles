@@ -162,6 +162,7 @@ now(function()
         depends = {"mason-org/mason.nvim"},
     })
     require("mason-lspconfig").setup{
+        -- Some system tools are required: unzip and npm
         ensure_installed = {
             -- no rust_analyzer: shall use the one installed with rust
             "lua_ls",
