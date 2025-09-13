@@ -197,6 +197,9 @@ now(function()
         source = 'rebelot/kanagawa.nvim',
 		name = "kanagawa",
     })
+    require('kanagawa').setup({
+        integrations = { telescope = true },
+    })
     vim.cmd([[colorscheme kanagawa]])
 end)
 

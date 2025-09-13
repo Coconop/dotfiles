@@ -94,4 +94,13 @@ now(function()
 		source = "nvim-telescope/telescope-ui-select.nvim",
 	})
     require("telescope").load_extension("ui-select")
+
+    -- Link Telescope highlight groups for consistency in theme
+    vim.api.nvim_set_hl(0, "TelescopeNormal",       { link = "Normal" })
+    vim.api.nvim_set_hl(0, "TelescopeBorder",       { link = "FloatBorder" })
+    vim.api.nvim_set_hl(0, "TelescopePromptNormal", { link = "NormalFloat" })
+    vim.api.nvim_set_hl(0, "TelescopePromptBorder", { link = "FloatBorder" })
+    vim.api.nvim_set_hl(0, "TelescopePromptTitle",  { link = "Title" })
+    vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "Title" })
+    vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { link = "Title" })
 end)
