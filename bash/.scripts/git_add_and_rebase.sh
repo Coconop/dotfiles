@@ -63,8 +63,8 @@ ticket_nb="$(git rev-parse --abbrev-ref HEAD | cut -d '/' -f2 | cut -d '-' -f1,2
 while true; do
     read -rp "$(echo -e "Push on $ticket_nb and rebase on $branch (y/n):")" response
     case "$response" in
-        [Yy]* ) action "$ticket_nb" "$branch";;
-        [Nn]* ) echo "Abort.";;
+        [Yy]* ) action "$ticket_nb" "$branch" && exit 0;;
+        [Nn]* ) echo "Abort." && exit 4;;
         * ) echo -e "Please answer yes or no.";;
     esac
 done
