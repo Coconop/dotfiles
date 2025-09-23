@@ -27,7 +27,9 @@ HELP
 }
 
 action() {
+    set -x
     git add . && git commit -m "[$1] QuickFix" && git push && git rebase -i "$2" && git push --force-with-lease
+    set +x
 }
 
 while getopts 'b:h' opt; do
