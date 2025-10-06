@@ -63,11 +63,12 @@ __set_bash_prompt()
         local None=''
     fi
 
+    local ip=$(hostname -I | awk '{print $1}')
     local clr=""
     local time="\t"
     local cur_dir="\w"
     local is_root="\$"
-    local usr="\u@\h"
+    local usr="\u@${ip}"
     local status="·"
 
     if [[ ${EUID} == 0 ]]; then
@@ -106,7 +107,7 @@ __set_bash_prompt()
     else
         local ssh_ps1="@"
     fi
-    usr="\u${ssh_ps1}\h"
+    usr="\u${ssh_ps1}${ip}"
 
     local PreGitPS1="${clr}[${usr}][${aws_ps1}${HBlu}${time}${clr}]${ven_ps1}[${Whi}${cur_dir}${clr}]("
 
