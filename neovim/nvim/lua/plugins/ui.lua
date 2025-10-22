@@ -200,12 +200,19 @@ now(function()
     require('kanagawa').setup({
         integrations = { telescope = true },
     })
-    vim.cmd([[colorscheme kanagawa]])
+    -- vim.cmd([[colorscheme kanagawa]])
 end)
 
 now(function()
     add({
         source = 'EdenEast/nightfox.nvim',
     })
-    vim.cmd([[colorscheme nightfox]])
+    vim.cmd([[colorscheme nordfox]])
+end)
+
+now(function()
+    add({
+        source = 'gbprod/nord.nvim',
+    })
+    -- vim.cmd([[colorscheme nord]])
 end)
