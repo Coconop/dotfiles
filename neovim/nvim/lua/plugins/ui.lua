@@ -13,6 +13,12 @@ now(function()
     require('mini.icons').mock_nvim_web_devicons()
 end)
 
+-- Keep windows layout when closing a buffer
+now(function()
+    require('mini.bufremove').setup()
+    vim.keymap.set("n", "<leader>bd", ":lua require('mini.bufremove').unshow()<CR>", { desc = "[B]uffer [D]elete" })
+end)
+
 -- Awesome status line
 now(function()
     --- @param trunc_width number trunctates component when screen width is less than trunc_width
@@ -175,7 +181,7 @@ now(function() require('mini.clue').setup({
   },
 }) end)
 
--- Cool colorscheme (until I change it)
+-- Cool colorschemes
 now(function()
     add({
         source = 'catppuccin/nvim',
