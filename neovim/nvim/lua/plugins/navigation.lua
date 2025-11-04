@@ -18,6 +18,8 @@ later(function()
 end)
 
 -- Awesome picker
+-- Note: Ctrl+/ while picking shows telescop default key bindings
+-- Note: Ctr+space allow fuzzy refinment (by filename) during grep search
 now(function()
     add({
         source = 'nvim-telescope/telescope.nvim',
@@ -44,9 +46,48 @@ now(function()
             find_files = {
                 -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
                 find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
+                theme = "ivy",
+                -- layout_config = {
+                --     prompt_position = 'top',
+                --     preview_width  = 0.5,
+                -- }
             },
+            live_grep = {
+                theme = "ivy",
+                debounce = 200, -- default is 100ms
+            },
+            buffers = {
+                theme = "ivy",
+                preview = false,
+                mappings = {
+                    i = {
+                        ['<C-e>'] = 'delete_buffer',
+                    }
+                }
+            },
+            symbols = {
+                theme = "dropdown",
+                layout_config = {
+                    prompt_position = 'top'
+                }
+            },
+            help_tags = {
+                theme = 'ivy'
+            }
         },
     }
+
+    -- Show Line numbers in preview
+    vim.api.nvim_create_autocmd("User", {
+        pattern = "TelescopePreviewerLoaded",
+        callback = function()
+            if vim.bo.filetype ~= "TelescopePrompt" then
+                vim.opt_local.number = true
+            end
+        end,
+    })
+
+    -- Some nice keybindings
     local builtin = require("telescope.builtin")
     vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind [F]iles" })
     vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind [G]rep live" })

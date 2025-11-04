@@ -151,7 +151,7 @@ now(function()
         -- No distraction by default
         virtual_text = false,
         virtual_lines = false,
-        underline = false,
+        underline = true,
     })
 end)
 
