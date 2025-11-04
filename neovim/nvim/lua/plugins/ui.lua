@@ -4,7 +4,7 @@ local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 now(function()
   require('mini.notify').setup()
   vim.notify = require('mini.notify').make_notify()
-  vim.keymap.set("n", "<leader>ns", ":lua require('mini.notify').show_history()<CR>", { desc = "[N]otifications [S]how" })
+  vim.keymap.set("n", "<leader>vn", ":lua require('mini.notify').show_history()<CR>", { desc = "[V]iew [N]otifications" })
 end)
 
 -- Basic icons

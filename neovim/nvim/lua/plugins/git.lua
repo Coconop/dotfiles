@@ -5,8 +5,8 @@ later(function()
     add({
 		source = "rhysd/conflict-marker.vim",
     })
-    vim.keymap.set("n", "<leader>mn", "<cmd>ConflictMarkerNextHunk<cr>", { desc = "[M]erge Conflict [N]ext" })
-    vim.keymap.set("n", "<leader>mp", "<cmd>ConflictMarkerPrevHunk<cr>", { desc = "[M]erge Conflict [P]rev" })
+    vim.keymap.set("n", "<leader>nc", "<cmd>ConflictMarkerNextHunk<cr>", { desc = "[N]ext [C]onflict" })
+    vim.keymap.set("n", "<leader>pc", "<cmd>ConflictMarkerPrevHunk<cr>", { desc = "[P]rev [C]onflict" })
 end)
 
 -- Work with diff hunks
@@ -16,5 +16,5 @@ later(function()
             style = 'sign'
         }
     })
-    vim.keymap.set("n", "<leader>do", ":lua MiniDiff.toggle_overlay()<CR>", { desc = "[D]iff [O]verlay Toogle" })
+    vim.keymap.set("n", "<leader>vh", ":lua MiniDiff.toggle_overlay()<CR>", { desc = "[V]iew [H]unks" })
 end)

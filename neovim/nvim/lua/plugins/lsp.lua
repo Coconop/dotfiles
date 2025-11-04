@@ -106,23 +106,30 @@ now(function()
         end,
     })
 
-    vim.keymap.set({ "n", "x" }, "<leader>vt", function()
+    vim.keymap.set({ "n", "x" }, "<leader>dt", function()
         local current = vim.diagnostic.config().virtual_text
         vim.diagnostic.config({ virtual_text = not current })
         print("virtual_text: " .. tostring(not current))
-    end, {desc = "[V]irtualText [T]ext Diagnostics Toggle"})
+    end, {desc = "[D]iagnostic Virtual [T]ext toogle"})
 
-    vim.keymap.set({ "n", "x" }, "<leader>vl", function()
+    vim.keymap.set({ "n", "x" }, "<leader>dl", function()
         local current = vim.diagnostic.config().virtual_lines
         vim.diagnostic.config({ virtual_lines = not current })
         print("virtual_lines: " .. tostring(not current))
-    end, {desc = "[V]irtual [L]ines Diagnostics Toggle"})
+    end, {desc = "[D]iagnostic Virtual [L]ines toogle"})
 
-    vim.keymap.set({ "n", "x" }, "<leader>vu", function()
+    vim.keymap.set({ "n", "x" }, "<leader>du", function()
         local current = vim.diagnostic.config().underline
         vim.diagnostic.config({ underline = not current })
         print("underline: " .. tostring(not current))
-    end, {desc = "[V]isual [U]nderlines Diagnostics Toggle"})
+    end, {desc = "[D]iagnostic [U]nderline toogle"})
+
+    vim.keymap.set("n", "<leader>nd", function()
+        vim.diagnostic.jump({count=1, float=true}) end,
+        {desc = "[N]ext [D]iagnostic"})
+    vim.keymap.set("n", "<leader>pd", function()
+        vim.diagnostic.jump({count=-1, float=true}) end,
+        {desc = "[P]rev [D]iagnostic"})
 
     -- Highlight entire line for errors
     -- Highlight the line number for warnings
