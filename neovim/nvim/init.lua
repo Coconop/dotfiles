@@ -1,7 +1,9 @@
 -- General (Neo)Vim settings
-require("options")
+require("config.options")
 -- Neovim keybindings
-require("keymaps")
+require("config.keymaps")
+-- Custom autocommands
+require("config.autocmd")
 -- Plugin Manager
 require("config.mini")
 -- Plugins
