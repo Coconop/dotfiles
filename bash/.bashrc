@@ -51,6 +51,9 @@ fi
 
 test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
 
+# System syntax highlight on man pages
+export MANPAGER="less -R --use-color -Dd+r -Du+b"
+
 # Personnal setup
 if [ -d ~/.my_bash ]; then
     for file in ~/.my_bash/*.bash; do
