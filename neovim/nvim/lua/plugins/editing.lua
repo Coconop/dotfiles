@@ -17,3 +17,10 @@ later(function()
     require('mini.trailspace').setup()
     vim.keymap.set("n", "<leader>st", ":lua MiniTrailspace.trim()<CR>", { desc = "[S]pace/[T]rim" })
 end)
+
+-- Detect and adapt indent style (shiftwidth and expandtab)
+now(function()
+    add({
+		source = "tpope/vim-sleuth",
+    })
+end)
