@@ -84,10 +84,10 @@ now(function()
                 { buffer = event.buf, desc = "LSP: " .. desc })
             end
             map("<leader>ld", require("telescope.builtin").lsp_definitions,
-            "goto [D]efinition")
+            "goto [d]efinition")
             map("<leader>lD", vim.lsp.buf.declaration, "goto [D]eclaration")
             map("<leader>lr", require("telescope.builtin").lsp_references,
-            "goto [R]eferences")
+            "goto [r]eferences")
             map("<leader>lI", require("telescope.builtin").lsp_implementations,
             "goto [I]mplementation")
             map("<leader>lt", require("telescope.builtin").lsp_type_definitions,
@@ -95,7 +95,7 @@ now(function()
             map("<leader>ls", require("telescope.builtin").lsp_document_symbols,
             "document [S]ymbols")
             map("<leader>lR", vim.lsp.buf.rename, "[R]ename")
-            map("<leader>lc", vim.lsp.buf.code_action, "[C]ode action", { "n", "x" })
+            map("<leader>lc", vim.lsp.buf.code_action, "[c]ode action", { "n", "x" })
 
             -- clangd specific
             local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -153,6 +153,12 @@ now(function()
         virtual_lines = false,
         underline = true,
     })
+
+    vim.keymap.set({ "n" }, "<leader>i", function()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+        vim.notify(vim.lsp.inlay_hint.is_enabled() and "Inlay Hints Enabled" or "Inlay Hints Disabled")
+    end, {desc = "[i]nlay Hints toggle"})
+
 end)
 
 -- Easily install LSP/DAP/Linters

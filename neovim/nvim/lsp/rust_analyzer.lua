@@ -17,13 +17,45 @@ return {
 
     filetypes : { "rust" },
 
-        settings = {
-            ["rust-analyzer"] = {
-                chechOnSave = {
-                    command = "clippy",
+    settings = {
+        ["rust-analyzer"] = {
+            chechOnSave = {
+                command = "clippy",
+            },
+            inlayHints = {
+                bindingModeHints = {
+                    enable = false,
+                },
+                chainingHints = {
+                    enable = true,
+                },
+                closingBraceHints = {
+                    enable = true,
+                    minLines = 25,
+                },
+                closureReturnTypeHints = {
+                    enable = "never",
+                },
+                lifetimeElisionHints = {
+                    enable = "never",
+                    useParameterNames = false,
+                },
+                maxLength = 25,
+                parameterHints = {
+                    enable = true,
+                },
+                reborrowHints = {
+                    enable = "never",
+                },
+                renderColons = true,
+                typeHints = {
+                    enable = true,
+                    hideClosureInitialization = false,
+                    hideNamedConstructor = false,
                 },
             },
         },
+    },
 
     on_attach = function()
         vim.api.nvim_buf_create_user_command(0, 'LspCargoReload', function()
