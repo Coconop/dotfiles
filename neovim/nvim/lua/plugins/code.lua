@@ -92,7 +92,7 @@ later(function()
     vim.keymap.set("n", "<leader>cf", "<cmd>CsPrompt f<cr>", {desc = "[C]scope Find [f]ile"})
     vim.keymap.set("n", "<leader>ch", "<cmd>CsPrompt i<cr>", {desc = "[C]scope Find #include of this [h]eader"})
     vim.keymap.set("n", "<leader>ca", "<cmd>CsPrompt a<cr>", {desc = "[C]scope Find [a]ssignments"})
-    vim.keymap.set("n", "<leader>cb", "<cmd>CsPrompt b<cr>", {desc = "[C]scope [b]uild DB"})
+    vim.keymap.set("n", "<leader>cb", ":!cscope -bqkvR<cr>", {desc = "[C]scope [b]uild DB"})
 
     -- View call-in Stack hierarchy
     vim.keymap.set("n", "<leader>ci", function()

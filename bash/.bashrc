@@ -52,7 +52,40 @@ fi
 test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
 
 # System syntax highlight on man pages
-export MANPAGER="less -R --use-color -Dd+r -Du+b"
+# --- Nord Theme for less ---
+export LESS='-R'
+
+# Nord palette (256-color approximations)
+NORD0=$'\e[38;5;236m'   # dark polar night
+NORD1=$'\e[38;5;237m'
+NORD2=$'\e[38;5;238m'
+NORD3=$'\e[38;5;239m'
+
+NORD4=$'\e[38;5;252m'   # snow storm (light fg)
+NORD5=$'\e[38;5;253m'
+NORD6=$'\e[38;5;255m'
+
+NORD7=$'\e[38;5;109m'   # frost colors
+NORD8=$'\e[38;5;110m'
+NORD9=$'\e[38;5;111m'
+NORD10=$'\e[38;5;108m'
+
+RESET=$'\e[0m'
+
+# --- less capabilities ---
+export LESS_TERMCAP_mb="$NORD8"                     # blinking → Nord blue
+export LESS_TERMCAP_md="$NORD9"                     # bold → icy blue
+export LESS_TERMCAP_me="$RESET"                     # end bold
+export LESS_TERMCAP_us="$NORD10"                    # underline → Nord greenish
+export LESS_TERMCAP_ue="$RESET"                     # end underline
+
+# Standout (used by man-page section headers)
+export LESS_TERMCAP_so=$'\e[48;5;237m\e[38;5;179m'  # dark bg + Nord yellow
+export LESS_TERMCAP_se="$RESET"                     # end standout
+
+# Optional: better man colors
+export MANPAGER="less -R"
+export MANROFFOPT="-c"
 
 # Personnal setup
 if [ -d ~/.my_bash ]; then
