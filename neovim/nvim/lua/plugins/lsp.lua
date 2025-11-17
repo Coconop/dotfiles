@@ -83,19 +83,23 @@ now(function()
                 vim.keymap.set(mode, keys, func,
                 { buffer = event.buf, desc = "LSP: " .. desc })
             end
-            map("<leader>ld", require("telescope.builtin").lsp_definitions,
+
+            map("<leader>ld", require("fzf-lua").lsp_definitions,
             "goto [d]efinition")
-            map("<leader>lD", vim.lsp.buf.declaration, "goto [D]eclaration")
-            map("<leader>lr", require("telescope.builtin").lsp_references,
+            map("<leader>lh", vim.lsp.buf.declaration, "goto declaration")
+            map("<leader>lr", require("fzf-lua").lsp_references,
             "goto [r]eferences")
-            map("<leader>lI", require("telescope.builtin").lsp_implementations,
+            map("<leader>lI", require("fzf-lua").lsp_implementations,
             "goto [I]mplementation")
-            map("<leader>lt", require("telescope.builtin").lsp_type_definitions,
+            map("<leader>lt", require("fzf-lua").lsp_typedefs,
             "goto [T]ype definition")
-            map("<leader>ls", require("telescope.builtin").lsp_document_symbols,
+            map("<leader>ls", require("fzf-lua").lsp_document_symbols,
             "document [S]ymbols")
             map("<leader>lR", vim.lsp.buf.rename, "[R]ename")
-            map("<leader>lc", vim.lsp.buf.code_action, "[c]ode action", { "n", "x" })
+            map("<leader>la", vim.lsp.buf.code_action, "code [a]ction", { "n", "x" })
+            map("<leader>lci", require("fzf-lua").lsp_incoming_calls, "[I]ncoming calls")
+            map("<leader>lco", require("fzf-lua").lsp_outgoing_calls, "[O]utgoing calls")
+            map("<leader>le", require("fzf-lua").diagnostics_document, "list Diagnostics [e]rrors")
 
             -- clangd specific
             local client = vim.lsp.get_client_by_id(event.data.client_id)

@@ -18,130 +18,21 @@ later(function()
 end)
 
 -- Awesome picker
--- Note: Ctrl+/ while picking shows telescop default key bindings
--- Note: Ctr+space allow fuzzy refinment (by filename) during grep search
 now(function()
     add({
-        source = 'nvim-telescope/telescope.nvim',
-        depends = {'nvim-lua/plenary.nvim'},
-        checkout = '0.1.8'
-
+        source = 'ibhagwan/fzf-lua',
+        depends = {'nvim-mini/mini.icons'},
     })
 
-    require('telescope').setup{
-        defaults = {
-            vimgrep_arguments = {
-                "rg",
-                "--color=never",
-                "--no-heading",
-                "--with-filename",
-                "--line-number",
-                "--column",
-                "--hidden",
-                "--trim",
-                "--glob", "!.git/*",
-            }
-        },
-        pickers = {
-            find_files = {
-                -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
-                find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
-                theme = "ivy",
-                -- layout_config = {
-                --     prompt_position = 'top',
-                --     preview_width  = 0.5,
-                -- }
-            },
-            live_grep = {
-                theme = "ivy",
-                debounce = 200, -- default is 100ms
-            },
-            buffers = {
-                theme = "ivy",
-                preview = false,
-                mappings = {
-                    i = {
-                        ['<C-e>'] = 'delete_buffer',
-                    }
-                }
-            },
-            symbols = {
-                theme = "dropdown",
-                layout_config = {
-                    prompt_position = 'top'
-                }
-            },
-            help_tags = {
-                theme = 'ivy'
-            }
-        },
-    }
-
-    -- Show Line numbers in preview
-    vim.api.nvim_create_autocmd("User", {
-        pattern = "TelescopePreviewerLoaded",
-        callback = function()
-            if vim.bo.filetype ~= "TelescopePrompt" then
-                vim.opt_local.number = true
-            end
-        end,
-    })
-
-    -- Some nice keybindings
-    local builtin = require("telescope.builtin")
-    vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind [F]iles" })
-    vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind [G]rep live" })
-    vim.keymap.set("n", "<leader>fc", function()
-        builtin.live_grep({
-            glob_pattern = "*.{c,h}",
-            -- file_ignore_patterns = { "%.py$", "%.pyx$"},
-            prompt_title = "Live Grep (.c/.h files)",
-        })
-    end, { desc = "[F]ind grep live in [C]" })
-    vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "[F]ind [B]uffers" })
-    vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "[F]ind [H]elp tags" })
-    vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })
-    vim.keymap.set("n", "<leader>fr", builtin.grep_string, { desc = "[F]ind [R]ef under cursor" })
-    vim.keymap.set("n", "<leader>fi", builtin.lsp_incoming_calls, { desc = "[F]ind [I]ncoming calls" })
-    vim.keymap.set("n", "<leader>fo", builtin.lsp_outgoing_calls, { desc = "[F]ind [O]utgoing calls" })
-    vim.keymap.set("n", "<leader>fs", builtin.lsp_document_symbols, { desc = "[F]ind [S]ymbols" })
-    vim.keymap.set("n", "<leader>fR", builtin.resume, { desc = "[F]indings [R]esume" })
+    -- Keybindings
+    vim.keymap.set("n", "<leader>ff", require("fzf-lua").files, { desc = "[F]ind [F]iles" })
+    vim.keymap.set("n", "<leader>fg", require("fzf-lua").live_grep, { desc = "[F]ind [G]rep live" })
+    vim.keymap.set("n", "<leader>fb", require("fzf-lua").buffers, { desc = "[F]ind [B]uffers" })
+    vim.keymap.set("n", "<leader>fh", require("fzf-lua").helptags, { desc = "[F]ind [H]elp tags" })
+    vim.keymap.set("n", "<leader>fr", require("fzf-lua").grep_cword, { desc = "[F]ind [R]ef under cursor" })
+    vim.keymap.set("n", "<leader>fR", require("fzf-lua").resume, { desc = "[F]indings [R]esume" })
     vim.keymap.set("n", "<leader>fn", function()
-        builtin.find_files({ cwd = vim.fn.stdpath("config") })
+        require("fzf-lua").files({ cwd = vim.fn.stdpath("config") })
     end, { desc = "[F]ind [N]eovim files" })
-    vim.keymap.set("n", "<leader>fm", builtin.marks, { desc = "[F]indings [M]arks" })
-    vim.keymap.set("n", "<leader>fz", builtin.current_buffer_fuzzy_find, { desc = "[F]indings Fu[Z]zy" })
-
-    -- Extensions
-
-    -- Custom function to have lazy:'build' or vimplug:'do' equivalent
-    -- It takes param that are passed to 'hooks' (cf mini.deps doc)
-    local function make_fzf_native(params)
-        vim.cmd("lcd " .. params.path)
-        vim.cmd("!make -s")
-        -- vim.cmd("cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release")
-        vim.cmd("lcd -")
-    end
-	add({
-        source = "nvim-telescope/telescope-fzf-native.nvim",
-        hooks = {
-            post_install = make_fzf_native,
-            post_checkout = make_fzf_native
-        },
-    })
-    require("telescope").load_extension("fzf")
-
-	add({
-		source = "nvim-telescope/telescope-ui-select.nvim",
-	})
-    require("telescope").load_extension("ui-select")
-
-    -- Link Telescope highlight groups for consistency in theme
-    vim.api.nvim_set_hl(0, "TelescopeNormal",       { link = "Normal" })
-    vim.api.nvim_set_hl(0, "TelescopeBorder",       { link = "FloatBorder" })
-    vim.api.nvim_set_hl(0, "TelescopePromptNormal", { link = "NormalFloat" })
-    vim.api.nvim_set_hl(0, "TelescopePromptBorder", { link = "FloatBorder" })
-    vim.api.nvim_set_hl(0, "TelescopePromptTitle",  { link = "Title" })
-    vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "Title" })
-    vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { link = "Title" })
+    vim.keymap.set("n", "<leader>fm", require("fzf-lua").marks, { desc = "[F]indings [M]arks" })
 end)

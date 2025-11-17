@@ -38,7 +38,7 @@ later(function()
     add({
         source = "dhananjaylatkar/cscope_maps.nvim",
         depends = {
-            "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
+            "ibhagwan/fzf-lua", -- optional [for picker="fzf-lua"]
         },
     })
     require('cscope_maps').setup({
@@ -49,7 +49,7 @@ later(function()
 
         cscope = {
             exec = "cscope",
-            picker = "telescope", -- Then Ctrl-q to send to quickfix (or Resume Telescope last search)
+            picker = "fzf-lua", -- Then Ctrl-q to send to quickfix
             -- do not open picker for single result, just JUMP
             skip_picker_for_single_result = true,
             -- custom script can be used for db build
