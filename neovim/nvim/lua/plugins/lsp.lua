@@ -163,6 +163,49 @@ now(function()
         vim.notify(vim.lsp.inlay_hint.is_enabled() and "Inlay Hints Enabled" or "Inlay Hints Disabled")
     end, {desc = "[i]nlay Hints toggle"})
 
+    -- Rust analyzer specific (not handled by Mason)
+    vim.lsp.config('rust_analyzer', {
+        settings = {
+            ['rust-analyzer'] = {
+                chechOnSave = {
+                    command = "clippy",
+                },
+                inlayHints = {
+                    bindingModeHints = {
+                        enable = false,
+                    },
+                    chainingHints = {
+                        enable = true,
+                    },
+                    closingBraceHints = {
+                        enable = true,
+                        minLines = 25,
+                    },
+                    closureReturnTypeHints = {
+                        enable = "never",
+                    },
+                    lifetimeElisionHints = {
+                        enable = "never",
+                        useParameterNames = false,
+                    },
+                    maxLength = 25,
+                    parameterHints = {
+                        enable = true,
+                    },
+                    reborrowHints = {
+                        enable = "never",
+                    },
+                    renderColons = true,
+                    typeHints = {
+                        enable = true,
+                        hideClosureInitialization = false,
+                        hideNamedConstructor = false,
+                    },
+                },
+            },
+        },
+    })
+    vim.lsp.enable('rust_analyzer')
 end)
 
 -- Easily install LSP/DAP/Linters
@@ -181,12 +224,11 @@ now(function()
     require("mason-lspconfig").setup{
         -- Some system tools are required: unzip and npm
         ensure_installed = {
-            -- no rust_analyzer: shall use the one installed with rust
+            -- no rust_analyzer: shall use the one installed with rustup
             "lua_ls",
             "clangd",
             "bashls",
             -- shellcheck Linter shall be installed manually
         },
-        -- automatic_installation = true,
     }
 end)
