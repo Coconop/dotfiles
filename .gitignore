@@ -1,9 +1,7 @@
 # Vim files
 *.swp
 *.swo
-vim/.vim/backups
-vim/.vim/plugged
-vim/.vim/undodir
+vim/.vim
 codelldb/codelldb_adapter
 neovim/nvim/lazy-lock.json
 neovim/nvim/undo

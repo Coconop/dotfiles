@@ -56,6 +56,4 @@ sudo make install
 echo -e "Vim successfully installed in [${location}]"
 ${location}/vim --version
 
-echo -e "Installing Plugins..."
-vim -c 'PlugInstall' -c 'qa!'
 cd ${WORK_DIR}
