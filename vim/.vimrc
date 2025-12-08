@@ -34,7 +34,7 @@ set hlsearch            " Highlight search results
 set showcmd
 set showmode
 set showmatch
-set mouse=a             " We never know... 
+set mouse=a             " We never know...
 set clipboard=unnamed,unnamedplus   " best-effort; harmless if not available
 set conceallevel=0      " So that I can see `` in markdown files
 
@@ -123,14 +123,15 @@ let g:colors_name = 'nord-fallback'
 hi Normal       guifg=#D8DEE9 guibg=#2E3440
 hi CursorLine   guibg=#3B4252
 hi LineNr       guifg=#4C566A guibg=#2E3440
+hi CursorLineNr guifg=#EBCB8B
 hi Comment      guifg=#616E88 gui=italic
 hi Constant     guifg=#88C0D0
 hi Identifier   guifg=#EBCB8B
-hi Statement    guifg=#81A1C1
-hi PreProc      guifg=#8FBCBB
-hi Type         guifg=#8FBCBB
+hi Statement    guifg=#B48EAD
+hi PreProc      guifg=#BF616A
+hi Type         guifg=#5E81AC
 hi Special      guifg=#A3BE8C
-hi Todo         guifg=#BF616A guibg=#3B4252 gui=bold
+hi Todo         guifg=#D08770 guibg=#3B4252 gui=bold
 hi Visual       guibg=#434C5E
 hi Search       guifg=#2E3440 guibg=#EBCB8B
 hi StatusLine   guifg=#ECEFF4 guibg=#4C566A
