@@ -1,6 +1,6 @@
 " Standalone .vimrc - no plugins required
 
-set nocompatible            " use Vim defaults
+set nocompatible            " This ain't vi
 
 " -------------------------
 " Basic UI / editing prefs
@@ -149,6 +149,14 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=o
 " But insert comment leader after hitting <CR>
 autocmd FileType * setlocal formatoptions+=r
 
+" Search recursively with find
+set path+=**
+" Use tab to cycle through partial matches
+set wildmenu
+" Jump to tags
+nnoremap <leader>cd <C-]>
+" Jump back with C-O
+
 " -------------------------
 " Bindings
 " -------------------------
@@ -160,8 +168,25 @@ cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 nnoremap <leader>hh :bprevious<CR>
 nnoremap <leader>ll :bnext<CR>
 " Picker muscle memory
-nnoremap <silent> <Leader>ff :Explore<CR>
+nnoremap <silent> <Leader>ee :Explore<CR>
+nnoremap <silent> <Leader>ff :find
 nnoremap <silent> <Leader>fb :ls<CR>:buffer
+
+" Toggle zoom
+function! ToggleZoom()
+  if exists("t:zoomed")
+    " Restore previous layout
+    execute "wincmd ="
+    unlet t:zoomed
+  else
+    " Maximize current window
+    let t:zoomed = 1
+    execute "wincmd _"
+    execute "wincmd |"
+  endif
+endfunction
+nnoremap <leader>z :call ToggleZoom()<CR>
+
 
 " Reselect previously changed, put or yanked text
 nnoremap gV `[v`]
@@ -231,6 +256,7 @@ function MiniStatuslineActive()
   let l:wrap = s:SectionWrap()
   " Diagnostics section is missing as this is a script for Vim
   let l:filename = s:SectionFilename(140)
+  let l:zoomed = s:SectionZoom()
   let l:fileinfo = s:SectionFileinfo(120)
   let l:location = s:SectionLocation()
 
@@ -240,6 +266,7 @@ function MiniStatuslineActive()
     \ {'string': l:wrap,     'hl': v:null},
     \ '%<',
     \ {'string': l:filename, 'hl': '%#MiniStatuslineFilename#'},
+    \ {'string': l:zoomed,   'hl': '%#MiniStatuslineFilename#'},
     \ '%=',
     \ {'string': l:fileinfo, 'hl': '%#MiniStatuslineFileinfo#'},
     \ {'string': l:location, 'hl': l:mode_info['hl']},
@@ -302,6 +329,14 @@ function s:SectionFilename(trunc_width)
     " Use fullpath if not truncated
     return '%F%m%r'
   endif
+endfunction
+
+" Zoom status
+function s:SectionZoom()
+    if exists("t:zoomed")
+        return '(+)'
+    else
+        return ''
 endfunction
 
 function s:SectionFileinfo(trunc_width)
