@@ -27,6 +27,20 @@ vim.opt.cursorline = true
 
 vim.opt.colorcolumn = "80"
 
+-- find and gf will search recursively from cwd
+vim.opt.path:append("**")
+-- ignore common directories
+vim.opt.wildignore:append({
+  "*/node_modules/*",
+  "*/.git/*",
+  "*/build/*",
+  "*/dist/*",
+})
+vim.opt.wildmenu = true
+-- Show completion matches in a popup menu
+vim.opt.wildmode = { "longest:full", "full" }
+vim.opt.wildoptions = { "pum" }
+
 -- Suppresses the intro message on startup
 vim.opt.shortmess:append("I")
 

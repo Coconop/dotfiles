@@ -1,8 +1,10 @@
 # dotfiles
 
-My personnal setup.
+Let me cook
 
-Download some tools and symlink config into `$HOME`.
+Highly experimental terminal-based config.
+
+Most configuration is meant to be symlinked to `$HOME`.
 
 # Dependencies
 
@@ -16,16 +18,10 @@ $ git clone https://github.com/Coconop/dotfiles.git
 $ cd dotfiles
 ```
 
-Explore and launch desired `install.sh` and/or `linkme.sh`
+Explore and launch desired `install.sh` and/or `linkme.sh` (might explode)
 
 # Disclaimer
 
-This serves as a personnal backup, it is NOT intended to be used by anyone else.
-* It may crash on some distributions
-* It is probably buggy
-* It is most likely outdated
-
-Use it at your own risks.
-
-You are free to partially/fully copy whatever you want though.
+This is my own backup that I constantly tweak: it is never meant to be stable.
+It can serve as inspiration for your own config though.
 
