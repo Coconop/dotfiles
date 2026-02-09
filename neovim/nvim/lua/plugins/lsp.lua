@@ -206,6 +206,9 @@ now(function()
         },
     })
     vim.lsp.enable('rust_analyzer')
+    vim.lsp.enable('clangd')
+    vim.lsp.enable('lua_ls')
+    vim.lsp.enable('bashls')
 end)
 
 -- Easily install LSP/DAP/Linters
@@ -217,13 +220,14 @@ now(function()
 end)
 
 now(function()
+    -- Prefer system install (especially on isolated VM)
+    local use_sys_inst = vim.fn.executable("clangd") == 1
     add({
         source = "mason-org/mason-lspconfig.nvim",
         depends = {"mason-org/mason.nvim"},
     })
     require("mason-lspconfig").setup{
-        -- Some system tools are required: unzip and npm
-        ensure_installed = {
+        ensure_installed = use_sys_inst and {} or {
             -- no rust_analyzer: shall use the one installed with rustup
             "lua_ls",
             "clangd",

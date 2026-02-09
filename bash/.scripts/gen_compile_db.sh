@@ -4,6 +4,7 @@ set -e
 
 cmd=$(basename "$0")
 
+
 show_help() {
     cat <<- HELP
     Usage: $cmd -r root_dir -f flags_file
@@ -62,6 +63,11 @@ if [[ "$root_dir" == "." || "$root_dir" == "./"* ]]; then
     echo -e "\tUse absolute path: $root_dir"
 fi
 
+if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]]; then
+    echo -e "\tUse Windows path"
+    root_dir=$(cygpath -m "$root_dir")
+fi
+
 # It seems ok for compile_flags to have relative paths
 # However it could be parsed to also transform relative to absolute paths
 flags=$(cat "$flag_file" | tr '\n' ' ')
@@ -75,7 +81,7 @@ for f in $(find . -name '*.c'); do
     echo "  {" >> "$json_db"
     echo "    \"directory\": \"$root_dir\"," >> "$json_db"
     echo "    \"command\": \"cc $flags -c $f\"," >> "$json_db"
-    echo "    \"file\": \"$root_dir/$f\"" >> "$json_db"
+    echo "    \"file\": \"$f\"" >> "$json_db"
     echo -n "  }" >> "$json_db"
 done
 echo "]" >> "$json_db"

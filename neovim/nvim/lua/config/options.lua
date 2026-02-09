@@ -161,9 +161,22 @@ else
       },
       cache_enabled = true,
     }
+  elseif has_command('win32yank') then
+      vim.g.clipboard = {
+        name = "win32yank",
+        copy = {
+          ["+"] = "win32yank.exe -i --crlf",
+          ["*"] = "win32yank.exe -i --crlf",
+        },
+        paste = {
+          ["+"] = "win32yank.exe -o --lf",
+          ["*"] = "win32yank.exe -o --lf",
+        },
+        cache_enabled = 0,
+      }
   else
     vim.opt.clipboard:append("unnamedplus")
-    print("Warning: Neither xclip nor xsel found. Using built-in clipboard.")
+    print("options.lua: Ooops! No clipboard binary found: using built-in.")
   end
 end
 
