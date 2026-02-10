@@ -208,7 +208,6 @@ now(function()
     vim.lsp.enable('rust_analyzer')
     vim.lsp.enable('clangd')
     vim.lsp.enable('lua_ls')
-    vim.lsp.enable('bashls')
     vim.lsp.enable('pyright')
 end)
 
@@ -236,4 +235,19 @@ now(function()
             -- shellcheck Linter shall be installed manually
         },
     }
+end)
+
+-- Jenkins linter (not a real LSP but kinda)
+now(function()
+    add({
+        source = "ckipp01/nvim-jenkinsfile-linter",
+        depends = {"nvim-lua/plenary.nvim"}
+    })
+
+    local linter = require('jenkinsfile_linter')
+
+    vim.keymap.set('n', '<leader>jl', function()
+        linter.validate()
+    end, { desc = "[J]enkinsfile [L]int" })
+
 end)
