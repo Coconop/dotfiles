@@ -205,10 +205,61 @@ now(function()
             },
         },
     })
-    vim.lsp.enable('rust_analyzer')
-    vim.lsp.enable('clangd')
-    vim.lsp.enable('lua_ls')
-    vim.lsp.enable('pyright')
+
+    vim.keymap.set("n", "<leader>lg", function()
+        vim.notify("Enabling LSP")
+        vim.lsp.enable('rust_analyzer')
+        vim.lsp.enable('clangd')
+        vim.lsp.enable('lua_ls')
+        vim.lsp.enable('pyright')
+    end, { desc = "[L]SP [g]o"})
+
+    vim.keymap.set("n", "<leader>lf", function()
+        vim.notify("Disabling LSP")
+        vim.lsp.disable()
+        for _, client in ipairs(vim.lsp.get_clients()) do
+            client.stop()
+        end
+    end, { desc = "[L]SP [f]inish"})
+
+
+    vim.keymap.set("n", "<leader>sc", function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      local filename = vim.api.nvim_buf_get_name(bufnr)
+
+      vim.fn.jobstart({ "shellcheck", "--format=json", filename }, {
+        stdout_buffered = true,
+        on_stdout = function(_, data)
+          if not data then return end
+          local output = table.concat(data, "\n")
+          local ok, result = pcall(vim.fn.json_decode, output)
+          if not ok or not result then return end
+
+          local diagnostics = {}
+          for _, item in ipairs(result) do
+            table.insert(diagnostics, {
+              lnum = item.line - 1,
+              col = item.column - 1,
+              end_lnum = item.endLine - 1,
+              end_col = item.endColumn,
+              severity = item.level == "error" and vim.diagnostic.severity.ERROR
+                      or item.level == "warning" and vim.diagnostic.severity.WARN
+                      or vim.diagnostic.severity.INFO,
+              message = item.message,
+              source = "shellcheck",
+            })
+          end
+
+          vim.diagnostic.set(vim.api.nvim_create_namespace("shellcheck"), bufnr, diagnostics)
+        end,
+      })
+    end, { desc = "[S]hell[C]heck"})
+
+    -- Global clear (all namespaces)
+    vim.keymap.set("n", "<leader>dc", function()
+        vim.diagnostic.reset(nil, 0)
+    end, { desc = "[D]iagnostic [C]lear"})
+
 end)
 
 -- Easily install LSP/DAP/Linters
