@@ -13,14 +13,15 @@ later(function() require('mini.pairs').setup() end)
 later(function() require('mini.surround').setup() end)
 
 -- Quickly remove trailing spaces
-later(function()
-    require('mini.trailspace').setup()
-    vim.keymap.set("n", "<leader>st", ":lua MiniTrailspace.trim()<CR>", { desc = "[S]pace/[T]rim" })
-end)
+vim.keymap.set("n", "<leader>st", function()
+    local view = vim.fn.winsaveview()
+    vim.cmd([[keeppatterns %s/\s\+$//e]])
+    vim.fn.winrestview(view)
+end, { desc = "[S]pace/[T]rim" })
 
 -- Detect and adapt indent style (shiftwidth and expandtab)
 now(function()
     add({
-		source = "tpope/vim-sleuth",
+	source = "tpope/vim-sleuth",
     })
 end)

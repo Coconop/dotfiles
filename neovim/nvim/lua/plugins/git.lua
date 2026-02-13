@@ -1,13 +1,13 @@
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
--- Easily visualize git conflicts
-later(function()
-    add({
-		source = "rhysd/conflict-marker.vim",
-    })
-    vim.keymap.set("n", "<leader>nc", "<cmd>ConflictMarkerNextHunk<cr>", { desc = "[N]ext [C]onflict" })
-    vim.keymap.set("n", "<leader>pc", "<cmd>ConflictMarkerPrevHunk<cr>", { desc = "[P]rev [C]onflict" })
-end)
+-- Navigate git conflicts
+vim.keymap.set("n", "<leader>nc", function()
+    vim.fn.search("^<<<<<<<\\|^=======\\|^>>>>>>>", "W")
+end, { desc = "[N]ext [C]onflict" })
+
+vim.keymap.set("n", "<leader>pc", function()
+    vim.fn.search("^<<<<<<<\\|^=======\\|^>>>>>>>", "bW")
+end, { desc = "[P]rev [C]onflict" })
 
 -- Work with diff hunks
 later(function()
