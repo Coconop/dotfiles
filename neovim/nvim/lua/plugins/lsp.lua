@@ -214,13 +214,16 @@ later(function()
         vim.lsp.enable('pyright')
     end, { desc = "[L]SP [g]o"})
 
-    vim.keymap.set("n", "<leader>lf", function()
+    vim.keymap.set("n", "<leader>lx", function()
         vim.notify("Disabling LSP")
-        vim.lsp.disable()
         for _, client in ipairs(vim.lsp.get_clients()) do
             client.stop()
         end
-    end, { desc = "[L]SP [f]inish"})
+        vim.lsp.enable('rust_analyzer', false)
+        vim.lsp.enable('clangd', false)
+        vim.lsp.enable('lua_ls', false)
+        vim.lsp.enable('pyright', false)
+    end, { desc = "[L]SP e[x]it"})
 
 
     vim.keymap.set("n", "<leader>sc", function()
