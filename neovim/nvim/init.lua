@@ -1,6 +1,6 @@
 vim.loader.enable()
 
--- General (Neo)Vim settings
+-- General Neovim settings
 require("config.options")
 -- Neovim keybindings
 require("config.keymaps")

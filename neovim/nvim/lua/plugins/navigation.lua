@@ -1,6 +1,6 @@
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
--- Seemless navigation between (Neo)Vim and Tmux panes
+-- Seemless navigation between Neovim and Tmux panes
 now(function()
     add({
         source = 'christoomey/vim-tmux-navigator'

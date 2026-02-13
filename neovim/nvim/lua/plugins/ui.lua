@@ -81,29 +81,6 @@ now(function() require('mini.clue').setup({
 }) end)
 
 -- Cool colorschemes
--- now(function()
---     add({
---         source = 'catppuccin/nvim',
--- 		name = "catppuccin",
---     })
---     -- vim.cmd([[colorscheme catppuccin-mocha]])
--- end)
---
--- now(function()
---     add({
---         source = 'sainnhe/everforest',
--- 		name = "everforest",
---     })
---     -- vim.cmd([[colorscheme everforest]])
--- end)
---
--- now(function()
---     add({
---         source = 'rebelot/kanagawa.nvim',
--- 		name = "kanagawa",
---     })
---     -- vim.cmd([[colorscheme kanagawa]])
--- end)
 
 now(function()
     add({
@@ -112,9 +89,3 @@ now(function()
     vim.cmd([[colorscheme nordfox]])
 end)
 
--- now(function()
---     add({
---         source = 'gbprod/nord.nvim',
---     })
---     -- vim.cmd([[colorscheme nord]])
--- end)

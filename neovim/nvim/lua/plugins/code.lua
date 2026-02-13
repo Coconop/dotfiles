@@ -92,7 +92,17 @@ later(function()
     vim.keymap.set("n", "<leader>cf", "<cmd>CsPrompt f<cr>", {desc = "[C]scope Find [f]ile"})
     vim.keymap.set("n", "<leader>ch", "<cmd>CsPrompt i<cr>", {desc = "[C]scope Find #include of this [h]eader"})
     vim.keymap.set("n", "<leader>ca", "<cmd>CsPrompt a<cr>", {desc = "[C]scope Find [a]ssignments"})
-    vim.keymap.set("n", "<leader>cb", ":!cscope -bqkvR<cr>", {desc = "[C]scope [b]uild DB"})
+
+    vim.keymap.set("n", "<leader>cb", function()
+    vim.notify("Building cscope database...")
+    vim.system({'cscope', '-bqkvR'}, {}, function(result)
+        if result.code == 0 then
+            vim.notify("Cscope database built successfully")
+        else
+            vim.notify("Cscope build failed: " .. (result.stderr or ""), vim.log.levels.ERROR)
+        end
+    end)
+end, {desc = "[C]scope [b]uild DB"})
 
     -- View call-in Stack hierarchy
     vim.keymap.set("n", "<leader>ci", function()
