@@ -1,7 +1,7 @@
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
 -- LSP client goes "Brrrr"
-now(function()
+later(function()
     add({
         source = "neovim/nvim-lspconfig",
     })
@@ -263,14 +263,14 @@ now(function()
 end)
 
 -- Easily install LSP/DAP/Linters
-now(function()
+later(function()
     add({
         source = "mason-org/mason.nvim",
     })
     require("mason").setup{}
 end)
 
-now(function()
+later(function()
     -- Prefer system install (especially on isolated VM)
     local use_sys_inst = vim.fn.executable("clangd") == 1
     add({
@@ -289,7 +289,7 @@ now(function()
 end)
 
 -- Jenkins linter (not a real LSP but kinda)
-now(function()
+later(function()
     add({
         source = "ckipp01/nvim-jenkinsfile-linter",
         depends = {"nvim-lua/plenary.nvim"}

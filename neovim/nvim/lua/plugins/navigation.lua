@@ -18,7 +18,7 @@ later(function()
 end)
 
 -- Awesome picker
-now(function()
+later(function()
     add({
         source = 'ibhagwan/fzf-lua',
         depends = {'nvim-mini/mini.icons'},
