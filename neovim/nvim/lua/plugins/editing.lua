@@ -25,3 +25,17 @@ now(function()
 	source = "tpope/vim-sleuth",
     })
 end)
+
+-- Easy table editor
+add({
+  source = 'SCJangra/table-nvim',
+})
+-- Lazy load it for Markdown
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'markdown',
+  callback = function()
+    require('mini.deps').now(function()
+      require('table-nvim').setup({})
+    end)
+  end,
+})
