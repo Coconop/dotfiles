@@ -7,6 +7,7 @@ neovim/nvim/lazy-lock.json
 neovim/nvim/undo
 neovim/nvim/backup
 neovim/nvim/swap
+neovim/nvim/spell
 *.log
 *.netrwhist
 bash/.bash_local.d/*
