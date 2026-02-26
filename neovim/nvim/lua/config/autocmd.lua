@@ -28,14 +28,6 @@ vim.api.nvim_create_autocmd("VimResized", {
 	command = "wincmd =",
 })
 
--- no auto continue comments on new line
-vim.api.nvim_create_autocmd("FileType", {
-	group = vim.api.nvim_create_augroup("no_auto_comment", {}),
-	callback = function()
-		vim.opt_local.formatoptions:remove({ "c", "r", "o" })
-	end,
-})
-
 -- syntax highlighting for dotenv files
 vim.api.nvim_create_autocmd("BufRead", {
 	group = vim.api.nvim_create_augroup("dotenv_ft", { clear = true }),
@@ -45,7 +37,7 @@ vim.api.nvim_create_autocmd("BufRead", {
 	end,
 })
 
--- show cursorline only in active window enable
+-- show cursor line only in active window enable
 vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
 	group = vim.api.nvim_create_augroup("active_cursorline", { clear = true }),
 	callback = function()
@@ -53,9 +45,9 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
 	end,
 })
 
--- spellcheck in md
+-- spellcheck in md (zg to add, z= to show suggestions)
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "markdown",
-	command = "setlocal spell wrap",
+	command = "setlocal spell wrap", -- enable both spelling and line wrapping
 })
 

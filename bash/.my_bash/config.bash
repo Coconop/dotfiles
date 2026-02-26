@@ -49,6 +49,16 @@ function addssh() {
   ssh-add ~/.ssh/id_rsa
 }
 
+# Fuzzy find a file and open it into nvim, also append the command to history
+function ff() {
+  local file
+  file=$(fzf) || return
+  local cmd="nvim $(printf '%q' "$file")"
+  history -s "$cmd"
+  history -a
+  eval "$cmd"
+}
+
 # Workaround when using `pass`: git commands ask for GPG password
 # But pincurse is in conflict with lazygit TTY: do simple fetch to cache pswd
 alias lazygit='git fetch && lazygit'

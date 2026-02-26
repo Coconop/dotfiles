@@ -1,20 +1,21 @@
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
--- Navigate git conflicts
-vim.keymap.set("n", "<leader>nc", function()
+-- Navigate merge conflicts
+vim.keymap.set("n", "<leader>mn", function()
     vim.fn.search("^<<<<<<<\\|^=======\\|^>>>>>>>", "W")
-end, { desc = "[N]ext [C]onflict" })
+end, { desc = "[M]erge conflict [N]ext" })
 
-vim.keymap.set("n", "<leader>pc", function()
+vim.keymap.set("n", "<leader>mp", function()
     vim.fn.search("^<<<<<<<\\|^=======\\|^>>>>>>>", "bW")
-end, { desc = "[P]rev [C]onflict" })
+end, { desc = "[M]erge conflict [P]rev" })
 
 -- Work with diff hunks
 later(function()
     require('mini.diff').setup({
         view = {
-            style = 'sign'
+            style = 'sign',
+            signs = { add='+', change='~', delete='-'}
         }
     })
-    vim.keymap.set("n", "<leader>vh", ":lua MiniDiff.toggle_overlay()<CR>", { desc = "[V]iew [H]unks" })
+    vim.keymap.set("n", "<leader>md", ":lua MiniDiff.toggle_overlay()<CR>", { desc = "[M]ini [D]iff" })
 end)

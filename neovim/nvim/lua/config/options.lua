@@ -1,71 +1,30 @@
-vim.opt.nu = true
-vim.opt.relativenumber = true
+-- Editor Options
+vim.opt.number = true -- line number
+vim.opt.relativenumber = false -- relative line numbers (set rnu to toggle)
 
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+vim.opt.expandtab = true -- Use spaces instead of actual \t
+vim.opt.tabstop = 4 -- VISUAL \t spaces count
+vim.opt.softtabstop = 4 -- INSERT \t spaces count
+vim.opt.shiftwidth = 4 -- indent-format spaces count
 
-vim.opt.smartindent = true
+vim.opt.autoindent = true -- Copy indent of current lien on new line
+vim.opt.smartindent = true -- Inc/Dec new lines C-style (brackets, keywords...)
 
-vim.opt.wrap = false
+vim.opt.wrap = false -- Don't wrap, jump/search/vsp
 
-vim.opt.hlsearch = true
-vim.opt.incsearch = true
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+vim.opt.hlsearch = true -- highlight matches
+vim.opt.incsearch = true -- show partial matches as typing
+vim.opt.ignorecase = true -- case insensitive search
+vim.opt.smartcase = true -- switch to sensitive if an uppercase is used
+vim.opt.path:append("**") -- recursive file search from CWD for find/gf
 
-vim.opt.termguicolors = true
-
-vim.opt.scrolloff = 8
-vim.opt.signcolumn = "yes"
-vim.opt.isfname:append("@-@")
-
-vim.opt.updatetime = 50
-
-vim.opt.cursorline = true
-
-vim.opt.colorcolumn = "80"
-
--- find and gf will search recursively from cwd
-vim.opt.path:append("**")
--- ignore common directories
-vim.opt.wildignore:append({
-  "*/node_modules/*",
-  "*/.git/*",
-  "*/build/*",
-  "*/dist/*",
-})
-vim.opt.wildmenu = true
--- Show completion matches in a popup menu
-vim.opt.wildmode = { "longest:full", "full" }
-vim.opt.wildoptions = { "pum" }
-
--- Suppresses the intro message on startup
-vim.opt.shortmess:append("I")
-
-local undodir = vim.fn.expand("~/.config/nvim/undo")
-if vim.fn.isdirectory(undodir) == 0 then
-    vim.fn.mkdir(undodir, "p")
-end
-vim.opt.undodir = undodir
-vim.opt.undofile = true
-
-local swapdir = vim.fn.expand("~/.config/nvim/swap")
-if vim.fn.isdirectory(swapdir) == 0 then
-    vim.fn.mkdir(swapdir, "p")
-end
-vim.opt.directory = swapdir .. '//'
-vim.opt.swapfile = true
-
-local backupdir = vim.fn.expand("~/.config/nvim/backup")
-if vim.fn.isdirectory(backupdir) == 0 then
-    vim.fn.mkdir(backupdir, "p")
-end
-vim.opt.backupdir = backupdir
-vim.opt.backup = true
-
-vim.opt.listchars = {
+vim.opt.termguicolors = true -- enables 24-bit RGB color inthe TUI
+vim.opt.scrolloff = 8 -- How many screen lines to keep above and below cursor
+vim.opt.signcolumn = "yes" -- always show a sign column (for LSP/git/...)
+vim.opt.iskeyword:append("-") -- include '-' in word text-object
+vim.opt.cursorline = true -- highligh the line the cursor is on
+vim.opt.colorcolumn = "80" -- The old school 80 char per line rule
+vim.opt.listchars = { -- invisible chars to display (set list/nolist)
   tab = "| ",      -- tabs
   trail = "_",     -- trailing spaces
   extends = ">",   -- line extends past the window
@@ -73,6 +32,45 @@ vim.opt.listchars = {
   nbsp = "~",      -- Non-breaking space
   eol = "$",       -- Line feeds
 }
+
+vim.opt.updatetime = 1000 -- ms of inactivity before writing swap to disk
+vim.opt.wildignore:append({-- ignore common directories
+  "*/node_modules/*",
+  "*/.git/*",
+  "*/build/*",
+  "*/dist/*",
+})
+vim.opt.wildmenu = true -- tab triggers completion
+vim.opt.wildmode = { "longest:full", "full" } -- complete to longest match
+vim.opt.wildoptions = { "pum" } -- show completion in pop-up menu
+
+vim.opt.shortmess:append("I") -- no intro message on startup
+vim.opt.autoread = true -- auto-reload changes outside of neovim
+
+-- Save 'undo' actions in directory (create it if needed)
+local undodir = vim.fn.expand("~/.config/nvim/undo")
+if vim.fn.isdirectory(undodir) == 0 then
+    vim.fn.mkdir(undodir, "p")
+end
+vim.opt.undodir = undodir
+vim.opt.undofile = true
+
+-- Save swap files in specific directory (create it if needed)
+local swapdir = vim.fn.expand("~/.config/nvim/swap")
+if vim.fn.isdirectory(swapdir) == 0 then
+    vim.fn.mkdir(swapdir, "p")
+end
+vim.opt.directory = swapdir .. '//'
+vim.opt.swapfile = true
+
+-- Store backups in specific directory (create if needed)
+local backupdir = vim.fn.expand("~/.config/nvim/backup")
+if vim.fn.isdirectory(backupdir) == 0 then
+    vim.fn.mkdir(backupdir, "p")
+end
+vim.opt.backupdir = backupdir
+vim.opt.backup = true
+
 
 -- Netrw customization stolen from doom-nvim
 -- https://github.com/doom-neovim/doom-nvim/blob/main/lua/doom/modules/features/netrw/init.lua
