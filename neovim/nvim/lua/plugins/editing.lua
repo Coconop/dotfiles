@@ -19,13 +19,6 @@ vim.keymap.set("n", "<leader>st", function()
     vim.fn.winrestview(view)
 end, { desc = "[S]pace/[T]rim" })
 
--- Detect and adapt indent style (shiftwidth and expandtab)
-now(function()
-    add({
-	source = "tpope/vim-sleuth",
-    })
-end)
-
 -- Easy table editor
 add({
   source = 'SCJangra/table-nvim',

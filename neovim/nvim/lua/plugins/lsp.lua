@@ -99,7 +99,6 @@ later(function()
             map("<leader>la", vim.lsp.buf.code_action, "code [a]ction", { "n", "x" })
             map("<leader>lci", require("fzf-lua").lsp_incoming_calls, "[I]ncoming calls")
             map("<leader>lco", require("fzf-lua").lsp_outgoing_calls, "[O]utgoing calls")
-            map("<leader>le", require("fzf-lua").diagnostics_document, "list Diagnostics [e]rrors")
 
             -- clangd specific
             local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -109,6 +108,14 @@ later(function()
             end
         end,
     })
+
+    vim.keymap.set("n", "<leader>dt", function()
+        vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+    end, { desc = "[D]iagnostic [T]oggle" })
+
+    vim.keymap.set("n", "<leader>dl", function()
+        require("fzf-lua").diagnostics_document()
+    end, { desc = "[D]iagnostic [L]ist" })
 
     vim.keymap.set({ "n", "x" }, "<leader>dvt", function()
         local current = vim.diagnostic.config().virtual_text
@@ -212,6 +219,7 @@ later(function()
         vim.lsp.enable('clangd')
         vim.lsp.enable('lua_ls')
         vim.lsp.enable('pyright')
+        -- vim.lsp.enable('groovyls')
     end, { desc = "[L]SP [g]o"})
 
     vim.keymap.set("n", "<leader>lx", function()
@@ -301,7 +309,10 @@ later(function()
     local linter = require('jenkinsfile_linter')
 
     vim.keymap.set('n', '<leader>jl', function()
+        vim.diagnostic.enable(true)
+        vim.diagnostic.config({ virtual_text = true })
         linter.validate()
+        vim.diagnostic.jump({count=1, float=true})
     end, { desc = "[J]enkinsfile [L]int" })
 
 end)
