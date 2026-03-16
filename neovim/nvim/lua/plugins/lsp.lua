@@ -27,10 +27,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
             require("fzf-lua").lsp_implementations()
         end, {buffer = event.buf, desc = "[L]SP [I]mplementations" })
 
-        vim.keymap.set("n", "<leader>lt", function()
-            require("fzf-lua").lsp_typedefs()
-        end, {buffer = event.buf, desc = "[L]SP [t]ypedefs" })
-
         vim.keymap.set("n", "<leader>lR", function()
             vim.lsp.buf.rename()
         end, {buffer = event.buf, desc = "[L]SP [R]ename" })
@@ -116,10 +112,10 @@ vim.keymap.set({ "n", "x" }, "<leader>du", function()
 end, {desc = "[D]iagnostic [U]nderline toogle"})
 
 
--- Global clear (all namespaces)
+-- Clear all diagnostics
 vim.keymap.set("n", "<leader>dc", function()
-    vim.diagnostic.reset(nil, 0)
-end, { desc = "[D]iagnostic [C]lear"})
+    vim.diagnostic.reset()
+end, { desc = "[D]iagnostic [C]lear ALL"})
 
 
 --- Lsp toogle (disabled by default for fast edit) -----------------------------
@@ -149,35 +145,40 @@ end, { desc = "[L]SP e[x]it"})
 
 --- ShellCheck
 vim.keymap.set("n", "<leader>lts", function()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local filename = vim.api.nvim_buf_get_name(bufnr)
+    local bufnr = vim.api.nvim_get_current_buf()
+    local filename = vim.api.nvim_buf_get_name(bufnr)
 
-  vim.fn.jobstart({ "shellcheck", "--format=json", filename }, {
-    stdout_buffered = true,
-    on_stdout = function(_, data)
-      if not data then return end
-      local output = table.concat(data, "\n")
-      local ok, result = pcall(vim.fn.json_decode, output)
-      if not ok or not result then return end
+    vim.fn.jobstart({ "shellcheck", "--format=json", filename }, {
+        stdout_buffered = true,
+        on_stdout = function(_, data)
+            if not data then return end
+            local output = table.concat(data, "\n")
+            local ok, result = pcall(vim.fn.json_decode, output)
+            if not ok or not result then return end
 
-      local diagnostics = {}
-      for _, item in ipairs(result) do
-        table.insert(diagnostics, {
-          lnum = item.line - 1,
-          col = item.column - 1,
-          end_lnum = item.endLine - 1,
-          end_col = item.endColumn,
-          severity = item.level == "error" and vim.diagnostic.severity.ERROR
-                  or item.level == "warning" and vim.diagnostic.severity.WARN
-                  or vim.diagnostic.severity.INFO,
-          message = item.message,
-          source = "shellcheck",
-        })
-      end
+            local diagnostics = {}
+            for _, item in ipairs(result) do
+                table.insert(diagnostics, {
+                    lnum = item.line - 1,
+                    col = item.column - 1,
+                    end_lnum = item.endLine - 1,
+                    end_col = item.endColumn,
+                    severity = item.level == "error" and vim.diagnostic.severity.ERROR
+                        or item.level == "warning" and vim.diagnostic.severity.WARN
+                        or vim.diagnostic.severity.INFO,
+                    message = item.message,
+                    source = "shellcheck",
+                })
+            end
 
-      vim.diagnostic.set(vim.api.nvim_create_namespace("shellcheck"), bufnr, diagnostics)
-    end,
-  })
+            vim.diagnostic.reset(vim.api.nvim_get_namespaces()["shellcheck"], bufnr)
+            vim.diagnostic.set(vim.api.nvim_create_namespace("shellcheck"), bufnr, diagnostics)
+            vim.diagnostic.enable(true)
+            vim.diagnostic.config({ virtual_text = false })
+            vim.diagnostic.config({ virtual_lines = true })
+            vim.diagnostic.jump({count=1, float=true})
+        end,
+    })
 end, { desc = "Lint: [S]hellCheck"})
 
 --- CodeNarc
@@ -245,15 +246,10 @@ local function set_diagnostics(output)
 
     -- Clear old diagnostics and set new ones
     for buf, diags in pairs(diagnostics_by_buf) do
+        vim.diagnostic.reset(ns, buf)
         vim.diagnostic.set(ns, buf, diags)
     end
 end
-
-vim.keymap.set("n", "<leader>ltx", function()
-  local nsc = vim.api.nvim_create_namespace("codenarc")
-  local nss = vim.api.nvim_create_namespace("shellcheck")
-  vim.diagnostic.reset(ns, vim.api.nvim_get_current_buf())
-end, { desc = "Lint: Clear diagnostics" })
 
 vim.keymap.set("n", "<leader>ltc", function()
     local codenarc_dir = vim.fs.joinpath(vim.fn.expand("~"), "git", "codenarc")
@@ -303,7 +299,9 @@ vim.keymap.set("n", "<leader>ltc", function()
     })
 
     vim.diagnostic.enable(true)
+    vim.diagnostic.config({ virtual_text = false })
     vim.diagnostic.config({ virtual_lines = true })
+    vim.diagnostic.jump({count=1, float=true})
 
 end, { desc = "Lint: [C]odeNarc"})
 
@@ -318,7 +316,8 @@ later(function()
 
     vim.keymap.set('n', '<leader>ltj', function()
         vim.diagnostic.enable(true)
-        vim.diagnostic.config({ virtual_text = true })
+        vim.diagnostic.config({ virtual_text = false })
+        vim.diagnostic.config({ virtual_line = true })
         linter.validate()
         vim.diagnostic.jump({count=1, float=true})
     end, { desc = "Lint: [J]enkins" })
