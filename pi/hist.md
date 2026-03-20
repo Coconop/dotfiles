@@ -65,7 +65,7 @@ make CMAKE_BUILD_TYPE=RelWithDebInfo
 cd build && cpack -G DEB && sudo dpkg -i nvim-linux-arm64.deb
 ```
 
-`arm64` because `aarch64` returned by
+`arm64` because `aarch64` returned by:
 ``` bash
 uname-m
 # or
@@ -83,7 +83,57 @@ cli:
 cargo install --locked tree-sitter-cli
 ```
 
+Careful with api break -> `checkout v0.9.3`
+
 
 # dotfiles
 
 https://github.com/Coconop/dotfiles.git
+
+# docker
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+# HOMELAB
+
+## External hard drive
+
+```bash
+# Harddrive
+lsblk
+
+# Custom mount point
+sudo mkdir -p /mnt/media
+
+# Format
+# sudo mkfs.ext4 /dev/sda1
+
+# Get the UUID for auto-mount
+sudo blkid /dev/sda1
+```
+
+if windows ntfs:
+
+`sudo apt install ntfs-3g`
+Edit `/etc/fstab`
+```bash
+UUID=xxxx-xxxx  /mnt/media  ntfs-3g  defaults,nofail,uid=1000,gid=1000,umask=0022  0  0
+```
+
+Bus-powered: append to /boot/firmware/config.txt: `max_usb_current=1` for give it that sweet 1.2A
+
+## Media center
+
+make a docker-compose.yml with jellyfin as media center and bazarr for subtitles fetcher
+
+## Library population
+No auto download from pi
+```bash
+rsync -avh --progress MY_MOVIE.mkv USER@REMOTE:/mnt/media/movies/
+```
+
+
