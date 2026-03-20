@@ -122,6 +122,7 @@ end)
 later(function()
 	add({
         source = "nvim-treesitter/nvim-treesitter",
+        checkout = 'v0.9.3', -- TODO Remove this line when Neovim v0.12
         hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
     })
     local configs = require("nvim-treesitter.configs")
