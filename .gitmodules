@@ -1,0 +1,3 @@
+[submodule "wintools"]
+	path = wintools
+	url = https://github.com/Coconop/bibinaries.git
