@@ -35,8 +35,25 @@ vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
 
+-- Copy and show filepath of current buffer
 vim.keymap.set("n", "<leader>pf", function()
 	local path = vim.fn.expand("%:p")
 	vim.fn.setreg("+", path) --copy filepath
 	print("file:", path) -- show it
 end, { desc = "[P]ath [F]ile Copy" })
+
+-- Quickly remove trailing spaces
+vim.keymap.set("n", "<leader>st", function()
+    local view = vim.fn.winsaveview()
+    vim.cmd([[keeppatterns %s/\s\+$//e]])
+    vim.fn.winrestview(view)
+end, { desc = "[S]pace/[T]rim" })
+
+-- Navigate merge conflicts
+vim.keymap.set("n", "<leader>mn", function()
+    vim.fn.search("^<<<<<<<\\|^=======\\|^>>>>>>>", "W")
+end, { desc = "[M]erge conflict [N]ext" })
+
+vim.keymap.set("n", "<leader>mp", function()
+    vim.fn.search("^<<<<<<<\\|^=======\\|^>>>>>>>", "bW")
+end, { desc = "[M]erge conflict [P]rev" })
