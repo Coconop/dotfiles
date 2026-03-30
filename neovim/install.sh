@@ -40,11 +40,10 @@ source ${SCRIPT_DIR}/../sourceme.sh
 #    /usr/local/bin/nvim
 #fi
 
-echo "git switch main"
-echo "git fetch origin && git pull"
-echo "git tag -d stable"
-echo "git tag -d nightly"
+echo "git switch master"
+echo "git tag -d stable nightly"
 echo "git fetch origin --prune --tags"
+echo "git pull"
 echo "git checkout stable"
 echo "rm -rf ./build"
 echo "make distclean"
