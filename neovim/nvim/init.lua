@@ -645,3 +645,5 @@ vim.keymap.set('n', '<leader>ltj', function()
     vim.diagnostic.jump({count=1, float=true})
 end, { desc = "Lint: [J]enkins" })
 
+--- Markdown -------------------------------------------------------------------
+require('table-nvim').setup({})
