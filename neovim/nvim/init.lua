@@ -301,13 +301,7 @@ vim.keymap.set("n", "<leader>co", function()
 end, { desc = "[C]scope [o]ut stack call" })
 
 --------- Colorschemes ---------------------------------------------------------
-require('nightfox').setup({
-  options = {
-    styles = {
-      comments = "italic",
-    }
-  }
-})
+require('nightfox').setup()
 vim.cmd("colorscheme nordfox")
 
 -- LSP -------------------------------------------------------------------------
