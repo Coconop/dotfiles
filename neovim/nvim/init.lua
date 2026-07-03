@@ -1,26 +1,15 @@
 -- Optimize loading of lua modules (parse and compile once then use cache)
 vim.loader.enable()
 
+-- Use this with :startuptime to optimize
+-- vim.g.startup_profile = true
+
 -- General Neovim settings
 require("config.options")
 -- Neovim keybindings
 require("config.keymaps")
 -- Custom autocommands
 require("config.autocmd")
-
--- Catch Pack events to define hooks via autocommands
-vim.api.nvim_create_autocmd('PackChanged', { callback = function(ev)
-    -- Retrieve which plugin triggered on which event
-    local name, kind = ev.data.spec.name, ev.data.kind
-
-    -- When Treesitter is upgraded, installed parser shall also be updated
-    if name == 'nvim-treesitter' and kind == 'update' then
-        -- If plugin is not loaded yet, do it before using its command
-        if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
-        -- Update installed parsers
-        vim.cmd('TSUpdate')
-    end
-end })
 
 vim.pack.add({
     -- Lua utilities for Neovim used by other plugins as dependency
@@ -29,8 +18,6 @@ vim.pack.add({
     'https://github.com/ibhagwan/fzf-lua',
     -- Library of minimalistics and independants lua modules
     'https://github.com/nvim-mini/mini.nvim',
-    -- Advanced code parser for text-objects handle and syntax highlight
-    'https://github.com/nvim-treesitter/nvim-treesitter',
     -- Tmux integration for easy windows navigation
     'https://github.com/christoomey/vim-tmux-navigator',
     -- [c] Integration of good old cscope (fallback if no LSP)
@@ -44,7 +31,17 @@ vim.pack.add({
     -- [groovy] Jenkins file linter
     'https://github.com/ckipp01/nvim-jenkinsfile-linter',
     -- Colorscheme collection
-    'https://github.com/EdenEast/nightfox.nvim',
+    'https://github.com/EdenEast/nightfox.nvim', -- nordfox <3
+    'https://github.com/neanias/everforest-nvim',
+    'https://github.com/rebelot/kanagawa.nvim',
+    ---------- Fancy zone: might be deleted ----------
+    -- File Explorer (in addition of mini.files and netrw)
+    'https://github.com/MunifTanjim/nui.nvim',
+    'https://github.com/nvim-neo-tree/neo-tree.nvim',
+
+    -- nvim-treesitter is archived but nvim 0.12+ has native treesitter hl
+    -- If language is not present, use tree-sitter-cli (cargo) 
+    -- and `:TSInstall <lang>`
 })
 
 ------ Mini -------------------------------------------------------------------
@@ -66,6 +63,8 @@ require('mini.completion').setup()
 require('mini.cursorword').setup()
 -- Simple status line
 require('mini.statusline').setup()
+-- Code/text formatting
+require('mini.align').setup()
 
 -- Visualize current scope
 require('mini.indentscope').setup({
@@ -114,12 +113,13 @@ require('mini.diff').setup({
 vim.keymap.set("n", "<leader>md", ":lua MiniDiff.toggle_overlay()<CR>", { desc = "[M]ini [D]iff" })
 
 -- Hybrid filetree viewer with oil/vineagar spirit
+-- Prettier than netrw but neo-tree is the real hotty
 require('mini.files').setup({
     windows = {
         preview = false,
     }
 })
-vim.keymap.set("n", "<leader>ee", ":lua MiniFiles.open()<CR>", { desc = "[E]xplorer" })
+vim.keymap.set("n", "<leader>em", ":lua MiniFiles.open()<CR>", { desc = "[E]xplore [M]ini" })
 
 -- Pretty notifications
 require('mini.notify').setup()
@@ -188,7 +188,7 @@ require('mini.clue').setup({
     },
 })
 
------- Treesitter --------------------------------------------------------------
+------ FZF-LUA--- --------------------------------------------------------------
 require('fzf-lua').setup()
 vim.keymap.set("n", "<leader>ff", require("fzf-lua").files, { desc = "[F]ind [F]iles" })
 vim.keymap.set("n", "<leader>fg", require("fzf-lua").live_grep, { desc = "[F]ind [G]rep live" })
@@ -201,15 +201,6 @@ vim.keymap.set("n", "<leader>fn", function()
     require("fzf-lua").files({ cwd = vim.fn.stdpath("config") })
 end, { desc = "[F]ind [N]eovim files" })
 vim.keymap.set("n", "<leader>fm", require("fzf-lua").marks, { desc = "[F]indings [M]arks" })
-
------- Treesitter --------------------------------------------------------------
-require('nvim-treesitter').setup({
-    ensure_installed = { 
-        "c", "cpp", "lua", "vim", "vimdoc", "rust", "bash", "json", "toml", 
-        "python"},
-    highlight = {enable = true},
-    indent = {enable = true},
-})
 
 ------ cscope_maps -------------------------------------------------------------
 require('cscope_maps').setup({
@@ -236,7 +227,7 @@ require('cscope_maps').setup({
 
 -- Build cscope.files (required to build database)
 vim.keymap.set("n", "<leader>cl", function()
-    local use_fd = os.execute("fd --version > /dev/null 2>&1")
+    local use_fd = vim.fn.system("fd --version > /dev/null 2>&1") == 0
     local cmd
     if use_fd then
         -- List files with fd
@@ -301,8 +292,8 @@ vim.keymap.set("n", "<leader>co", function()
 end, { desc = "[C]scope [o]ut stack call" })
 
 --------- Colorschemes ---------------------------------------------------------
-require('nightfox').setup()
-vim.cmd("colorscheme nordfox")
+-- vim.cmd("colorscheme catppuccin")
+vim.cmd("colorscheme everforest")
 
 -- LSP -------------------------------------------------------------------------
 
@@ -427,6 +418,8 @@ end, { desc = "[D]iagnostic [C]lear ALL"})
 
 --- Lsp toogle (disabled by default for fast edit) -----------------------------
 
+-- groovyls is disabled for current workflow but lsp/groovyls exists
+
 vim.keymap.set("n", "<leader>lg", function()
     vim.notify("Enabling LSP")
     vim.lsp.enable('rust_analyzer')
@@ -483,10 +476,9 @@ vim.keymap.set("n", "<leader>lts", function()
                 })
             end
 
-            vim.diagnostic.reset(
-                vim.api.nvim_get_namespaces()["shellcheck"], bufnr)
-            vim.diagnostic.set(
-                vim.api.nvim_create_namespace("shellcheck"), bufnr, diagnostics)
+            local ns = vim.api.nvim_create_namespace("shellcheck")
+            vim.diagnostic.reset(ns, bufnr)
+            vim.diagnostic.set(ns, bufnr, diagnostics)
             vim.diagnostic.enable(true)
             vim.diagnostic.config({ virtual_text = false })
             vim.diagnostic.config({ virtual_lines = true })
@@ -634,10 +626,32 @@ end, { desc = "Lint: [C]odeNarc"})
 vim.keymap.set('n', '<leader>ltj', function()
     vim.diagnostic.enable(true)
     vim.diagnostic.config({ virtual_text = false })
-    vim.diagnostic.config({ virtual_line = true })
+    vim.diagnostic.config({ virtual_lines = true })
     require('jenkinsfile_linter').validate()
     vim.diagnostic.jump({count=1, float=true})
 end, { desc = "Lint: [J]enkins" })
 
+--- csv ------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "csv",
+  callback = function() require("rainbow_csv").setup() end,
+})
+
 --- Markdown -------------------------------------------------------------------
-require('table-nvim').setup({})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function() require("table-nvim").setup() end,
+})
+
+--- Rust -----------------------------------------------------------------------
+vim.api.nvim_create_autocmd("BufReadPost", {
+  pattern = "Cargo.toml",
+  callback = function() require("crates").setup() end,
+})
+
+--- NeoTree --------------------------------------------------------------------
+require('neo-tree').setup({})
+vim.keymap.set("n", "<leader>et", ":Neotree<CR>", { desc = "[E]xplore Neo[T]ree" })
+
+--- Misc -----------------------------------------------------------------------
+vim.keymap.set("n", "<leader>en", ":Ex<CR>", { desc = "[E]xplore [N]etrw" })
