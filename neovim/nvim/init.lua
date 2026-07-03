@@ -36,11 +36,11 @@ vim.pack.add({
     'https://github.com/rebelot/kanagawa.nvim',
     ---------- Fancy zone: might be deleted ----------
     -- File Explorer (in addition of mini.files and netrw)
-    'https://github.com/MunifTanjim/nui.nvim',
+    'https://github.com/MunifTanjim/nui.nvim', -- dependency of neo-tree
     'https://github.com/nvim-neo-tree/neo-tree.nvim',
 
     -- nvim-treesitter is archived but nvim 0.12+ has native treesitter hl
-    -- If language is not present, use tree-sitter-cli (cargo) 
+    -- If language is not present, use tree-sitter-cli (cargo)
     -- and `:TSInstall <lang>`
 })
 
@@ -63,8 +63,10 @@ require('mini.completion').setup()
 require('mini.cursorword').setup()
 -- Simple status line
 require('mini.statusline').setup()
--- Code/text formatting
+-- Code/text easy alignment
 require('mini.align').setup()
+-- Split (gS) or Join (gJ) arguments
+require('mini.splitjoin').setup()
 
 -- Visualize current scope
 require('mini.indentscope').setup({
@@ -79,17 +81,17 @@ local grp_conflict_mid = minihip.compute_hex_color_group("#cba6f7", 'bg')
 local grp_conflict_end = minihip.compute_hex_color_group("#f9e2af", 'bg')
 require('mini.hipatterns').setup({
     highlighters = {
-        fixme = { 
-            pattern = '%f[%w]()FIXME()%f[%W]', 
+        fixme = {
+            pattern = '%f[%w]()FIXME()%f[%W]',
             group = 'MiniHipatternsFixme' },
         todo  = {
             pattern = '%f[%w]()TODO()%f[%W]',
-            group = 'MiniHipatternsTodo'  
+            group = 'MiniHipatternsTodo'
         },
 
         git_conflict_start = {
             pattern = '^<<<<<<< .*$',
-            group = grp_conflict_start 
+            group = grp_conflict_start
         },
         git_conflict_middle = {
             pattern = '^=======$',
@@ -110,25 +112,86 @@ require('mini.diff').setup({
         signs = { add='+', change='~', delete='-'}
     }
 })
-vim.keymap.set("n", "<leader>md", ":lua MiniDiff.toggle_overlay()<CR>", { desc = "[M]ini [D]iff" })
+vim.keymap.set(
+    "n",
+    "<leader>md",
+    ":lua MiniDiff.toggle_overlay()<CR>",
+    { desc = "[M]ini [D]iff" }
+)
 
--- Hybrid filetree viewer with oil/vineagar spirit
+-- Hybrid filetree viewer, allow oil/vineager file management buffer-like style
 -- Prettier than netrw but neo-tree is the real hotty
 require('mini.files').setup({
     windows = {
-        preview = false,
+        preview = true,
     }
 })
-vim.keymap.set("n", "<leader>em", ":lua MiniFiles.open()<CR>", { desc = "[E]xplore [M]ini" })
+vim.keymap.set(
+    "n",
+    "<leader>em",
+    ":lua MiniFiles.open()<CR>",
+    { desc = "[E]xplore [M]ini" }
+)
 
 -- Pretty notifications
-require('mini.notify').setup()
-vim.notify = require('mini.notify').make_notify()
-vim.keymap.set("n", "<leader>vn", ":lua require('mini.notify').show_history()<CR>", { desc = "[V]iew [N]otifications" })
+local level_icons = {
+    ERROR = '󰅚',
+    WARN  = '󰀪',
+    INFO  = '󰋽',
+    DEBUG = '',
+    TRACE = '✎',
+}
+require('mini.notify').setup({
+    content = {
+        format = function(notif)
+            -- use custom icons
+            local icon = level_icons[notif.level] or '(i)'
+            -- remove trailing CR/LF (usually from external tools)
+            local msg = notif.msg:gsub("[\r\n]+$", "")
+            return string.format('%s %s', icon, msg)
+        end,
+        -- Show more recent notifications first
+        sort = function(notif_arr)
+            table.sort(
+                notif_arr,
+                function(a, b) return a.ts_update > b.ts_update end
+            )
+            return notif_arr
+        end,
+    },
+    window = {
+        winblend = 0,
+        -- wider than the 0.382 default
+        max_width_share = 0.5,
+        config = function()
+            return { border = 'rounded' }
+        end,
+    },
+})
+-- Colorize custom notifications
+vim.notify = require('mini.notify').make_notify(
+  {
+    ERROR = { duration = 5000, hl_group = 'DiagnosticError'  },
+    WARN  = { duration = 5000, hl_group = 'DiagnosticWarn'   },
+    INFO  = { duration = 5000, hl_group = 'DiagnosticInfo'   },
+    DEBUG = { duration = 5000, hl_group = 'DiagnosticHint'   },
+    TRACE = { duration = 5000, hl_group = 'DiagnosticOk'     },
+    OFF   = { duration = 5000, hl_group = 'MiniNotifyNormal' },
+  }
+)
+vim.keymap.set("n", 
+    "<leader>ns",
+    ":lua require('mini.notify').show_history()<CR>",
+    { desc = "[N]otifications [S]how" })
 
 -- Keep windows layout when closing a buffer
 require('mini.bufremove').setup()
-vim.keymap.set("n", "<leader>bd", ":lua require('mini.bufremove').unshow()<CR>", { desc = "[B]uffer [D]elete" })
+vim.keymap.set(
+    "n",
+    "<leader>bd",
+    ":lua require('mini.bufremove').unshow()<CR>",
+    { desc = "[B]uffer [D]elete" }
+)
 
 
 -- Help remember my keybindings
@@ -189,18 +252,31 @@ require('mini.clue').setup({
 })
 
 ------ FZF-LUA--- --------------------------------------------------------------
-require('fzf-lua').setup()
-vim.keymap.set("n", "<leader>ff", require("fzf-lua").files, { desc = "[F]ind [F]iles" })
-vim.keymap.set("n", "<leader>fg", require("fzf-lua").live_grep, { desc = "[F]ind [G]rep live" })
-vim.keymap.set("n", "<leader>fb", require("fzf-lua").buffers, { desc = "[F]ind [B]uffers" })
-vim.keymap.set("n", "<leader>fh", require("fzf-lua").helptags, { desc = "[F]ind [H]elp tags" })
-vim.keymap.set("n", "<leader>fr", require("fzf-lua").grep_cword, { desc = "[F]ind [R]ef under cursor" })
-vim.keymap.set("n", "<leader>fR", require("fzf-lua").resume, { desc = "[F]indings [R]esume" })
-vim.keymap.set("n", "<leader>fp", require("fzf-lua").complete_path, { desc = "Complete [F]uzzy [P]ath" })
-vim.keymap.set("n", "<leader>fn", function()
-    require("fzf-lua").files({ cwd = vim.fn.stdpath("config") })
-end, { desc = "[F]ind [N]eovim files" })
-vim.keymap.set("n", "<leader>fm", require("fzf-lua").marks, { desc = "[F]indings [M]arks" })
+local fzf = require('fzf-lua')
+fzf.setup()
+vim.keymap.set(
+    "n", "<leader>ff", fzf.files,         { desc="[F]ind [F]iles" })
+vim.keymap.set(
+    "n", "<leader>fg", fzf.live_grep,     { desc="[F]ind [G]rep live" })
+vim.keymap.set(
+    "n", "<leader>fb", fzf.buffers,       { desc="[F]ind [B]uffers" })
+vim.keymap.set(
+    "n", "<leader>fh", fzf.helptags,      { desc="[F]ind [H]elp tags" })
+vim.keymap.set(
+    "n", "<leader>fr", fzf.grep_cword,    { desc="[F]ind [R]ef under cursor" })
+vim.keymap.set(
+    "n", "<leader>fR", fzf.resume,        { desc="[F]indings [R]esume" })
+vim.keymap.set(
+    "n", "<leader>fp", fzf.complete_path, { desc="Complete [F]uzzy [P]ath" })
+vim.keymap.set(
+    "n", "<leader>fm", fzf.marks,         { desc="[F]indings [M]arks" })
+vim.keymap.set(
+    "n", "<leader>fn",
+    function()
+        require("fzf-lua").files({ cwd = vim.fn.stdpath("config") })
+    end,
+    { desc = "[F]ind [N]eovim files" }
+)
 
 ------ cscope_maps -------------------------------------------------------------
 require('cscope_maps').setup({
@@ -241,17 +317,17 @@ vim.keymap.set("n", "<leader>cl", function()
     vim.fn.system(cmd)
 
     -- Notify the user
-    print("cscope.files generated")
+    vim.notify("cscope.files generated")
 end, { desc = "[C]scope [l]ist files for DB gen" })
 
 -- Use my own keymaps for better muscle memory
-vim.keymap.set("n", "<leader>cs", "<cmd>CsPrompt s<cr>", 
+vim.keymap.set("n", "<leader>cs", "<cmd>CsPrompt s<cr>",
     {desc = "[C]scope Find [s]ymbol"})
-vim.keymap.set("n", "<leader>cd", "<cmd>CsPrompt g<cr>", 
+vim.keymap.set("n", "<leader>cd", "<cmd>CsPrompt g<cr>",
     {desc = "[C]scope GoTo [d]efinition"})
-vim.keymap.set("n", "<leader>cI", "<cmd>CsPrompt c<cr>", 
+vim.keymap.set("n", "<leader>cI", "<cmd>CsPrompt c<cr>",
     {desc = "[C]scope Find Caller ([i]n)"})
-vim.keymap.set("n", "<leader>cO", "<cmd>CsPrompt d<cr>", 
+vim.keymap.set("n", "<leader>cO", "<cmd>CsPrompt d<cr>",
     {desc = "[C]scope Find Callee ([o]ut)"})
 vim.keymap.set("n", "<leader>ct", "<cmd>CsPrompt t<cr>",
     {desc = "[C]scope Find [t]ext string"})
@@ -265,13 +341,13 @@ vim.keymap.set("n", "<leader>ca", "<cmd>CsPrompt a<cr>",
     {desc = "[C]scope Find [a]ssignments"})
 
 vim.keymap.set("n", "<leader>cb", function()
-    vim.notify("Building cscope database...")
+    vim.notify("Building cscope database...", vim.log.levels.INFO)
     vim.system({'cscope', '-bqkvR'}, {}, function(result)
         if result.code == 0 then
             vim.notify("Cscope database built successfully")
         else
             vim.notify(
-                "Cscope build failed: " .. (result.stderr or ""), 
+                "Cscope build failed: " .. (result.stderr or ""),
                 vim.log.levels.ERROR)
         end
     end)
@@ -292,7 +368,7 @@ vim.keymap.set("n", "<leader>co", function()
 end, { desc = "[C]scope [o]ut stack call" })
 
 --------- Colorschemes ---------------------------------------------------------
--- vim.cmd("colorscheme catppuccin")
+-- vim.cmd("colorscheme catppuccin") -- now bundled within neovim <3
 vim.cmd("colorscheme everforest")
 
 -- LSP -------------------------------------------------------------------------
@@ -342,7 +418,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
             vim.notify(
                 vim.lsp.inlay_hint.is_enabled()
-                    and "Inlay Hints Enabled" or "Inlay Hints Disabled")
+                    and "Inlay Hints Enabled" or "Inlay Hints Disabled",
+                vim.log.levels.DEBUG)
         end, {buffer = event.buf, desc = "[L]SP inlay [H]ints toggle" })
 
     end
@@ -353,7 +430,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.keymap.set("n", "<leader>dt", function()
     vim.diagnostic.enable(not vim.diagnostic.is_enabled())
     vim.notify(vim.diagnostic.is_enabled()
-        and "Diagnostics Enabled" or "Diagnostics Disabled")
+        and "Diagnostics Enabled" or "Diagnostics Disabled",
+        vim.log.levels.DEBUG)
 end, { desc = "[D]iagnostic [T]oggle" })
 
 -- navigate diagnostics
@@ -394,19 +472,19 @@ vim.diagnostic.config({
 vim.keymap.set({ "n", "x" }, "<leader>dvt", function()
     local current = vim.diagnostic.config().virtual_text
     vim.diagnostic.config({ virtual_text = not current })
-    print("virtual_text: " .. tostring(not current))
+    vim.notify("virtual_text: " .. tostring(not current), vim.log.levels.DEBUG)
 end, {desc = "[D]iagnostic [V]irtual [T]ext toogle"})
 
 vim.keymap.set({ "n", "x" }, "<leader>dvl", function()
     local current = vim.diagnostic.config().virtual_lines
     vim.diagnostic.config({ virtual_lines = not current })
-    print("virtual_lines: " .. tostring(not current))
+    vim.notify("virtual_lines: " .. tostring(not current), vim.log.levels.DEBUG)
 end, {desc = "[D]iagnostic [V]irtual [L]ines toogle"})
 
 vim.keymap.set({ "n", "x" }, "<leader>du", function()
     local current = vim.diagnostic.config().underline
     vim.diagnostic.config({ underline = not current })
-    print("underline: " .. tostring(not current))
+    vim.notify("underline: " .. tostring(not current), vim.log.levels.DEBUG)
 end, {desc = "[D]iagnostic [U]nderline toogle"})
 
 
@@ -432,7 +510,7 @@ end, { desc = "[L]SP [g]o"})
 vim.keymap.set("n", "<leader>lx", function()
     vim.notify("Disabling LSP")
     for _, client in ipairs(vim.lsp.get_clients()) do
-        client.stop()
+        client:stop()
     end
     vim.lsp.enable('rust_analyzer', false)
     vim.lsp.enable('clangd', false)
@@ -463,13 +541,13 @@ vim.keymap.set("n", "<leader>lts", function()
                     col = item.column - 1,
                     end_lnum = item.endLine - 1,
                     end_col = item.endColumn,
-                    severity = 
-                            item.level == "error" 
+                    severity =
+                            item.level == "error"
                             and vim.diagnostic.severity.ERROR
                         or
                             item.level == "warning"
                             and vim.diagnostic.severity.WARN
-                        or 
+                        or
                             vim.diagnostic.severity.INFO,
                     message = item.message,
                     source = "shellcheck",
@@ -515,7 +593,7 @@ local function parse_codenarc(output)
                     file = current_file,
                     lnum = tonumber(lnum) - 1,  -- Neovim is 0-indexed
                     col = 0,
-                    severity = 
+                    severity =
                         severity_map[priority] or vim.diagnostic.severity.WARN,
                     message = string.format("[%s] %s", rule, msg),
                     source = "codenarc",
@@ -537,11 +615,11 @@ local function set_diagnostics(output)
             local buf_name = vim.api.nvim_buf_get_name(buf):gsub("\\", "/")
             if buf_name:find(d.file, 1, true) then
                 diagnostics_by_buf[buf] = diagnostics_by_buf[buf] or {}
-                local line_content = 
+                local line_content =
                     vim.api.nvim_buf_get_lines(
                         buf, d.lnum, d.lnum + 1, false)[1] or ""
                 -- find first non-space, convert to 0-indexed
-                local col = line_content:find("%S") - 1  
+                local col = line_content:find("%S") - 1
                 table.insert(diagnostics_by_buf[buf], {
                     lnum     = d.lnum,
                     col      = col,
@@ -568,7 +646,7 @@ vim.keymap.set("n", "<leader>ltc", function()
     local deps_slf4j = vim.fs.joinpath(codenarc_dir, "slf4j", "*")
     local deps_gmetrics =vim.fs.joinpath(codenarc_dir, "gmetrics", "*")
     -- \ on windows, / on unix
-    local sep = package.config:sub(1,1) == "\\" and ";" or ":" 
+    local sep = package.config:sub(1,1) == "\\" and ";" or ":"
     local classpath = table.concat(
         {deps_groovy, deps_gmetrics, deps_slf4j, jar},
         sep)
@@ -607,7 +685,7 @@ vim.keymap.set("n", "<leader>ltc", function()
         end,
         on_exit = function(_, code)
             if code ~= 0 then
-                vim.notify("CodeNarc exited with code: " .. 
+                vim.notify("CodeNarc exited with code: " ..
                     code, vim.log.levels.ERROR)
             end
             -- send accumulated output to process
@@ -634,24 +712,24 @@ end, { desc = "Lint: [J]enkins" })
 --- csv ------------------------------------------------------------------------
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "csv",
-  callback = function() require("rainbow_csv").setup() end,
+  callback = function() require("rainbow_csv").setup({}) end,
 })
 
 --- Markdown -------------------------------------------------------------------
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
-  callback = function() require("table-nvim").setup() end,
+  callback = function() require("table-nvim").setup({}) end,
 })
 
 --- Rust -----------------------------------------------------------------------
 vim.api.nvim_create_autocmd("BufReadPost", {
   pattern = "Cargo.toml",
-  callback = function() require("crates").setup() end,
+  callback = function() require("crates").setup({}) end,
 })
 
 --- NeoTree --------------------------------------------------------------------
 require('neo-tree').setup({})
-vim.keymap.set("n", "<leader>et", ":Neotree<CR>", { desc = "[E]xplore Neo[T]ree" })
+vim.keymap.set("n", "<leader>et", ":Neotree<CR>", {desc="[E]xplore Neo[T]ree"})
 
 --- Misc -----------------------------------------------------------------------
 vim.keymap.set("n", "<leader>en", ":Ex<CR>", { desc = "[E]xplore [N]etrw" })

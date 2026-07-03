@@ -6,7 +6,7 @@ local function find_pyright_cfg()
   while true do
     local cfg_path = dir .. "/.pyright_cfg.lua"
     if vim.fn.filereadable(cfg_path) == 1 then
-      vim.notify("Found config: " .. cfg_path .. "]")
+      vim.notify("config: " .. cfg_path, vim.log.levels.TRACE)
       return dofile(cfg_path) -- found: execute and return the config table
     end
     if dir == home then break end -- Do not walk up past HOME
@@ -19,7 +19,8 @@ local function find_pyright_cfg()
 end
 
 local cfg = find_pyright_cfg() or {}
-vim.notify("[" .. vim.inspect(cfg.venv) .. "]" .. vim.inspect(cfg.extraPaths))
+vim.notify("Virtual env: " .. vim.inspect(cfg.venv), vim.log.levels.DEBUG)
+vim.notify("Extra Paths: " .. vim.inspect(cfg.extraPaths), vim.log.levels.TRACE)
 
 return {
     cmd = { "pyright-langserver", "--stdio" },
