@@ -21,7 +21,6 @@ vim.opt.path:append("**") -- recursive file search from CWD for find/gf
 vim.opt.termguicolors = true -- enables 24-bit RGB color inthe TUI
 vim.opt.scrolloff = 8 -- How many screen lines to keep above and below cursor
 vim.opt.signcolumn = "yes" -- always show a sign column (for LSP/git/...)
-vim.opt.iskeyword:append("-") -- include '-' in word text-object
 vim.opt.cursorline = true -- highligh the line the cursor is on
 vim.opt.colorcolumn = "80" -- The old school 80 char per line rule
 vim.opt.listchars = { -- invisible chars to display (set list/nolist)
@@ -71,36 +70,6 @@ end
 vim.opt.backupdir = backupdir
 vim.opt.backup = true
 
-
--- Netrw customization stolen from doom-nvim
--- https://github.com/doom-neovim/doom-nvim/blob/main/lua/doom/modules/features/netrw/init.lua
--- Just for nice UI when opening a directory, for the rest, use mini.files
-
--- Keep the current directory and the browsing directory synced.
--- This helps you avoid the move files error.
-vim.g.netrw_keepdir = 0
-
--- Show directories first (sorting)
-vim.g.netrw_sort_sequence = [[[\/]$,*]]
-
--- Netrw list style
--- 0 : thin listing (one file per line)
--- 1 : long listing (one file per line with timestamp information and file size)
--- 2 : wide listing (multiple files in columns)
--- 3 : tree style listing
-vim.g.netrw_liststyle = 3
-
--- Human-readable files sizes
-vim.g.netrw_sizestyle = "H"
-
--- Show hidden files
--- 0 : show all files
--- 1 : show not-hidden files
--- 2 : show hidden files only
-vim.g.netrw_hide = 0
-
--- Preview files in a vertical split window
-vim.g.netrw_preview = 1
 
 --------------------------------------------------------------------------------
 

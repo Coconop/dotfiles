@@ -33,12 +33,9 @@ vim.pack.add({
     -- Colorscheme collection
     'https://github.com/EdenEast/nightfox.nvim', -- nordfox <3
     'https://github.com/neanias/everforest-nvim',
-    'https://github.com/rebelot/kanagawa.nvim',
-    ---------- Fancy zone: might be deleted ----------
-    -- File Explorer (in addition of mini.files and netrw)
-    'https://github.com/MunifTanjim/nui.nvim', -- dependency of neo-tree
-    'https://github.com/nvim-neo-tree/neo-tree.nvim',
 
+    -- Pimp my netrw
+    'https://github.com/prichrd/netrw.nvim'
     -- nvim-treesitter is archived but nvim 0.12+ has native treesitter hl
     -- If language is not present, use tree-sitter-cli (cargo)
     -- and `:TSInstall <lang>`
@@ -119,20 +116,6 @@ vim.keymap.set(
     { desc = "[M]ini [D]iff" }
 )
 
--- Hybrid filetree viewer, allow oil/vineager file management buffer-like style
--- Prettier than netrw but neo-tree is the real hotty
-require('mini.files').setup({
-    windows = {
-        preview = true,
-    }
-})
-vim.keymap.set(
-    "n",
-    "<leader>em",
-    ":lua MiniFiles.open()<CR>",
-    { desc = "[E]xplore [M]ini" }
-)
-
 -- Pretty notifications
 local level_icons = {
     ERROR = '󰅚',
@@ -179,7 +162,7 @@ vim.notify = require('mini.notify').make_notify(
     OFF   = { duration = 5000, hl_group = 'MiniNotifyNormal' },
   }
 )
-vim.keymap.set("n", 
+vim.keymap.set("n",
     "<leader>ns",
     ":lua require('mini.notify').show_history()<CR>",
     { desc = "[N]otifications [S]how" })
@@ -224,8 +207,8 @@ require('mini.clue').setup({
         { mode = 'n', keys = '<C-w>' },
 
         -- -- `z` key
-        -- { mode = 'n', keys = 'z' },
-        -- { mode = 'x', keys = 'z' },
+        { mode = 'n', keys = 'z' },
+        { mode = 'x', keys = 'z' },
     },
 
     window = {
@@ -246,10 +229,128 @@ require('mini.clue').setup({
         require('mini.clue').gen_clues.registers({
             show_contents = true
         }),
-        require('mini.clue').gen_clues.windows(),
-        -- require('mini.clue').gen_clues.z(),
+        require('mini.clue').gen_clues.windows({
+            submode_move = true,
+            submode_navigate = true,
+            submode_resize = true,
+        }),
+        require('mini.clue').gen_clues.z(),
     },
 })
+
+----
+-- Netrw customization stolen from doom-nvim
+-- https://github.com/doom-neovim/doom-nvim/blob/main/lua/doom/modules/features/netrw/init.lua
+-- Just for nice UI when opening a directory, for the rest, use mini.files
+
+vim.g.netrw_banner = 0
+
+-- Keep the current directory and the browsing directory synced.
+-- (avoid the move files error.)
+vim.g.netrw_keepdir = 0
+
+-- Show directories first (sorting)
+vim.g.netrw_sort_sequence = [[[\/]$,*]]
+
+-- Netrw list style
+-- 0 : thin listing (one file per line)
+-- 1 : long listing (one file per line with timestamp information and file size)
+-- 2 : wide listing (multiple files in columns)
+-- 3 : tree style listing
+vim.g.netrw_liststyle = 3
+
+-- Human-readable files sizes
+vim.g.netrw_sizestyle = "H"
+
+-- Show hidden files
+-- 0 : show all files
+-- 1 : show not-hidden files
+-- 2 : show hidden files only
+vim.g.netrw_hide = 0
+
+-- Preview files in a vertical split window
+vim.g.netrw_preview = 1
+
+-- 0 = open files in the previous window (not split)
+vim.g.netrw_browse_split = 0
+
+-- When netrw open in split, use 25% of screen width
+vim.g.netrw_winsize = 25
+
+-- allow recursive directory deletion/copy
+vim.g.netrw_localrmdir = 'rm -r'
+vim.g.netrw_copydircmd = 'cp -r'
+
+-- highlight special files (exe, links, etc)
+vim.g.netrw_special_syntax = 1
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'netrw',
+  desc = 'Netrw buffer-local keymaps',
+  callback = function(ev)
+    local opts = { buffer = ev.buf, silent = true }
+
+    -- quick close with q, matching most tree plugins
+    vim.keymap.set('n', 'q', '<cmd>close<CR>', opts)
+
+    vim.keymap.set('n', '?', function()
+      local lines = {
+        ' Netrw cheatsheet ',
+        '',
+        ' Navigation',
+        '   -        go up a directory',
+        '   <CR>     open file/dir',
+        '   u / U    go back / forward in history',
+        '   gb       go to previously bookmarked dir',
+        '',
+        ' Marking files (visual selection across lines)',
+        '   mf       mark/unmark file under cursor',
+        '   mu       unmark all marked files',
+        '   mF       mark files matching a pattern',
+        '   mt       set the target directory (for copy/move)',
+        '   mc       copy marked files to target',
+        '   mm       move marked files to target',
+        '   mx       execute a shell command on marked files',
+        '   md       diff marked files',
+        '',
+        ' File/dir ops',
+        '   %        create a new file',
+        '   d        create a new directory',
+        '   D        delete file/dir under cursor (or marked files)',
+        '   R        rename file/dir under cursor (or marked files)',
+        '   gp       chmod file under cursor',
+        '',
+        ' View',
+        '   i        cycle listing style (thin/long/wide/tree)',
+        '   s        cycle sort (name/time/size/ext)',
+        '   r        reverse sort order',
+        '',
+        ' q  close this cheatsheet ',
+      }
+      local width = 0
+      for _, l in ipairs(lines) do width = math.max(width, #l) end
+      local buf = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+      vim.bo[buf].modifiable = false
+      local win = vim.api.nvim_open_win(buf, true, {
+        relative = 'editor',
+        width = width + 2,
+        height = #lines,
+        row = math.floor((vim.o.lines - #lines) / 2),
+        col = math.floor((vim.o.columns - width) / 2),
+        style = 'minimal',
+        border = 'rounded',
+        title = ' netrw help ',
+        title_pos = 'center',
+      })
+      vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = buf })
+      vim.keymap.set('n', '<Esc>', '<cmd>close<CR>', { buffer = buf })
+    end, { buffer = ev.buf, silent = true, desc = 'Netrw cheatsheet' })
+
+  end,
+})
+
+require("netrw").setup({})
 
 ------ FZF-LUA--- --------------------------------------------------------------
 local fzf = require('fzf-lua')
@@ -727,9 +828,3 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function() require("crates").setup({}) end,
 })
 
---- NeoTree --------------------------------------------------------------------
-require('neo-tree').setup({})
-vim.keymap.set("n", "<leader>et", ":Neotree<CR>", {desc="[E]xplore Neo[T]ree"})
-
---- Misc -----------------------------------------------------------------------
-vim.keymap.set("n", "<leader>en", ":Ex<CR>", { desc = "[E]xplore [N]etrw" })

@@ -9,15 +9,15 @@
       "src": "https://github.com/saecki/crates.nvim"
     },
     "cscope_maps.nvim": {
-      "rev": "037b87b259340dc257cd207f6f58fbf9cf84e863",
+      "rev": "2304cc91fc226b8dd0f7074a7c14873061e2ccb9",
       "src": "https://github.com/dhananjaylatkar/cscope_maps.nvim"
     },
     "everforest-nvim": {
-      "rev": "d235ca0aa6a29546e661a020e2618612acbbffbe",
+      "rev": "a0e9edc57379e8feafc6ba207c26dbb12fc1b6d8",
       "src": "https://github.com/neanias/everforest-nvim"
     },
     "fzf-lua": {
-      "rev": "09880d502bc76f1e025fdbdcaeff44650f7ea78a",
+      "rev": "28440c741e927592877514fba3db21eb188caec8",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "kanagawa.nvim": {
@@ -25,15 +25,19 @@
       "src": "https://github.com/rebelot/kanagawa.nvim"
     },
     "mini.nvim": {
-      "rev": "c5cdbadeb423ff724e27a42ab2d1c504d1d6fc5a",
+      "rev": "8bf5c57bc82dd590932faa41bfde9fd6d40a9433",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "neo-tree.nvim": {
-      "rev": "b01ee1769144c4491ea44bc329cb84040e9793be",
+      "rev": "86e95be4ad1ae5e6f90c809399c9704446e7e86c",
       "src": "https://github.com/nvim-neo-tree/neo-tree.nvim"
     },
+    "netrw.nvim": {
+      "rev": "3f643df59951d9adc4cf348cefe435fcdb5a3671",
+      "src": "https://github.com/prichrd/netrw.nvim"
+    },
     "nightfox.nvim": {
-      "rev": "26b61b1f856ec37cae3cb64f5690adb955f246a1",
+      "rev": "4dacd3f0185a2227bdf3b6c0975a8f0bf87cac9a",
       "src": "https://github.com/EdenEast/nightfox.nvim"
     },
     "nui.nvim": {
