@@ -11,9 +11,10 @@ require("config.keymaps")
 -- Custom autocommands
 require("config.autocmd")
 
+-- To remove a plugin
+-- `:lua vim.pack.update()` to get the list -> spot `not active`
+-- `:lua vim.pack.del({'plug1.nvim', 'plug2-nvim'})`
 vim.pack.add({
-    -- Lua utilities for Neovim used by other plugins as dependency
-    'https://github.com/nvim-lua/plenary.nvim',
     -- Fuzzy-finder picker
     'https://github.com/ibhagwan/fzf-lua',
     -- Library of minimalistics and independants lua modules
