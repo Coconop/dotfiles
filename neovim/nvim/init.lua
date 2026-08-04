@@ -833,3 +833,15 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 --- Diff -----------------------------------------------------------------------
 require("diffbandit").setup()
+
+--- Tweaks ---------------------------------------------------------------------
+--- Fix shell commands for Neovim launched from Windows GitBash
+if vim.fn.has('win32') == 1 and vim.fn.executable('bash') == 1 then
+  vim.o.shell = 'bash' -- 'C:/Program Files/Git/bin/bash.exe'
+  vim.o.shellcmdflag = '-c'
+  vim.o.shellxquote = '' -- clears the cmd.exe-style quoting that breaks bash
+  vim.o.shellquote = ''
+  vim.o.shellredir = '>%s 2>&1'
+  vim.o.shellpipe = '2>&1 | tee'
+  vim.o.shellslash = true -- optional: makes Neovim use / instead of \ internally
+end
