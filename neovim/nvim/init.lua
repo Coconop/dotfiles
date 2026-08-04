@@ -33,9 +33,12 @@ vim.pack.add({
     -- Colorscheme collection
     'https://github.com/EdenEast/nightfox.nvim', -- nordfox <3
     'https://github.com/neanias/everforest-nvim',
+    -- Pimp my netrw (wainting for dir.lua in nvim 0.13+)
+    'https://github.com/prichrd/netrw.nvim',
 
-    -- Pimp my netrw
-    'https://github.com/prichrd/netrw.nvim'
+    ---- Testing
+    'https://github.com/CoreyKaylor/diffbandit.nvim',
+
     -- nvim-treesitter is archived but nvim 0.12+ has native treesitter hl
     -- If language is not present, use tree-sitter-cli (cargo)
     -- and `:TSInstall <lang>`
@@ -828,3 +831,5 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function() require("crates").setup({}) end,
 })
 
+--- Diff -----------------------------------------------------------------------
+require("diffbandit").setup()

@@ -12,6 +12,10 @@
       "rev": "2304cc91fc226b8dd0f7074a7c14873061e2ccb9",
       "src": "https://github.com/dhananjaylatkar/cscope_maps.nvim"
     },
+    "diffbandit.nvim": {
+      "rev": "207ef5718edb74161897eafb1cbe6f7832cda28b",
+      "src": "https://github.com/CoreyKaylor/diffbandit.nvim"
+    },
     "everforest-nvim": {
       "rev": "a0e9edc57379e8feafc6ba207c26dbb12fc1b6d8",
       "src": "https://github.com/neanias/everforest-nvim"
