@@ -59,8 +59,6 @@ vim.keymap.set("n", "<leader>mp", function()
 end, { desc = "[M]erge conflict [P]rev" })
 
 -- Quality of life GIT functions
-local blame_ns = vim.api.nvim_create_namespace('git_blame_line')
-
 local function git_blame_line()
   local filepath = vim.api.nvim_buf_get_name(0)
   if filepath == '' then
@@ -72,6 +70,7 @@ local function git_blame_line()
   local line = vim.api.nvim_win_get_cursor(0)[1]
   local dir = vim.fn.fnamemodify(filepath, ':h')
 
+  -- use `-C` to ensure we are in the git repo of the file (if any)
   local cmd = string.format(
     'git -C %s blame -L %d,%d --date=short -- %s',
     vim.fn.shellescape(dir),
@@ -79,25 +78,21 @@ local function git_blame_line()
     vim.fn.shellescape(vim.fn.fnamemodify(filepath, ':t'))
   )
 
+  -- Execute command and process output
   local result = vim.fn.systemlist(cmd)
-
-  -- clear any previous blame virtual line in this buffer
-  vim.api.nvim_buf_clear_namespace(bufnr, blame_ns, 0, -1)
-
   if vim.v.shell_error ~= 0 or #result == 0 then
     vim.notify('git blame failed (not tracked / no repo?)', vim.log.levels.ERROR)
     return
   end
 
-  -- e.g. "abc1234 (Jane Doe 2026-07-30 12) some code here"
-  local hash, author, date = result[1]:match('^%^?(%x+)%s+%((.-)%s+(%d%d%d%d%-%d%d%-%d%d)%s+%d+%)')
-
+  -- Parse the commit hash (if any)
+  local hash = result[1]:match('^%^?(%x+)')
   if not hash then
-    vim.notify('Could not parse blame output', vim.log.levels.ERROR)
+    vim.notify('Could not retrieve Commit hash', vim.log.levels.ERROR)
     return
   end
 
-  -- uncommitted lines show as all-zero hash
+  -- Uncommitted lines show as all-zero hash
   if hash:match('^0+$') then
     vim.notify('Line not yet committed', vim.log.levels.INFO)
     return
@@ -107,19 +102,9 @@ local function git_blame_line()
   vim.fn.setreg('+', hash)
   vim.fn.setreg('*', hash)
 
-  local text = string.format('%s  %s  %s', hash, author, date)
-
-  vim.api.nvim_buf_set_extmark(bufnr, blame_ns, line - 1, 0, {
-    virt_lines = { { { text, 'Comment' } } },
-    virt_lines_above = false,
-  })
+  -- Display the log associated
+  vim.cmd("!" .. "git log -1 " .. vim.fn.shellescape(hash))
 end
 
-vim.keymap.set('n', '<leader>gbs', git_blame_line, { desc = '[g]it [b]lame [s]how current line (& copy hash)' })
-vim.keymap.set('n', '<leader>gl', ":! git log -1 ", { desc = '[g]it [l]og (copy hash)' })
-
-local function clear_blame()
-    vim.api.nvim_buf_clear_namespace(0, blame_ns, 0, -1)
-end
-vim.keymap.set('n', '<leader>gbc', clear_blame, { desc = '[g]it [b]lame [c]lear' })
+vim.keymap.set('n', '<leader>gb', git_blame_line, { desc = '[g]it [b]lame current line (& copy hash)' })
 
