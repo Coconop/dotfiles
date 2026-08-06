@@ -36,6 +36,10 @@
       "rev": "4bd761597348df2700dc456d870a1a5501448df2",
       "src": "https://github.com/ckipp01/nvim-jenkinsfile-linter"
     },
+    "plenary.nvim": {
+      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
+      "src": "https://github.com/nvim-lua/plenary.nvim"
+    },
     "rainbow_csv.nvim": {
       "rev": "26de78d8324f7ac6a3e478319d1eb1f17123eb5b",
       "src": "https://github.com/cameron-wags/rainbow_csv.nvim"

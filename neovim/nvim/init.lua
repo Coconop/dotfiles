@@ -15,6 +15,9 @@ require("config.autocmd")
 -- `:lua vim.pack.update()` to get the list -> spot `not active`
 -- `:lua vim.pack.del({'plug1.nvim', 'plug2-nvim'})`
 vim.pack.add({
+    -- Required by: nvim-jenkinsfile_linter
+    'https://github.com/nvim-lua/plenary.nvim',
+
     -- Fuzzy-finder picker
     'https://github.com/ibhagwan/fzf-lua',
     -- Library of minimalistics and independants lua modules
