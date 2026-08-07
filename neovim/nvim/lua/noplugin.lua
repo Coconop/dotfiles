@@ -297,9 +297,19 @@ local jenkins_ns = vim.api.nvim_create_namespace("jenkinsfile_lint")
 
 vim.keymap.set("n", "<leader>ltj", function()
   local jenkins_url = os.getenv("JENKINS_URL")
-  local jenkins_auth = os.getenv("JENKINS_AUTH")
-  if not jenkins_url or not jenkins_auth then
-    vim.notify("JENKINS_URL / JENKINS_AUTH not set", vim.log.levels.ERROR)
+  local jenkins_usr = os.getenv("JENKINS_USER_ID")
+  local jenkins_api_tok = os.getenv("JENKINS_API_TOKEN")
+  local jenkins_auth = jenkins_usr .. ":" .. jenkins_api_tok
+  if not jenkins_url then
+    vim.notify("JENKINS_URL not set", vim.log.levels.ERROR)
+    return
+  end
+  if not jenkins_usr then
+    vim.notify("JENKINS_USER_ID not set", vim.log.levels.ERROR)
+    return
+  end
+  if not jenkins_api_tok then
+    vim.notify("JENKINS_API_TOKEN not set", vim.log.levels.ERROR)
     return
   end
 
