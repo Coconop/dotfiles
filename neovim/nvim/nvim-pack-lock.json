@@ -17,28 +17,16 @@
       "src": "https://github.com/neanias/everforest-nvim"
     },
     "fzf-lua": {
-      "rev": "28440c741e927592877514fba3db21eb188caec8",
+      "rev": "8671012a7b2a1648595952c655039d51fb301c14",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "mini.nvim": {
-      "rev": "8cef23520832134c05e4524e49f0468623501053",
+      "rev": "3e47ec3709716177bf28e2d17e35c7ab39db126e",
       "src": "https://github.com/nvim-mini/mini.nvim"
-    },
-    "netrw.nvim": {
-      "rev": "3f643df59951d9adc4cf348cefe435fcdb5a3671",
-      "src": "https://github.com/prichrd/netrw.nvim"
     },
     "nightfox.nvim": {
       "rev": "4dacd3f0185a2227bdf3b6c0975a8f0bf87cac9a",
       "src": "https://github.com/EdenEast/nightfox.nvim"
-    },
-    "nvim-jenkinsfile-linter": {
-      "rev": "4bd761597348df2700dc456d870a1a5501448df2",
-      "src": "https://github.com/ckipp01/nvim-jenkinsfile-linter"
-    },
-    "plenary.nvim": {
-      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
-      "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "rainbow_csv.nvim": {
       "rev": "26de78d8324f7ac6a3e478319d1eb1f17123eb5b",
