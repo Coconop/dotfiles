@@ -5,7 +5,7 @@
 * https://www.raspberrypi.com/software/
 * Pi Lite OS 64bit
 * No WiFi (ethernet -> ensure wifi disabled with boot configuration)
-* Custom hostname, enable SSH
+* Custom hostname, enable SSH (/etc/dhcpd.conf)
 * Kingston 120GB SSD -> format
 
 * Reboot + wait (avahi daemon need to start for DNS hostname resolution)
@@ -78,6 +78,7 @@ arch
 cli:
 - tar
 - curl
+- need clang !
 
 ```bash
 cargo install --locked tree-sitter-cli
