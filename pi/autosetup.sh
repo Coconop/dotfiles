@@ -37,7 +37,7 @@ echo -e "${Blu}Checking eeprom updates...${None}"
 
 sudo rpi-eeprom-update
 
-if ask_for_confirmation("${Blu}Update EEPROM?${Red} This will automatically REBOOT!"); then
+if ask_for_confirmation "${Blu}Update EEPROM?${Red} This will automatically REBOOT!"; then
     sudo rpi-eeprom-update -a
     sudo reboot
 fi
