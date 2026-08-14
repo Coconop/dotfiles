@@ -9,7 +9,7 @@
       "src": "https://github.com/dhananjaylatkar/cscope_maps.nvim"
     },
     "diffbandit.nvim": {
-      "rev": "207ef5718edb74161897eafb1cbe6f7832cda28b",
+      "rev": "46b959ba22035535adc0055be7565bc71e81e616",
       "src": "https://github.com/CoreyKaylor/diffbandit.nvim"
     },
     "everforest-nvim": {
@@ -17,11 +17,11 @@
       "src": "https://github.com/neanias/everforest-nvim"
     },
     "fzf-lua": {
-      "rev": "8671012a7b2a1648595952c655039d51fb301c14",
+      "rev": "05e44d38de0a79c11fba5f7bf8138791b1dbdd1e",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "mini.nvim": {
-      "rev": "3e47ec3709716177bf28e2d17e35c7ab39db126e",
+      "rev": "629bf6792187e11b4829411c1648f86f28df3963",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "nightfox.nvim": {
