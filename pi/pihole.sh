@@ -179,6 +179,6 @@ sudo service unbound restart
 
 echo -e "${Mag}Go to $(hostname -I):80/admin and set 127.0.0.1#5335 as DNS${None}"
 
-if ask_for_confirmation "Reboot ?"; the
+if ask_for_confirmation "Reboot ?"; then
     sudo reboot now
 fi

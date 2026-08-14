@@ -47,7 +47,7 @@ fi
 echo -e "${Blu}Installing packages...${None}"
 
 sudo apt install -y build-essential clang ninja-build cmake pkg-config \
-  libssl-dev curl git unzip btop pass gnupg2 vim ufw unbound
+  libssl-dev curl git unzip btop pass gnupg2 vim ufw unbound tmux
 
 # fzf
 echo -e "${Blu}Installing fzf...${None}"
@@ -58,8 +58,9 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 echo -e "${Blu}Installing neovim \\o/...${None}"
 mkdir -p "$HOME/git"
 git clone https://github.com/neovim/neovim.git "$HOME/git/neovim"
+git checkout stable
 WORKDIR=$(pwd)
-cd neovim
+cd git/neovim
 make CMAKE_BUILD_TYPE=RelWithDebInfo
 cd build && cpack -G DEB && sudo dpkg -i nvim-linux-arm64.deb
 
@@ -87,8 +88,7 @@ cd "$DOTFILES/git"
 # Docker
 echo -e "${Blu}Installing docker...${None}"
 sudo apt remove $(dpkg --get-selections docker.io docker-compose docker-doc docker-buildx podman-docker containerd runc | cut -f1)
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo groupadd docker
+curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker "$USER"
 newgrp docker
 
@@ -116,7 +116,7 @@ echo -e "UUID=XXXXXXX  /mnt/media  ext4  defaults,nofail,x-systemd.device-timeou
 echo -e "\n\t${Red}Reboot to ensure automount is working${None}\n"
 
 JELLYFIN="$HOME/docker/jellyfin"
-mkdir -p "$JELLYFIN/{config,cache}"
+mkdir -p "$JELLYFIN"/{config,cache}
 touch "$JELLYFIN/docker-compose.yml"
 cat << EOF > "$JELLYFIN/docker-compose.yml"
 services:
