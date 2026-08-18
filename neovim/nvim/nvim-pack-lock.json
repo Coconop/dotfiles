@@ -28,18 +28,6 @@
       "rev": "4dacd3f0185a2227bdf3b6c0975a8f0bf87cac9a",
       "src": "https://github.com/EdenEast/nightfox.nvim"
     },
-    "nvim-jenkinsfile-linter": {
-      "rev": "4bd761597348df2700dc456d870a1a5501448df2",
-      "src": "https://github.com/ckipp01/nvim-jenkinsfile-linter"
-    },
-    "nvim-treesitter": {
-      "rev": "7caec274fd19c12b55902a5b795100d21531391f",
-      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
-    },
-    "plenary.nvim": {
-      "rev": "b9fd5226c2f76c951fc8ed5923d85e4de065e509",
-      "src": "https://github.com/nvim-lua/plenary.nvim"
-    },
     "rainbow_csv.nvim": {
       "rev": "26de78d8324f7ac6a3e478319d1eb1f17123eb5b",
       "src": "https://github.com/cameron-wags/rainbow_csv.nvim"
