@@ -243,7 +243,13 @@ require('mini.clue').setup({
 
 ------ FZF-LUA--- --------------------------------------------------------------
 local fzf = require('fzf-lua')
--- fzf.setup()
+if vim.fn.has('win32') == 1 then
+    fzf.setup({
+        -- Try to avoid some process spawn (slow on windows)
+        git_icons = false,
+        file_icons = false
+    })
+end
 vim.keymap.set(
     "n", "<leader>ff", fzf.files,         { desc="[F]ind [F]iles" })
 vim.keymap.set(
@@ -531,16 +537,21 @@ require("diffbandit").setup()
 
 --- Tweaks ---------------------------------------------------------------------
 --- Fix shell commands for Windows
+--- Use `:!bash -c XXX` to launch XXX command via GitBash
 if vim.fn.has('win32') == 1 then
-    if vim.fn.executable('bash') == 1 then
-        -- Git bash
-        vim.o.shell = 'bash' -- 'C:/Program Files/Git/bin/bash.exe'
-        vim.o.shellcmdflag = '-c'
-        vim.o.shellxquote = '' -- clears the cmd.exe-style quoting that breaks bash
-        vim.o.shellquote = ''
-        vim.o.shellredir = '>%s 2>&1'
-        vim.o.shellpipe = '2>&1 | tee'
-        vim.o.shellslash = true -- optional: makes Neovim use / instead of \ internally
-    -- else: executable is cmd.exe
-    end
+    vim.o.shell = 'powershell'
+    vim.o.shellcmdflag = '-NoLogo -NoProfile -Command' --make it quick
+    vim.o.shellxquote = ''
+    vim.o.shellquote = ''
+    -- if vim.fn.executable('bash') == 1 then
+    --     -- Git bash
+    --     vim.o.shell = 'bash' -- 'C:/Program Files/Git/bin/bash.exe'
+    --     vim.o.shellcmdflag = '-c'
+    --     vim.o.shellxquote = '' -- clears the cmd.exe-style quoting that breaks bash
+    --     vim.o.shellquote = ''
+    --     vim.o.shellredir = '>%s 2>&1'
+    --     vim.o.shellpipe = '2>&1 | tee'
+    --     vim.o.shellslash = true -- optional: makes Neovim use / instead of \ internally
+    -- -- else: executable is cmd.exe
+    -- end
 end
