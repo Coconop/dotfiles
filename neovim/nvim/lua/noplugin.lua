@@ -111,6 +111,74 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+--- tree-sitter ----------------------------------------------------------------
+
+-- Use bash grammar for sh scripts
+vim.treesitter.language.register('bash', 'sh')
+vim.treesitter.language.register('c_sharp', 'cs')
+vim.treesitter.language.register('markdown', { 'pandoc', 'markdown.pandoc' })
+-- vimdoc parser is used for :help buffers, filetype 'help'
+vim.treesitter.language.register('vimdoc', 'help')
+
+local ts_group = vim.api.nvim_create_augroup('ts-highlight', { clear = true })
+
+local LARGE_FILE_SIZE = 1 * 1024 * 1024 -- 1MB
+
+local function file_too_big(buf)
+  local name = vim.api.nvim_buf_get_name(buf)
+  if name == '' then return false end
+  local ok, stats = pcall(function() return vim.uv.fs_stat(name) end)
+  return ok and stats ~= nil and stats.size > LARGE_FILE_SIZE
+end
+
+local function has_parser(lang)
+  return pcall(vim.treesitter.language.add, lang)
+end
+
+local function try_start_treesitter(buf, lang)
+  local ok = pcall(vim.treesitter.start, buf, lang)
+  return ok
+end
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = ts_group,
+  callback = function(args)
+    local buf = args.buf
+
+    -- Exit early on non-file buffers (pickers, terminal, quickfix, etc)
+    if vim.bo[buf].buftype ~= '' then return end
+
+    -- always kill legacy syntax — never let it silently take over
+    vim.bo[buf].syntax = 'OFF'
+
+    if file_too_big(buf) then
+      vim.b[buf].large_buf = true
+      return -- highlighting disabled entirely on large files
+    end
+
+    local ft = vim.bo[buf].filetype
+    if ft == '' then return end
+
+    local lang = vim.treesitter.language.get_lang(ft) or ft
+
+    if has_parser(lang) then
+      local started = try_start_treesitter(buf, lang)
+      if not started then
+        vim.notify(
+          ('treesitter failed to start for "%s" (buf %d) — highlighting disabled'):format(lang, buf),
+          vim.log.levels.WARN
+        )
+      end
+    else
+      vim.notify(
+        ('no treesitter parser for "%s" — highlighting disabled'):format(lang),
+        vim.log.levels.WARN
+      )
+    end
+  end,
+})
+
+
 --- Linters --------------------------------------------------------------------
 
 --- ShellCheck

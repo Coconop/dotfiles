@@ -139,7 +139,7 @@ else
           ["+"] = "win32yank.exe -o --lf",
           ["*"] = "win32yank.exe -o --lf",
         },
-        cache_enabled = 0,
+        cache_enabled = true,
       }
   else
     vim.opt.clipboard:append("unnamedplus")
