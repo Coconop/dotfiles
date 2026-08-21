@@ -131,10 +131,6 @@ local function file_too_big(buf)
   return ok and stats ~= nil and stats.size > LARGE_FILE_SIZE
 end
 
-local function has_parser(lang)
-  return pcall(vim.treesitter.language.add, lang)
-end
-
 local function try_start_treesitter(buf, lang)
   local ok = pcall(vim.treesitter.start, buf, lang)
   return ok
@@ -153,6 +149,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
     if file_too_big(buf) then
       vim.b[buf].large_buf = true
+      vim.cmd('NoMatchParen')
       return -- highlighting disabled entirely on large files
     end
 
@@ -161,19 +158,9 @@ vim.api.nvim_create_autocmd('FileType', {
 
     local lang = vim.treesitter.language.get_lang(ft) or ft
 
-    if has_parser(lang) then
-      local started = try_start_treesitter(buf, lang)
-      if not started then
-        vim.notify(
-          ('treesitter failed to start for "%s" (buf %d) — highlighting disabled'):format(lang, buf),
-          vim.log.levels.WARN
-        )
-      end
-    else
-      vim.notify(
-        ('no treesitter parser for "%s" — highlighting disabled'):format(lang),
-        vim.log.levels.WARN
-      )
+    local started = try_start_treesitter(buf, lang)
+    if not started then
+      print(('no treesitter highlighting for "%s"'):format(lang))
     end
   end,
 })
