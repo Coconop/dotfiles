@@ -32,8 +32,9 @@ vim.g.netrw_hide = 0
 -- Preview files in a vertical split window
 vim.g.netrw_preview = 1
 
--- 0 = open files in the previous window (not split)
-vim.g.netrw_browse_split = 0
+-- 0 = open file in current window
+-- 4 = spen file in the previous window, keeping netrw in sidebar
+vim.g.netrw_browse_split = 4
 
 -- When netrw open in split, use 25% of screen width
 vim.g.netrw_winsize = 25
@@ -44,6 +45,10 @@ vim.g.netrw_copydircmd = 'cp -r'
 
 -- highlight special files (exe, links, etc)
 vim.g.netrw_special_syntax = 1
+
+-- Always open netrw as a left-hand sidebar at 25% width
+vim.keymap.set('n', '<leader>e', '<cmd>Lexplore<CR>', { silent = true, desc = '[E]xplorer Toggle' })
+
 
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'netrw',
@@ -104,8 +109,8 @@ vim.api.nvim_create_autocmd('FileType', {
         title = ' netrw help ',
         title_pos = 'center',
       })
-      vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = buf })
-      vim.keymap.set('n', '<Esc>', '<cmd>close<CR>', { buffer = buf })
+      vim.keymap.set('n', 'q', '<cmd>Lexplore<CR>', { buffer = buf })
+      vim.keymap.set('n', '<Esc>', '<cmd>Lexplore<CR>', { buffer = buf })
     end, { buffer = ev.buf, silent = true, desc = 'Netrw cheatsheet' })
 
   end,
