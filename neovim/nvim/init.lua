@@ -493,13 +493,10 @@ end, { desc = "[D]iagnostic [C]lear ALL"})
 
 -- groovyls is disabled for current workflow but lsp/groovyls exists
 
+local servers = {'lemminx', 'rust_analyzer', 'clangd', 'lua_ls', 'pyright'}
 vim.keymap.set("n", "<leader>lg", function()
     vim.notify("Enabling LSP")
-    vim.lsp.enable('rust_analyzer')
-    vim.lsp.enable('clangd')
-    vim.lsp.enable('lua_ls')
-    vim.lsp.enable('pyright')
-    -- vim.lsp.enable('groovyls')
+    vim.lsp.enable(servers)
 end, { desc = "[L]SP [g]o"})
 
 vim.keymap.set("n", "<leader>lx", function()
@@ -507,11 +504,7 @@ vim.keymap.set("n", "<leader>lx", function()
     for _, client in ipairs(vim.lsp.get_clients()) do
         client:stop()
     end
-    vim.lsp.enable('rust_analyzer', false)
-    vim.lsp.enable('clangd', false)
-    vim.lsp.enable('lua_ls', false)
-    vim.lsp.enable('pyright', false)
-    -- vim.lsp.enable('groovyls', false)
+    vim.lsp.enable(servers, false)
 end, { desc = "[L]SP e[x]it"})
 
 --- csv ------------------------------------------------------------------------
