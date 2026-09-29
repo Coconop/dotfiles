@@ -22,7 +22,7 @@ return {
                 ParameterNames = true,
                 DeducedTypes = true,
             },
-            fallbackFlags = { "-std=c++20", "-D_CRT_SECURE_NO_WARNINGS" },
+            fallbackFlags = { "-std=c++20" },
         },
     }
 }

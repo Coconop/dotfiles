@@ -12,6 +12,12 @@ require("config.keymaps")
 require("config.autocmd")
 -- Plugin replacement
 require("noplugin")
+-- Local config (unversionned) to load if exists
+local my_local_nvim = vim.fn.expand("~/.my_local_nvim.lua")
+if vim.fn.filereadable(my_local_nvim) == 1 then
+    vim.notify("Local config loaded")
+    dofile(my_local_nvim)
+end
 
 -- To remove a plugin
 -- `:lua vim.pack.update()` to get the list -> spot `not active`
@@ -496,6 +502,7 @@ end, { desc = "[D]iagnostic [C]lear ALL"})
 local servers = {'lemminx', 'rust_analyzer', 'clangd', 'lua_ls', 'pyright'}
 vim.keymap.set("n", "<leader>lg", function()
     vim.notify("Enabling LSP")
+    vim.lsp.log.set_level 'trace'
     vim.lsp.enable(servers)
 end, { desc = "[L]SP [g]o"})
 

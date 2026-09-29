@@ -1,24 +1,4 @@
--- Look for custom config file on which virtual env to use
-local function find_pyright_cfg()
-  local dir = vim.fn.expand("%:p:h")
-  local home = vim.fn.expand("~")
-
-  while true do
-    local cfg_path = dir .. "/.pyright_cfg.lua"
-    if vim.fn.filereadable(cfg_path) == 1 then
-      vim.notify("config: " .. cfg_path, vim.log.levels.TRACE)
-      return dofile(cfg_path) -- found: execute and return the config table
-    end
-    if dir == home then break end -- Do not walk up past HOME
-    local parent = vim.fn.fnamemodify(dir, ":h")
-    if parent == dir then break end  -- Do not walk up past ROOT
-    dir = parent
-  end
-
-  return nil -- no config found :(
-end
-
-local cfg = find_pyright_cfg() or {}
+local cfg = janus and janus.pyright.settings or {}
 vim.notify("Virtual env: " .. vim.inspect(cfg.venv), vim.log.levels.DEBUG)
 vim.notify("Extra Paths: " .. vim.inspect(cfg.extraPaths), vim.log.levels.TRACE)
 
