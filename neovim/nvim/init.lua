@@ -15,7 +15,6 @@ require("noplugin")
 -- Local config (unversionned) to load if exists
 local my_local_nvim = vim.fn.expand("~/.my_local_nvim.lua")
 if vim.fn.filereadable(my_local_nvim) == 1 then
-    vim.notify("Local config loaded")
     dofile(my_local_nvim)
 end
 

@@ -1,4 +1,4 @@
-local cfg = janus and janus.pyright.settings or {}
+local cfg = janus and janus.pyright or {}
 vim.notify("Virtual env: " .. vim.inspect(cfg.venv), vim.log.levels.DEBUG)
 vim.notify("Extra Paths: " .. vim.inspect(cfg.extraPaths), vim.log.levels.TRACE)
 
