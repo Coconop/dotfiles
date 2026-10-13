@@ -1,6 +1,4 @@
 xml_settings = janus and janus.lemminx.xml_settings or {}
-vim.notify("Java: " .. vim.inspect(xml_settings.xml.java), vim.log.levels.DEBUG)
-vim.notify("XSD: " .. vim.inspect(xml_settings.xml.fileAssociations), vim.log.levels.TRACE)
 
 -- -- TODO
 --         xml_settings = {

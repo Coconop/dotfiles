@@ -496,12 +496,18 @@ end, { desc = "[D]iagnostic [C]lear ALL"})
 
 --- Lsp toogle (disabled by default for fast edit) -----------------------------
 
--- groovyls is disabled for current workflow but lsp/groovyls exists
+local function clear_lsp_log()
+    local path = vim.lsp.log.get_filename()
+  local f = io.open(path, "w")  -- "w" truncates the file
+  if f then f:close() end
+end
 
+-- groovyls is disabled for current workflow but lsp/groovyls exists
 local servers = {'lemminx', 'rust_analyzer', 'clangd', 'lua_ls', 'pyright'}
 vim.keymap.set("n", "<leader>lg", function()
     vim.notify("Enabling LSP")
-    vim.lsp.log.set_level 'trace'
+    clear_lsp_log()
+    vim.lsp.log.set_level 'error'
     vim.lsp.enable(servers)
 end, { desc = "[L]SP [g]o"})
 
